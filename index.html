@@ -235,7 +235,7 @@
                     <nav class="desktop-main-nav hidden md:flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
                         <button type="button" id="mainCatStudyBtn" onclick="switchMainCategory('study')" class="px-4 sm:px-5 py-2 rounded-xl text-xs sm:text-sm font-extrabold transition flex items-center justify-center gap-2 bg-cyan-700 text-white shadow-sm whitespace-nowrap">
                             <i class="fa-solid fa-clone"></i>
-                            <span>Ôn luyện (Flashcard)</span>
+                            <span>Ôn luyện</span>
                         </button>
                         <button type="button" id="mainCatQuizBtn" onclick="switchMainCategory('quiz')" class="px-4 sm:px-5 py-2 rounded-xl text-xs sm:text-sm font-extrabold transition flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900 whitespace-nowrap">
                             <i class="fa-solid fa-bolt-lightning text-amber-500"></i>
@@ -956,28 +956,24 @@
                         <!-- Nội dung Hướng dẫn Sheet 1: Từ vựng -->
                         <div id="guideSheet1" class="space-y-3">
                             <div class="text-xs text-slate-600 bg-amber-50 border border-amber-200 rounded-xl p-3 leading-relaxed space-y-1.5">
-                                <p><strong class="text-amber-900">Quy tắc nạp Từ vựng đa nghĩa & nhiều Cách dùng (Chữ Hán ➔ Khung nghĩa ➔ Cách dùng):</strong></p>
+                                <p><strong class="text-amber-900">Quy tắc trình bày Sheet "Từ vựng" (Phân tách rõ Ví dụ chung & Ví dụ theo từng Cách dùng):</strong></p>
                                 <ul class="list-disc list-inside space-y-1">
                                     <li><strong>3 cột bắt buộc:</strong> <strong class="text-rose-600">Chữ Hán*</strong>, <strong class="text-rose-600">Pinyin*</strong>, <strong class="text-rose-600">Nghĩa tiếng Việt*</strong>.</li>
-                                    <li><strong>Nạp nhiều Cách dùng trong 1 Loại từ (3 cách linh hoạt):</strong>
-                                        <ol class="list-decimal list-inside pl-3 mt-0.5 space-y-0.5 text-slate-700">
-                                            <li><strong>Chia cột trực tiếp:</strong> Đặt tên cột <code>Cách dùng 1</code>, <code>Ví dụ 1</code>, <code>Ghi chú 1</code>, <code>Cách dùng 2</code>, <code>Ví dụ 2</code>, <code>Ghi chú 2</code>... (đã có sẵn trong File Excel Mẫu).</li>
-                                            <li><strong>Ngắt dòng hoặc dùng dấu <code>||</code> trong 1 ô:</strong> Trong cột <code>Cách sử dụng</code> và cột <code>Ví dụ</code>, dùng ký tự <code>||</code> (hoặc xuống dòng <code>Alt + Enter</code>) để tách tương ứng Cách dùng 1 và Cách dùng 2.</li>
-                                            <li><strong>Nạp nhiều dòng trùng Chữ Hán + Loại từ:</strong> Hệ thống sẽ tự động bật bảng hỏi bạn chọn <strong>"Gộp chung"</strong> (đẩy thành Cách dùng mới vào mảng <code>usages</code>) hoặc <strong>"Ghi đè"</strong>.</li>
-                                        </ol>
-                                    </li>
+                                    <li><strong>Cột <code class="text-emerald-800 font-bold">Ví dụ chung</code>:</strong> Dành cho các câu ví dụ minh họa chung của từ/loại từ đó (không bắt buộc gắn với công thức cấu trúc).</li>
+                                    <li><strong>Các cột <code class="text-cyan-800 font-bold">Cách dùng 1</code>, <code class="text-cyan-800 font-bold">Ví dụ 1</code>, <code class="text-teal-800 font-bold">Cách dùng 2</code>, <code class="text-teal-800 font-bold">Ví dụ 2</code>...:</strong> Dành cho các cấu trúc/công thức sử dụng cụ thể và câu ví dụ đi kèm riêng với từng cách dùng đó.</li>
                                 </ul>
                             </div>
                             <div class="overflow-x-auto border border-slate-200 rounded-xl custom-scroll">
-                                <table class="w-full text-left text-[11px] min-w-[980px]">
+                                <table class="w-full text-left text-[11px] min-w-[1080px]">
                                     <thead class="bg-slate-800 text-white">
                                         <tr>
                                             <th class="p-2 border-r border-slate-700">Chữ Hán <span class="text-rose-400">*</span></th>
                                             <th class="p-2 border-r border-slate-700">Pinyin <span class="text-rose-400">*</span></th>
                                             <th class="p-2 border-r border-slate-700">Loại từ</th>
                                             <th class="p-2 border-r border-slate-700">Nghĩa tiếng Việt <span class="text-rose-400">*</span></th>
-                                            <th class="p-2 border-r border-slate-700 bg-cyan-900">Cách dùng 1 (hoặc Cách sử dụng)</th>
-                                            <th class="p-2 border-r border-slate-700 bg-cyan-900">Ví dụ 1 (hoặc Ví dụ)</th>
+                                            <th class="p-2 border-r border-slate-700 bg-emerald-900">Ví dụ chung</th>
+                                            <th class="p-2 border-r border-slate-700 bg-cyan-900">Cách dùng 1</th>
+                                            <th class="p-2 border-r border-slate-700 bg-cyan-900">Ví dụ 1</th>
                                             <th class="p-2 border-r border-slate-700 bg-teal-900">Cách dùng 2</th>
                                             <th class="p-2 border-r border-slate-700 bg-teal-900">Ví dụ 2</th>
                                             <th class="p-2 border-r border-slate-700">Từ đồng nghĩa</th>
@@ -991,8 +987,9 @@
                                             <td class="p-2">dàibiǎo</td>
                                             <td class="p-2 font-sans">Danh từ</td>
                                             <td class="p-2 font-sans">Người đại diện, đại biểu</td>
+                                            <td class="p-2 bg-emerald-50/40">他是我们的代表。; 各位代表已经到了。</td>
                                             <td class="p-2 font-sans">Số từ + 位/名 + 代表</td>
-                                            <td class="p-2">他是我们的代表。; 各位代表好。</td>
+                                            <td class="p-2">我们选出了三位代表参加会议。</td>
                                             <td class="p-2 font-sans text-slate-400"></td>
                                             <td class="p-2 text-slate-400"></td>
                                             <td class="p-2">代理人</td>
@@ -1004,6 +1001,7 @@
                                             <td class="p-2">dàibiǎo</td>
                                             <td class="p-2 font-sans">Động từ</td>
                                             <td class="p-2 font-sans">Đại diện cho, biểu thị</td>
+                                            <td class="p-2 bg-emerald-50/40">这仅代表我个人的意见。</td>
                                             <td class="p-2 font-sans">A + 代表 + B + Động từ (Thay mặt tổ chức)</td>
                                             <td class="p-2">我代表公司欢迎你。</td>
                                             <td class="p-2 font-sans">Sự vật A + 代表 + Ý nghĩa B (Biểu trưng cho)</td>
@@ -4506,7 +4504,7 @@
                 `<span>Bộ từ: ${escapeHtml((item.collections || [item.fileSource]).join(', '))}</span> ` +
                 (item.passedQuiz
                     ? `<span class="ml-1.5 px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] font-extrabold"><i class="fa-solid fa-circle-check text-emerald-600"></i> Đã thuộc</span>`
-                    : `<span class="ml-1.5 px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-bold"><i class="fa-solid fa-clock-rotate-left text-amber-600"></i> Cần ôn</span>`);
+                    : `<span class="ml-1.5 px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-bold"><i class="fa-solid fa-clock-rotate-left text-amber-600"></i> Cần ôn thêm</span>`);
 
             document.getElementById('grammarFrontTitle').textContent = item.pattern;
             document.getElementById('grammarBackTitle').textContent = item.pattern;
@@ -4667,29 +4665,132 @@
             }, { passive: false });
         }
 
+        // Helper kiểm tra điều kiện "Đã thuộc" cho Ngữ pháp & Thành ngữ (chỉ khi đã hoàn thành hết bài tập của mục đó)
+        function isGrammarOrIdiomMastered(item) {
+            if (!item) return false;
+            return Boolean(item.passedQuiz);
+        }
+
+        function renderMasteryStatusBadgeHtml(isMastered) {
+            return isMastered
+                ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800 border border-emerald-300 text-[11px] font-extrabold whitespace-nowrap"><i class="fa-solid fa-circle-check text-emerald-600"></i> Đã thuộc</span>`
+                : `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 text-[11px] font-bold whitespace-nowrap"><i class="fa-solid fa-clock-rotate-left text-amber-600"></i> Cần ôn thêm</span>`;
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
-            // Đồng bộ bộ lọc Hiển thị (Đã thuộc / Cần ôn thêm) cho Thành ngữ
+            // 1. Bọc hàm renderCurrentIdiomFlashcard để luôn giữ nhãn Đã thuộc / Cần ôn thêm khi chuyển thẻ
+            const origRenderCurrentIdiomFlashcard = window.renderCurrentIdiomFlashcard;
+            if (typeof origRenderCurrentIdiomFlashcard === 'function') {
+                window.renderCurrentIdiomFlashcard = function() {
+                    origRenderCurrentIdiomFlashcard.apply(this, arguments);
+                    const item = filteredIdiomCards[currentIdiomCardIndex];
+                    const deckEl = document.getElementById('idiomCardDeckSource');
+                    if (item && deckEl) {
+                        const mastered = isGrammarOrIdiomMastered(item);
+                        deckEl.innerHTML =
+                            `<span>Bộ từ: ${escapeHtml((item.collections || [item.fileSource]).join(', '))}</span> ` +
+                            (mastered
+                                ? `<span class="ml-1.5 px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] font-extrabold"><i class="fa-solid fa-circle-check text-emerald-600"></i> Đã thuộc</span>`
+                                : `<span class="ml-1.5 px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-bold"><i class="fa-solid fa-clock-rotate-left text-amber-600"></i> Cần ôn thêm</span>`);
+                    }
+                };
+            }
+
+            // 2. Đồng bộ bộ lọc Hiển thị (Đã thuộc / Cần ôn thêm) cho Thành ngữ
             window.rebuildIdiomFlashcardDeck = function() {
                 const masteryFilter = document.getElementById('idiomMasteryFilter')?.value || 'ALL';
                 let list = idiomList.filter(i => itemBelongsToCollection(i, null));
-                if (masteryFilter === 'NEED_REVIEW') list = list.filter(i => !i.passedQuiz);
-                else if (masteryFilter === 'MASTERED') list = list.filter(i => Boolean(i.passedQuiz));
+                if (masteryFilter === 'NEED_REVIEW') list = list.filter(i => !isGrammarOrIdiomMastered(i));
+                else if (masteryFilter === 'MASTERED') list = list.filter(i => isGrammarOrIdiomMastered(i));
 
                 filteredIdiomCards = list;
                 if (currentIdiomCardIndex >= filteredIdiomCards.length) {
                     currentIdiomCardIndex = 0;
                 }
-                if (typeof renderCurrentIdiomFlashcard === 'function') {
-                    renderCurrentIdiomFlashcard();
+                if (typeof window.renderCurrentIdiomFlashcard === 'function') {
+                    window.renderCurrentIdiomFlashcard();
                 }
-                const item = filteredIdiomCards[currentIdiomCardIndex];
-                const deckEl = document.getElementById('idiomCardDeckSource');
-                if (item && deckEl) {
-                    deckEl.innerHTML =
-                        `<span>Bộ từ: ${escapeHtml((item.collections || [item.fileSource]).join(', '))}</span> ` +
-                        (item.passedQuiz
-                            ? `<span class="ml-1.5 px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] font-extrabold"><i class="fa-solid fa-circle-check text-emerald-600"></i> Đã thuộc</span>`
-                            : `<span class="ml-1.5 px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-bold"><i class="fa-solid fa-clock-rotate-left text-amber-600"></i> Cần ôn</span>`);
+            };
+
+            // 3. Đảm bảo khi trả lời đúng bài tập Thành ngữ thì ghi nhận passedQuiz = true ("Đã thuộc")
+            const origSubmitIdiomQuizAnswer = window.submitIdiomQuizAnswer;
+            if (typeof origSubmitIdiomQuizAnswer === 'function') {
+                window.submitIdiomQuizAnswer = function(idx) {
+                    const wasAnswered = idiomQuizAnswered;
+                    const q = idiomQuizQuestions[idiomQuizCurrentIndex];
+                    origSubmitIdiomQuizAnswer.apply(this, arguments);
+                    if (!wasAnswered && q && q.options && q.options[idx] === q.correctAnswer && q.item) {
+                        q.item.passedQuiz = true;
+                        persistCurrentAccountData();
+                    }
+                };
+            }
+
+            // 4. Đồng bộ cột Đánh giá của Ngữ pháp & Thành ngữ trong Bảng Quản lý dữ liệu
+            const origRenderDataManagementTable = window.renderDataManagementTable;
+            if (typeof origRenderDataManagementTable === 'function') {
+                window.renderDataManagementTable = function() {
+                    origRenderDataManagementTable.apply(this, arguments);
+                    if (activeDataTableTab !== 'grammar' && activeDataTableTab !== 'idiom') return;
+
+                    const thead = document.getElementById('dataTableHead');
+                    const tbody = document.getElementById('dataTableBody');
+                    if (!thead || !tbody) return;
+
+                    const sourceList = activeDataTableTab === 'grammar' ? grammarList : idiomList;
+
+                    // Tìm vị trí cột Đánh giá / Trạng thái trên Header
+                    let statusColIdx = -1;
+                    const thList = Array.from(thead.querySelectorAll('th'));
+                    thList.forEach((th, idx) => {
+                        const text = (th.textContent || '').trim().toLowerCase();
+                        if (text.includes('đánh giá') || text.includes('trạng thái')) {
+                            statusColIdx = idx;
+                            th.textContent = 'Đánh giá';
+                        }
+                    });
+
+                    // Cập nhật nhãn Đã thuộc (emerald) / Cần ôn thêm (amber) cho từng dòng chính
+                    const mainRows = Array.from(tbody.querySelectorAll('tr')).filter(tr => tr.querySelector('input[type="checkbox"]'));
+                    mainRows.forEach((tr, rowIdx) => {
+                        const rowId = currentVisibleRowIds[rowIdx];
+                        const item = sourceList.find(x => x.id === rowId);
+                        if (!item) return;
+
+                        const mastered = isGrammarOrIdiomMastered(item);
+                        const cells = tr.querySelectorAll('td');
+                        const targetCell = (statusColIdx >= 0 && cells[statusColIdx])
+                            ? cells[statusColIdx]
+                            : (cells.length >= 2 ? cells[cells.length - 2] : null);
+
+                        if (targetCell) {
+                            targetCell.innerHTML = renderMasteryStatusBadgeHtml(mastered);
+                        }
+                    });
+                };
+            }
+
+            // 5. Đồng bộ nút thao tác nhóm (Bulk Actions: Đã thuộc / Cần ôn) cho cả Ngữ pháp & Thành ngữ
+            const origExecuteBulkMasteryStatus = window.executeBulkMasteryStatus;
+            window.executeBulkMasteryStatus = async function(isMastered) {
+                if (activeDataTableTab === 'vocab' && typeof origExecuteBulkMasteryStatus === 'function') {
+                    return origExecuteBulkMasteryStatus.apply(this, arguments);
+                }
+                if (selectedBulkIds.size === 0) {
+                    showToast("Vui lòng tích chọn ít nhất 1 mục trong bảng!", "error");
+                    return;
+                }
+                const targetList = activeDataTableTab === 'grammar' ? grammarList : idiomList;
+                let updatedCount = 0;
+                targetList.forEach(item => {
+                    if (selectedBulkIds.has(item.id)) {
+                        item.passedQuiz = Boolean(isMastered);
+                        updatedCount++;
+                    }
+                });
+                if (updatedCount > 0) {
+                    await persistCurrentAccountData();
+                    showToast(`Đã cập nhật trạng thái "${isMastered ? 'Đã thuộc' : 'Cần ôn thêm'}" cho ${updatedCount} mục!`, "success");
                 }
             };
 
@@ -5333,7 +5434,20 @@
             return 'SKIPPED';
         }
 
-        // Lấy chính xác giá trị cột Excel không bị chồng chéo giữa "Ví dụ chung" và "Ví dụ 1", "Cách dùng 1"
+        // Đọc chính xác cột "Ví dụ chung" mà không bị lẫn với các cột "Ví dụ 1", "Ví dụ 2"...
+        function pickGeneralExampleFromRow(rowObj) {
+            const keys = Object.keys(rowObj);
+            const exactAliases = ['viduchung', 'generalexample', 'viduchungtuloai', 'viduchungcuatu', 'cauviduchung'];
+            for (const rawKey of keys) {
+                const norm = normalizeColumnKey(rawKey);
+                if (exactAliases.includes(norm) || norm.includes('viduchung') || norm.includes('generalexample')) {
+                    return String(rowObj[rawKey] ?? '').trim();
+                }
+            }
+            return '';
+        }
+
+        // Lấy chính xác giá trị cột Excel không bị chồng chéo giữa "Ví dụ chung" và "Ví dụ 1..10", "Cách dùng 1..10"
         function pickExactOrIncludedRowField(rowObj, exactAliases, partialAliases = []) {
             const keys = Object.keys(rowObj);
             // 1. Ưu tiên khớp chính xác tên cột đã chuẩn hóa
@@ -5343,10 +5457,10 @@
                     return String(rowObj[rawKey] ?? '').trim();
                 }
             }
-            // 2. Khớp một phần nhưng loại trừ các cột đánh số 1..5 hoặc cột viduchung
+            // 2. Khớp một phần nhưng loại trừ các cột đánh số (1..10) và loại trừ cột "Ví dụ chung"
             for (const rawKey of keys) {
                 const norm = normalizeColumnKey(rawKey);
-                if (/[1-5]$/.test(norm) || norm.includes('viduchung') || norm.includes('generalexample')) continue;
+                if (/\d+$/.test(norm) || norm.includes('viduchung') || norm.includes('generalexample')) continue;
                 if (partialAliases.some(a => norm.includes(a))) {
                     return String(rowObj[rawKey] ?? '').trim();
                 }
@@ -5354,15 +5468,39 @@
             return '';
         }
 
-        // Bóc tách "Ví dụ chung" (Tầng 2) và mảng `usages` (Tầng 3: [{ formula, examples, note }]) từ 1 dòng Excel
-        function extractUsagesFromExcelRow(r, rawUsage, rawExamples, hint) {
+        // Đọc cột đánh số thứ i (VD: Cách dùng 1, Ví dụ 1, Ghi chú 1...)
+        function pickNumberedUsageField(rowObj, prefixList, indexNum) {
+            const keys = Object.keys(rowObj);
+            const exactTargets = prefixList.map(p => `${p}${indexNum}`);
+            for (const rawKey of keys) {
+                const norm = normalizeColumnKey(rawKey);
+                if (exactTargets.includes(norm)) {
+                    return String(rowObj[rawKey] ?? '').trim();
+                }
+            }
+            // Hỗ trợ trường hợp tiêu đề cột có chú thích phụ như "Cách dùng 1 (Công thức)" nhưng không khớp nhầm số 10
+            for (const rawKey of keys) {
+                const norm = normalizeColumnKey(rawKey);
+                const matchedPrefix = prefixList.some(p => {
+                    const regex = new RegExp(`^${p}${indexNum}(?!\\d)`);
+                    return regex.test(norm);
+                });
+                if (matchedPrefix) {
+                    return String(rowObj[rawKey] ?? '').trim();
+                }
+            }
+            return '';
+        }
+
+        // Bóc tách mảng `usages` ([{ formula, examples, note }]) từ 1 dòng Excel, tách biệt hoàn toàn với `generalExample`
+        function extractUsagesFromExcelRow(r, rawUsage, rawExamples) {
             const usages = [];
 
-            // 1. Kiểm tra các cột đánh số: Cách dùng 1..5, Ví dụ 1..5, Ghi chú 1..5
-            for (let i = 1; i <= 5; i++) {
-                const f = pickExactOrIncludedRowField(r, [`cachdung${i}`, `cachsudung${i}`, `congthuc${i}`, `usage${i}`]);
-                const exRaw = pickExactOrIncludedRowField(r, [`vidu${i}`, `cauvidu${i}`, `example${i}`]);
-                const note = pickExactOrIncludedRowField(r, [`ghichu${i}`, `luuy${i}`, `note${i}`]);
+            // 1. Quét các cột đánh số: Cách dùng 1..10, Ví dụ 1..10, Ghi chú 1..10
+            for (let i = 1; i <= 10; i++) {
+                const f = pickNumberedUsageField(r, ['cachdung', 'cachsudung', 'congthuc', 'usage'], i);
+                const exRaw = pickNumberedUsageField(r, ['vidu', 'cauvidu', 'example'], i);
+                const note = pickNumberedUsageField(r, ['ghichu', 'luuy', 'note'], i);
 
                 if (f || exRaw || note) {
                     const exList = exRaw ? exRaw.split(/[\n;；]+/).map(s => s.trim()).filter(Boolean) : [];
@@ -5378,7 +5516,7 @@
                 return usages;
             }
 
-            // 2. Nếu dùng cột "Cách sử dụng" và "Ví dụ" chung nhưng ngăn cách nhiều cách dùng bằng "||"
+            // 2. Hỗ trợ trường hợp file dùng cột "Cách sử dụng" và "Ví dụ" ngăn cách nhiều cách dùng bằng "||"
             if ((rawUsage && rawUsage.includes('||')) || (rawExamples && rawExamples.includes('||'))) {
                 const fParts = rawUsage ? rawUsage.split('||').map(s => s.trim()) : [];
                 const exParts = rawExamples ? rawExamples.split('||').map(s => s.trim()) : [];
@@ -5399,7 +5537,7 @@
                 if (usages.length > 0) return usages;
             }
 
-            // 3. Nếu có Công thức ở cột Cách sử dụng cũ -> Đưa vào usages[0]
+            // 3. Tương thích file mẫu cũ có 1 cột "Cách sử dụng" và 1 cột "Ví dụ"
             const cleanF = isLegacyAutoFormulaString(rawUsage) ? '' : rawUsage;
             const cleanEx = rawExamples ? rawExamples.split(/[\n;；]+/).map(s => s.trim()).filter(Boolean) : [];
             if (cleanF) {
@@ -5525,7 +5663,7 @@
                                 }
                             });
                         } else {
-                            // Sheet 1: Từ vựng (Bóc tách tách biệt "Ví dụ chung" Tầng 2 và các cột "Cách dùng 1..5" Tầng 3)
+                            // Sheet 1: Từ vựng — Đọc cột "Ví dụ chung" tách biệt hoàn toàn với các cột "Cách dùng i" / "Ví dụ i"
                             rows.forEach(r => {
                                 const hanzi = pickRowField(r, ['chuhan', 'hanzi', 'tuvung', 'tiengtrung']);
                                 const pinyin = pickRowField(r, ['pinyin', 'phienam']);
@@ -5534,8 +5672,7 @@
                                 const meaning = pickRowField(r, ['nghiatiengviet', 'nghia', 'meaning', 'dichnghia']);
                                 const hint = pickRowField(r, ['goiynhotu', 'goiy', 'meonho', 'chiettu', 'hint']);
 
-                                // Đọc cột "Ví dụ chung" (Tầng 2) tách biệt với "Ví dụ 1", "Ví dụ 2"
-                                const rawGeneralExample = pickExactOrIncludedRowField(r, ['viduchung', 'generalexample', 'viduchungtuloai']);
+                                const rawGeneralExample = pickGeneralExampleFromRow(r);
                                 const rawUsage = pickExactOrIncludedRowField(r, ['cachsudung', 'cachdung', 'congthuccau', 'usage'], ['cachsudung', 'cachdung']);
                                 const rawExamples = pickExactOrIncludedRowField(r, ['vidu', 'example', 'cauvidu'], ['vidu', 'example']);
 
@@ -5546,8 +5683,7 @@
                                 const deckRaw = pickRowField(r, ['botu', 'nhomtu', 'deck', 'collection', 'filenguon']);
 
                                 if (hanzi && (pinyin || meaning)) {
-                                    const extractedUsages = extractUsagesFromExcelRow(r, rawUsage, rawExamples, hint);
-                                    // Nếu file Excel cũ không có cột "Ví dụ chung" và không có công thức nhưng có cột "Ví dụ", tự động gán vào generalExample
+                                    const extractedUsages = extractUsagesFromExcelRow(r, rawUsage, rawExamples);
                                     const finalGeneralExample = rawGeneralExample || ((extractedUsages.length === 0 && rawExamples) ? rawExamples : '');
 
                                     const sanitizedVoc = sanitizeVocabRecord({
@@ -5572,7 +5708,6 @@
                         }
                     }
 
-                    // KHÓA LUỒNG TUẦN TỰ (ASYNC/AWAIT): Chờ người dùng xử lý xong Modal của từ thứ i rồi mới xét tiếp từ thứ i + 1
                     for (let i = 0; i < incomingVocabQueue.length; i++) {
                         const vocItem = incomingVocabQueue[i];
                         const progressText = `Từ ${i + 1} / ${incomingVocabQueue.length} trong file`;
@@ -5624,7 +5759,7 @@
             );
         };
 
-        // Xuất File Excel Mẫu Chuẩn 4 Sheet Mới Nhất (.xlsx) - Bổ sung cột "Ví dụ chung" (Tầng 2) tách biệt với "Cách dùng 1", "Ví dụ 1"... (Tầng 3)
+        // Xuất File Excel Mẫu Chuẩn 4 Sheet (.xlsx) — Làm rõ sự phân biệt giữa cột "Ví dụ chung" và các cột "Cách dùng i" / "Ví dụ i"
         window.downloadStandardExcelTemplate = function() {
             if (typeof XLSX === 'undefined') {
                 showToast("Không thể tạo file .xlsx khi thiếu thư viện SheetJS.", "error");
@@ -5632,7 +5767,7 @@
             }
             const wb = XLSX.utils.book_new();
 
-            // Sheet 1: "Từ vựng" (Có cột "Ví dụ chung" Tầng 2 riêng biệt với "Cách dùng 1", "Ví dụ 1", "Ghi chú 1" Tầng 3)
+            // Sheet 1: "Từ vựng" (Cột "Ví dụ chung" nằm độc lập trước các cột "Cách dùng 1", "Ví dụ 1", "Cách dùng 2", "Ví dụ 2")
             const vocabRows = [
                 {
                     "Chữ Hán*": "代表",
@@ -5662,11 +5797,11 @@
                     "Gợi ý nhớ từ": "Động từ mang nghĩa thay mặt hoặc biểu trưng cho sự vật/tập thể.",
                     "Ví dụ chung": "这仅代表我个人的意见。",
                     "Cách dùng 1": "Chủ ngữ (Người/Tổ chức) + 代表 + Tân ngữ + Động từ (Không mang 了)",
-                    "Ví dụ 1": "我代表公司欢迎你。",
+                    "Ví dụ 1": "我代表公司欢迎你。\n我代表全体同学向老师表示感谢。",
                     "Ghi chú 1": "Thay mặt một tập thể hoặc tổ chức để thực hiện hành động.",
                     "Cách dùng 2": "Sự vật A + 代表 + Ý nghĩa B",
                     "Ví dụ 2": "红玫瑰代表热情的爱情。",
-                    "Ghi chú 2": "Biểu thị hoặc tượng trưng cho điều gì đó.",
+                    "Ghi chú 2": "Biểu thị hoặc tượng trưng cho một ý nghĩa cụ thể.",
                     "Từ đồng nghĩa": "代替",
                     "So sánh cách sử dụng": "代表 là thay mặt về danh nghĩa/tư cách; 代替 là thay thế hoàn toàn vị trí hoặc làm thay công việc.",
                     "Từ trái nghĩa": "",
@@ -5683,9 +5818,9 @@
                     "Cách dùng 1": "A + 代替 + B (+ Động từ)",
                     "Ví dụ 1": "今天王老师生病了，李老师代替他来上课。",
                     "Ghi chú 1": "A thế chỗ hoàn toàn và làm thay phần việc của B.",
-                    "Cách dùng 2": "",
-                    "Ví dụ 2": "",
-                    "Ghi chú 2": "",
+                    "Cách dùng 2": "用 + A + 代替 + B",
+                    "Ví dụ 2": "我们可以用电子邮件代替传统信件。",
+                    "Ghi chú 2": "Dùng vật/phương thức A để thay thế cho B.",
                     "Từ đồng nghĩa": "代表",
                     "So sánh cách sử dụng": "代替 nhấn mạnh việc thế chỗ/làm thay hành động thực tế; 代表 nhấn mạnh tư cách đại diện.",
                     "Từ trái nghĩa": "",
@@ -5748,6 +5883,13 @@
             ];
 
             const wsVocab = XLSX.utils.json_to_sheet(vocabRows);
+            wsVocab['!cols'] = [
+                { wch: 12 }, { wch: 14 }, { wch: 12 }, { wch: 14 },
+                { wch: 30 }, { wch: 36 }, { wch: 34 },
+                { wch: 36 }, { wch: 34 }, { wch: 32 },
+                { wch: 32 }, { wch: 34 }, { wch: 30 },
+                { wch: 16 }, { wch: 42 }, { wch: 16 }, { wch: 20 }
+            ];
             const wsFib = XLSX.utils.json_to_sheet(fibRows);
             const wsGrammar = XLSX.utils.json_to_sheet(grammarRows);
             const wsIdiom = XLSX.utils.json_to_sheet(idiomRows);
@@ -5758,7 +5900,7 @@
             XLSX.utils.book_append_sheet(wb, wsIdiom, "Thành ngữ");
 
             XLSX.writeFile(wb, "Mau_Chuan_TiengTrungLyThu_4Sheet.xlsx");
-            showToast("Đã tải File Excel Mẫu Chuẩn 4 Sheet (Có cột Ví dụ chung & Đa cách dùng)!", "success");
+            showToast("Đã tải File Excel Mẫu Chuẩn 4 Sheet (Tách biệt Ví dụ chung & Cách dùng cụ thể)!", "success");
         };
 
         window.loadSampleChineseData = async function() {
@@ -5778,11 +5920,13 @@
                     sinoViet: 'ĐẠI BIỂU',
                     meaning: 'Người đại diện, đại biểu',
                     hint: 'Chữ 代 có bộ Nhân đứng (亻) chỉ người thay mặt; 表 là biểu đạt.',
-                    usageType: 'NORMAL',
-                    usageFormula: posFormulasMap['Danh từ'].split('\n').join(' | '),
-                    examples: [
-                        '他是我们班的代表。',
-                        '各位代表已经到达会场了。'
+                    generalExample: '他是我们班的代表。\n各位代表已经到达会场了。',
+                    usages: [
+                        {
+                            formula: 'Số từ + 位/名 + 代表',
+                            examples: ['我们选出了三位代表参加会议。'],
+                            note: 'Dùng lượng từ 位 khi muốn thể hiện sự trang trọng.'
+                        }
                     ],
                     synonyms: [],
                     antonyms: [],
@@ -5800,13 +5944,20 @@
                     pinyin: 'dàibiǎo',
                     pos: 'Động từ',
                     sinoViet: 'ĐẠI BIỂU',
-                    meaning: 'Đại diện cho, thay mặt cho',
-                    hint: 'Thay mặt cho tổ chức/tập thể. Không thêm 了 trực tiếp sau động từ 代表.',
-                    usageType: 'SPECIAL',
-                    usageFormula: 'Chủ ngữ + 代表 + Tổ chức/Cá nhân + Động từ (Không mang trợ từ 了)',
-                    examples: [
-                        '我代表公司欢迎大家。',
-                        '红玫瑰代表热情的爱情。'
+                    meaning: 'Đại diện cho, thay mặt cho, tượng trưng cho',
+                    hint: 'Thay mặt cho tổ chức/tập thể hoặc biểu trưng cho một ý nghĩa.',
+                    generalExample: '这仅代表我个人的意见。',
+                    usages: [
+                        {
+                            formula: 'Chủ ngữ + 代表 + Tổ chức/Cá nhân + Động từ (Không mang trợ từ 了)',
+                            examples: ['我代表公司欢迎大家。'],
+                            note: 'Thay mặt tập thể hoặc tổ chức thực hiện hành động.'
+                        },
+                        {
+                            formula: 'Sự vật A + 代表 + Ý nghĩa B',
+                            examples: ['红玫瑰代表热情的爱情。'],
+                            note: 'Biểu trưng hoặc tượng trưng cho điều gì đó.'
+                        }
                     ],
                     synonyms: [
                         {
@@ -5833,9 +5984,14 @@
                     sinoViet: 'ĐẠI THẾ',
                     meaning: 'Thay thế, làm thay',
                     hint: 'Chữ 替 có hai chữ 夫 ở trên, tượng trưng người này thế chỗ người kia.',
-                    usageType: 'NORMAL',
-                    usageFormula: 'A + 代替 + B (+ Động từ)',
-                    examples: ['今天王老师生病了，李老师代替他来上课。'],
+                    generalExample: '没有咖啡，用茶代替也可以。',
+                    usages: [
+                        {
+                            formula: 'A + 代替 + B (+ Động từ)',
+                            examples: ['今天王老师生病了，李老师代替他来上课。'],
+                            note: 'A thế chỗ hoàn toàn và làm thay phần việc của B.'
+                        }
+                    ],
                     synonyms: [
                         {
                             targetId: idDaibiaoVerb,
@@ -5861,9 +6017,8 @@
                     sinoViet: 'PHONG PHÚ',
                     meaning: 'Phong phú, dồi dào',
                     hint: '丰 (mùa màng bội thu), 富 (giàu có).',
-                    usageType: 'NORMAL',
-                    usageFormula: posFormulasMap['Tính từ'].split('\n').join(' | '),
-                    examples: ['他的教学经验非常丰富。'],
+                    generalExample: '他的教学经验非常丰富。',
+                    usages: [],
                     synonyms: [],
                     antonyms: [{ targetId: '', targetHanzi: '贫乏', targetPinyin: 'pínfá' }],
                     fibSentences: [],
@@ -5884,6 +6039,7 @@
                     formula: 'S + 不但 + V1 / Adj1，而且 + V2 / Adj2',
                     example: '他不但会说英语，而且汉语也说得很好。',
                     collections: [deck1],
+                    passedQuiz: false,
                     createdAt: now
                 }
             ];
@@ -5898,6 +6054,7 @@
                     usage: 'Thường làm vị ngữ, tân ngữ hoặc định ngữ trong câu',
                     example: '事实已经很清楚了，你再解释就是画蛇添足。',
                     collections: [deck1],
+                    passedQuiz: false,
                     createdAt: now
                 },
                 {
@@ -5909,6 +6066,7 @@
                     usage: 'Thường dùng làm lời chúc hoặc vị ngữ',
                     example: '祝你这次考试马到成功！',
                     collections: [deck11],
+                    passedQuiz: false,
                     createdAt: now + 1
                 }
             ];
