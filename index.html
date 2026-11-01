@@ -10,9 +10,9 @@
     <meta name="mobile-web-app-capable" content="yes">
     <title>Tiếng Trung Lý Thú - 趣味汉语 | Ôn Luyện Từ Vựng & Ngữ Pháp</title>
 
-    <!-- Favicon & Apple Touch Icon (Mặc định chuẩn theo logo.jpg nền trắng khung đen) -->
-    <link id="dynamicFavicon" rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 240'%3E%3Crect width='240' height='240' rx='40' fill='%23000000'/%3E%3Ccircle cx='120' cy='120' r='116' fill='%23ffffff'/%3E%3Cpolygon points='120,22 184,57 184,127 120,162 56,127 56,57' fill='none' stroke='%231e6b8c' stroke-width='5.5'/%3E%3Cpolygon points='137,25 190,72 174,139 103,159 50,112 66,45' fill='none' stroke='%23b59b45' stroke-width='3.2'/%3E%3Ctext x='116' y='118' text-anchor='middle' font-family='serif' font-weight='900' font-size='82' fill='%230b0b0b'%3E趣%3C/text%3E%3Ctext x='120' y='184' text-anchor='middle' font-family='sans-serif' font-weight='900' font-size='16' fill='%230b0b0b'%3ETIẾNG TRUNG LÝ THÚ%3C/text%3E%3Ctext x='120' y='214' text-anchor='middle' font-family='serif' font-weight='bold' font-size='26' fill='%231282a2'%3E趣味汉语%3C/text%3E%3C/svg%3E">
-    <link id="dynamicAppleIcon" rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 240'%3E%3Crect width='240' height='240' fill='%23000000'/%3E%3Ccircle cx='120' cy='120' r='116' fill='%23ffffff'/%3E%3Cpolygon points='120,22 184,57 184,127 120,162 56,127 56,57' fill='none' stroke='%231e6b8c' stroke-width='5.5'/%3E%3Cpolygon points='137,25 190,72 174,139 103,159 50,112 66,45' fill='none' stroke='%23b59b45' stroke-width='3.2'/%3E%3Ctext x='116' y='118' text-anchor='middle' font-family='serif' font-weight='900' font-size='82' fill='%230b0b0b'%3E趣%3C/text%3E%3C/svg%3E">
+    <!-- Favicon & Apple Touch Icon gọi trực tiếp file ảnh tĩnh ./logo.png -->
+    <link id="dynamicFavicon" rel="icon" type="image/png" href="./logo.png">
+    <link id="dynamicAppleIcon" rel="apple-touch-icon" href="./logo.png">
 
 <!-- Tailwind CSS & Thư viện (Tự động dùng Cache khi Offline) -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -131,43 +131,10 @@
     <input type="file" id="customLogoInput" accept="image/*" class="hidden" onchange="handleCustomLogoUpload(event)">
 
     <!-- ======================================================================= -->
-    <!-- TEMPLATE LOGO CHUẨN THEO ẢNH "logo.jpg" (KHUNG ĐEN + VÒNG TRÒN TRẮNG)    -->
+    <!-- TEMPLATE LOGO ẢNH TĨNH "./logo.png"                                     -->
     <!-- ======================================================================= -->
     <template id="defaultLogoSvgTemplate">
-        <svg viewBox="0 0 240 240" class="w-full h-full select-none" aria-label="Logo Tiếng Trung Lý Thú">
-            <defs>
-                <linearGradient id="hexGradLogoNew" x1="0%" y1="50%" x2="100%" y2="50%">
-                    <stop offset="0%" stop-color="#379d8f" />
-                    <stop offset="55%" stop-color="#227996" />
-                    <stop offset="100%" stop-color="#195c94" />
-                </linearGradient>
-            </defs>
-            <!-- Khung nền đen góc ngoài và hình tròn trắng tinh khiết chuẩn logo.jpg -->
-            <rect width="240" height="240" rx="120" fill="#000000" />
-            <circle cx="120" cy="120" r="115" fill="#ffffff" />
-
-            <!-- Khung lục giác chính (Gradient xanh ngọc -> xanh lam đậm) -->
-            <polygon points="120,22 184,57 184,127 120,162 56,127 56,57" fill="none" stroke="url(#hexGradLogoNew)" stroke-width="4.8" stroke-linejoin="round"/>
-            <!-- Khung lục giác xoay nghiêng (Màu vàng đồng mảnh) -->
-            <polygon points="137,25 190,72 174,139 103,159 50,112 66,45" fill="none" stroke="#b69b4c" stroke-width="2.5" stroke-linejoin="round"/>
-
-            <!-- Họa tiết nhành cỏ thủy mặc thanh mảnh bên phải lục giác -->
-            <path d="M108,156 Q152,135 173,70" fill="none" stroke="#0b0b0b" stroke-width="1.7" stroke-linecap="round"/>
-            <ellipse cx="172" cy="65" rx="3.5" ry="8.2" transform="rotate(-18 172 65)" fill="#0b0b0b"/>
-            <path d="M112,156 Q146,139 162,83" fill="none" stroke="#0b0b0b" stroke-width="1.4" stroke-linecap="round"/>
-            <ellipse cx="161" cy="79" rx="3.0" ry="6.4" transform="rotate(-12 161 79)" fill="#0b0b0b"/>
-            <path d="M70,126 Q128,149 183,134" fill="none" stroke="#0b0b0b" stroke-width="1.3" stroke-linecap="round"/>
-            <ellipse cx="183" cy="122" rx="3.2" ry="7.4" transform="rotate(15 183 122)" fill="#0b0b0b"/>
-
-            <!-- Chữ Hán thư pháp 趣 đậm nét ở trung tâm -->
-            <text x="116" y="119" text-anchor="middle" class="font-calligraphy" font-size="84" font-weight="bold" fill="#070707">趣</text>
-
-            <!-- Dòng chữ TIẾNG TRUNG LÝ THÚ (In hoa đậm, gọn chuẩn logo.jpg) -->
-            <text x="120" y="183" text-anchor="middle" class="font-condensed-title" font-weight="900" font-size="18.5" letter-spacing="0.3" fill="#070707">TIẾNG TRUNG LÝ THÚ</text>
-
-            <!-- Dòng chữ thư pháp 趣味汉语 màu xanh cổ vịt bên dưới -->
-            <text x="120" y="213" text-anchor="middle" class="font-calligraphy" font-weight="bold" font-size="27" letter-spacing="2" fill="#1180a1">趣味汉语</text>
-        </svg>
+        <img src="./logo.png" alt="Logo Tiếng Trung Lý Thú" class="w-full h-full object-cover rounded-full select-none" />
     </template>
 
     <!-- ======================================================================= -->
@@ -1302,17 +1269,32 @@
                 </div>
             </div>
 
-            <!-- TẦNG 2: NGHĨA TIẾNG VIỆT & GỢI Ý NHỚ TỪ (DÙNG CHUNG CHO CẢ KHUNG NGHĨA / LOẠI TỪ) -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Nghĩa tiếng Việt <span class="text-rose-600">*</span></label>
-                    <input type="text" id="inputVocabMeaning" required placeholder="VD: Coi như, xem như..." class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-cyan-600">
+            <!-- TẦNG 2: NGHĨA TIẾNG VIỆT, GỢI Ý NHỚ TỪ & VÍ DỤ CHUNG (DÙNG CHUNG CHO LOẠI TỪ NÀY) -->
+            <div class="p-3.5 sm:p-4 rounded-2xl bg-amber-50/40 border border-amber-200/80 space-y-3">
+                <div class="text-xs font-extrabold text-amber-950 uppercase tracking-wider flex items-center gap-1.5">
+                    <i class="fa-solid fa-layer-group text-amber-600"></i>
+                    <span>Thông tin Tầng 2 (Theo Loại từ)</span>
                 </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Nghĩa tiếng Việt <span class="text-rose-600">*</span></label>
+                        <input type="text" id="inputVocabMeaning" required placeholder="VD: Coi như, xem như..." class="w-full px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-sm focus:outline-none focus:border-cyan-600">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">
+                            <i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i>Gợi ý nhớ từ (Tầng 2 — Dùng chung)
+                        </label>
+                        <textarea id="inputVocabHint" rows="2" placeholder="VD: Câu chuyện chiết tự, mẹo nhớ chung cho loại từ này..." class="w-full px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-xs focus:outline-none focus:border-cyan-600"></textarea>
+                    </div>
+                </div>
+
+                <!-- Textarea dành riêng cho Ví dụ chung (Tầng 2 - nằm ngoài dynamicUsagesContainer) -->
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">
-                        <i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i>Gợi ý nhớ từ (Tầng 2 — Dùng chung cho loại từ này)
+                        <i class="fa-solid fa-quote-left text-emerald-600 mr-1"></i>Ví dụ chung (Tầng 2 — Dùng chung cho loại từ này, không bám theo công thức; mỗi câu 1 dòng)
                     </label>
-                    <textarea id="inputVocabHint" rows="2" placeholder="VD: Câu chuyện chiết tự, mẹo nhớ chung cho loại từ này..." class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs focus:outline-none focus:border-cyan-600"></textarea>
+                    <textarea id="inputVocabGeneralExample" rows="2" placeholder="VD:&#10;他是我们的代表。&#10;各位代表已经到达会场了。" class="font-hanzi w-full px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-xs sm:text-sm focus:outline-none focus:border-emerald-600"></textarea>
                 </div>
             </div>
 
@@ -1916,8 +1898,8 @@
 
         // Chuẩn hóa bản ghi Từ vựng tuân thủ nghiêm ngặt Cấu trúc 3 Tầng:
         // - Tầng 1: hanzi
-        // - Tầng 2: pos, meaning, hint (Gợi ý nhớ từ nằm cố định ở Tầng 2)
-        // - Tầng 3: usages: [{ formula, examples }]
+        // - Tầng 2: pos, meaning, hint, generalExample (Ví dụ chung không theo công thức)
+        // - Tầng 3: usages: [{ formula, examples, note }]
         function sanitizeVocabRecord(v) {
             if (!v || typeof v !== 'object') return null;
             const hanzi = String(v.hanzi || v.word || v.chinese || '').trim();
@@ -1928,9 +1910,16 @@
             const sinoViet = String(v.sinoViet || v.hanViet || '').trim();
             const meaning = String(v.meaning || v.vietnamese || '').trim();
 
-            // Gợi ý nhớ từ (hint) thuộc Tầng 2 (Nếu dữ liệu cũ lỡ lưu note trong usages[0] thì kế thừa lên Tầng 2)
-            const legacyNoteFromUsage = (Array.isArray(v.usages) && v.usages[0]?.note) ? String(v.usages[0].note).trim() : '';
-            const hint = String(v.hint || v.note || legacyNoteFromUsage || '').trim();
+            // Tầng 2: Gợi ý nhớ từ (hint) & Ví dụ chung (generalExample)
+            const hint = String(v.hint || v.note || '').trim();
+            const rawGeneralExample = Array.isArray(v.generalExamples)
+                ? v.generalExamples.join('\n')
+                : String(v.generalExample || '').trim();
+            const generalExampleLines = rawGeneralExample
+                .split(/[\n;；]+/)
+                .map(s => String(s || '').trim())
+                .filter(Boolean);
+            let generalExample = generalExampleLines.join('\n');
 
             const rawExamples = Array.isArray(v.examples) && v.examples.length > 0
                 ? v.examples
@@ -1949,7 +1938,7 @@
                 ? ''
                 : rawFormula;
 
-            // --- XỬ LÝ TẦNG 3: MẢNG USAGES CHỈ GỒM { formula, examples } ---
+            // --- XỬ LÝ TẦNG 3: MẢNG USAGES GỒM { formula, examples, note } ---
             let usages = [];
             if (Array.isArray(v.usages) && v.usages.length > 0) {
                 usages = v.usages.map(u => {
@@ -1960,25 +1949,37 @@
                         ? u.examples
                         : (u.example ? String(u.example).split(/[\n;；]+/) : []);
                     const uCleanEx = uRawEx.map(s => String(s || '').trim()).filter(Boolean);
+                    const uCleanNote = String(u.note || '').trim();
 
-                    if (!uCleanFormula && uCleanEx.length === 0) return null;
+                    if (!uCleanFormula && uCleanEx.length === 0 && !uCleanNote) return null;
                     return {
                         formula: uCleanFormula,
-                        examples: uCleanEx
+                        examples: uCleanEx,
+                        note: uCleanNote
                     };
                 }).filter(Boolean);
             }
 
-            // Tương thích ngược: Nếu chưa có mảng usages nhưng có công thức cũ hoặc ví dụ cũ -> Đưa vào phần tử mặc định
-            if (usages.length === 0 && (cleanLegacyFormula || legacyExamples.length > 0)) {
-                usages.push({
-                    formula: cleanLegacyFormula,
-                    examples: legacyExamples
-                });
+            // Tương thích ngược với dữ liệu cũ chưa có usages & generalExample
+            if (usages.length === 0 && !generalExample) {
+                if (cleanLegacyFormula) {
+                    usages.push({
+                        formula: cleanLegacyFormula,
+                        examples: legacyExamples,
+                        note: ''
+                    });
+                } else if (legacyExamples.length > 0) {
+                    generalExample = legacyExamples.join('\n');
+                }
             }
 
-            // Đồng bộ danh sách ví dụ phẳng để phục vụ bài Kiểm tra đục lỗ (Quiz)
+            const finalGeneralExampleLines = generalExample
+                ? generalExample.split(/[\n;；]+/).map(s => s.trim()).filter(Boolean)
+                : [];
+
+            // Đồng bộ danh sách ví dụ phẳng (gồm cả Ví dụ chung Tầng 2 + Ví dụ Tầng 3) để phục vụ bài Kiểm tra đục lỗ (Quiz)
             const aggregatedExamples = Array.from(new Set([
+                ...finalGeneralExampleLines,
                 ...usages.flatMap(u => u.examples || []),
                 ...legacyExamples
             ]));
@@ -1991,8 +1992,9 @@
                 pos,
                 sinoViet,
                 meaning: meaning || '...',
-                hint,   // Nằm ở Tầng 2
-                usages, // Nằm ở Tầng 3: [{ formula, examples }]
+                hint,           // Tầng 2: Gợi ý nhớ từ
+                generalExample, // Tầng 2: Ví dụ chung (không bám theo công thức)
+                usages,         // Tầng 3: [{ formula, examples, note }]
                 example: aggregatedExamples.join('\n'),
                 examples: aggregatedExamples,
                 usageType: primaryFormula ? 'SPECIAL' : 'NORMAL',
@@ -2431,7 +2433,6 @@
             const rawIdioms = safeJsonParse(userData?.idiomsJson, []);
             const rawFiles = safeJsonParse(userData?.filesJson, []);
 
-            // Làm sạch toàn bộ từ vựng cũ (Xóa các công thức tự động cũ khỏi dữ liệu)
             vocabList = (Array.isArray(rawVocab) ? rawVocab : []).map(sanitizeVocabRecord).filter(Boolean);
             grammarList = (Array.isArray(rawGrammar) ? rawGrammar : []).map(sanitizeGrammarRecord).filter(Boolean);
             idiomList = (Array.isArray(rawIdioms) ? rawIdioms : []).map(sanitizeIdiomRecord).filter(Boolean);
@@ -2686,7 +2687,6 @@
             const acc = memoryAccountsStore.get(accountKey);
             if (!acc) return;
 
-            // Sử dụng Modal xác nhận tùy chỉnh thay vì window.confirm() để không bị chặn trên Mobile
             pendingDeleteAction = async () => {
                 memoryAccountsStore.delete(accountKey);
                 memoryUserDataStore.delete(accountKey);
@@ -2751,7 +2751,7 @@
 
             const backupPayload = {
                 app: "Tiếng Trung Lý Thú - 趣味汉语",
-                version: 5,
+                version: 6,
                 exportedAt: new Date().toISOString(),
                 activeAccount: currentAccount,
                 accounts: accountsArr,
@@ -2933,18 +2933,21 @@
                 const posKey = (item.pos || '').trim();
                 const cleanFormula = isLegacyAutoFormulaString(item.usageFormula) ? '' : (item.usageFormula || '').trim();
                 const cleanHint = (item.hint || '').trim();
+                const cleanGeneralExample = (item.generalExample || '').trim();
 
-                // TẦNG 3: Mảng usages chỉ chứa { formula, examples }
+                // TẦNG 3: Mảng usages chứa { formula, examples, note }
                 let senseUsages = [];
                 if (Array.isArray(item.usages) && item.usages.length > 0) {
                     senseUsages = item.usages.map(u => ({
                         formula: isLegacyAutoFormulaString(u.formula || u.usageFormula) ? '' : String(u.formula || u.usageFormula || '').trim(),
-                        examples: Array.isArray(u.examples) ? u.examples.map(e => String(e || '').trim()).filter(Boolean) : []
-                    })).filter(u => u.formula || u.examples.length > 0);
-                } else if (cleanFormula || examplesArr.length > 0) {
+                        examples: Array.isArray(u.examples) ? u.examples.map(e => String(e || '').trim()).filter(Boolean) : [],
+                        note: String(u.note || '').trim()
+                    })).filter(u => u.formula || u.examples.length > 0 || u.note);
+                } else if (cleanFormula) {
                     senseUsages = [{
                         formula: cleanFormula,
-                        examples: examplesArr
+                        examples: examplesArr,
+                        note: ''
                     }];
                 }
 
@@ -2953,15 +2956,16 @@
                     group.allSensesMastered = false;
                 }
 
-                // TẦNG 2: Khung nghĩa theo Loại từ (Chứa hint dùng chung cho cả loại từ)
+                // TẦNG 2: Khung nghĩa theo Loại từ (Chứa Nghĩa, Gợi ý nhớ từ & Ví dụ chung)
                 group.senses.push({
                     id: item.id,
                     pinyin: (item.pinyin || '').trim(),
                     pos: posKey,
                     sinoViet: (item.sinoViet || '').trim(),
                     meaning: (item.meaning || '').trim(),
-                    hint: cleanHint,     // Tầng 2
-                    usages: senseUsages, // Tầng 3
+                    hint: cleanHint,                     // Tầng 2: Gợi ý nhớ từ
+                    generalExample: cleanGeneralExample, // Tầng 2: Ví dụ chung
+                    usages: senseUsages,                 // Tầng 3: Mảng các cách dùng cụ thể
                     example: examplesArr.join('\n'),
                     examples: examplesArr,
                     synonyms: Array.isArray(item.synonyms) ? item.synonyms : [],
@@ -3307,7 +3311,28 @@
                        </div>`
                     : '';
 
-                // TẦNG 3: Hiển thị phân cụm mảng usages (Cách dùng + Các câu ví dụ liên kết)
+                // TẦNG 2 (MỚI): Ví dụ chung (Nằm ngay dưới Gợi ý nhớ từ, trước vòng lặp Cách dùng Tầng 3)
+                const generalExLines = sense.generalExample
+                    ? String(sense.generalExample).split(/[\n;；]+/).map(s => s.trim()).filter(Boolean)
+                    : [];
+                const generalExampleHtml = generalExLines.length > 0
+                    ? `<div class="mt-2.5 p-2.5 sm:p-3 rounded-xl bg-emerald-500/15 border border-emerald-400/30 space-y-1">
+                           <div class="text-[11px] font-extrabold uppercase tracking-wide text-emerald-300 flex items-center gap-1.5">
+                               <i class="fa-solid fa-quote-left"></i>
+                               <span>Ví dụ chung (${generalExLines.length}):</span>
+                           </div>
+                           <div class="font-hanzi text-xs sm:text-sm text-emerald-50 space-y-1 pl-2 border-l-2 border-emerald-400/40">
+                               ${generalExLines.map((ex, exIdx) => `
+                                   <div class="leading-relaxed flex items-start gap-1.5">
+                                       <span class="text-emerald-300 font-sans font-bold text-xs shrink-0 select-none">${generalExLines.length > 1 ? `${exIdx + 1}.` : '→'}</span>
+                                       <span>${escapeHtml(ex)}</span>
+                                   </div>
+                               `).join('')}
+                           </div>
+                       </div>`
+                    : '';
+
+                // TẦNG 3: Hiển thị phân cụm mảng usages (Công thức + Ví dụ riêng + Note riêng của cách dùng đó)
                 const usagesList = Array.isArray(sense.usages) ? sense.usages : [];
                 const hasMultipleUsages = usagesList.length > 1;
 
@@ -3316,8 +3341,8 @@
                         ${usagesList.map((u, uIdx) => {
                             const hasFormula = Boolean(u.formula && u.formula.trim());
                             const exArr = Array.isArray(u.examples) ? u.examples.filter(Boolean) : [];
+                            const hasNote = Boolean(u.note && u.note.trim());
 
-                            // Tiêu đề cụm Cách dùng (Nếu có công thức hoặc có nhiều cách dùng)
                             let usageHeaderHtml = '';
                             if (hasFormula) {
                                 usageHeaderHtml = `
@@ -3333,18 +3358,23 @@
                             } else if (hasMultipleUsages) {
                                 usageHeaderHtml = `
                                     <div class="text-[11px] font-extrabold uppercase tracking-wide text-slate-300">
-                                        • Cách dùng ${uIdx + 1} (Ví dụ chung):
+                                        • Cách dùng ${uIdx + 1}:
                                     </div>
                                 `;
                             } else if (exArr.length > 0) {
                                 usageHeaderHtml = `
                                     <div class="text-[11px] font-bold text-slate-400">
-                                        <i class="fa-solid fa-quote-left mr-1 text-cyan-400"></i>Ví dụ minh họa (${exArr.length}):
+                                        <i class="fa-solid fa-code-branch mr-1 text-cyan-400"></i>Ví dụ theo cách dùng (${exArr.length}):
                                     </div>
                                 `;
                             }
 
-                            // Danh sách các câu ví dụ liên kết trực tiếp với Cách dùng đó
+                            const noteBlockHtml = hasNote
+                                ? `<div class="mt-1 text-[11px] text-amber-200/90 italic">
+                                       <i class="fa-solid fa-circle-info mr-1 text-amber-300"></i>Lưu ý cách dùng: ${escapeHtml(u.note)}
+                                   </div>`
+                                : '';
+
                             const examplesBlockHtml = exArr.length > 0
                                 ? `<div class="${hasFormula || hasMultipleUsages ? 'mt-1.5 pl-3 border-l-2 border-cyan-500/40 space-y-1' : 'mt-1 space-y-1'} font-hanzi text-xs sm:text-sm text-slate-100">
                                        ${exArr.map((ex, exIdx) => `
@@ -3359,6 +3389,7 @@
                             return `
                                 <div class="p-2.5 sm:p-3 rounded-xl bg-slate-950/50 border border-white/10 transition">
                                     ${usageHeaderHtml}
+                                    ${noteBlockHtml}
                                     ${examplesBlockHtml}
                                 </div>
                             `;
@@ -3385,6 +3416,7 @@
                         ${headerTag}
                         <div class="text-sm sm:text-lg leading-relaxed break-words">${formatSingleVocabSenseLine(sense)}</div>
                         ${hintHtml}
+                        ${generalExampleHtml}
                         ${usagesHtml}
                         ${synHtml}
                         ${antHtml}
@@ -4282,9 +4314,10 @@
         };
 
         // ---------------------------------------------------------------------------
-        // THUẬT TOÁN KIỂM TRA TRÙNG LẶP 3 BƯỚC & GỘP DỮ LIỆU TẦNG 3 (USAGES)
+        // THUẬT TOÁN KIỂM TRA TRÙNG LẶP 3 BƯỚC, KHÓA LUỒNG MODAL & GỘP DỮ LIỆU 3 TẦNG
         // ---------------------------------------------------------------------------
         let currentDuplicateResolver = null;
+        let isDuplicateModalActionLocked = false;
 
         function normalizeCompareText(str) {
             return String(str || '').trim().replace(/\s+/g, ' ').toLowerCase();
@@ -4293,9 +4326,7 @@
         function normalizeUsagesSignature(item) {
             const rawUsages = Array.isArray(item.usages) && item.usages.length > 0
                 ? item.usages
-                : ((item.usageFormula || (item.examples && item.examples.length > 0))
-                    ? [{ formula: item.usageFormula || '', examples: item.examples || [] }]
-                    : []);
+                : (item.usageFormula ? [{ formula: item.usageFormula, examples: item.examples || [], note: '' }] : []);
 
             return rawUsages
                 .map(u => {
@@ -4305,14 +4336,15 @@
                         .filter(Boolean)
                         .sort()
                         .join('~');
-                    return `${f}::${ex}`;
+                    const n = normalizeCompareText(u.note || '');
+                    return `${f}::${ex}::${n}`;
                 })
-                .filter(sig => sig !== '::')
+                .filter(sig => sig !== '::::')
                 .sort()
                 .join('||');
         }
 
-        // BƯỚC 1: Kiểm tra xem từ đang nạp có GIỐNG HỆT 100% nguyên bản với từ cũ trong kho hay không
+        // BƯỚC 1: Kiểm tra xem từ đang nạp có GIỐNG HỆT 100% nguyên bản (cả Tầng 2 lẫn Tầng 3) với từ cũ hay không
         function isVocabRecordIdentical100(existingItem, incomingItem) {
             if (!existingItem || !incomingItem) return false;
             if (existingItem.hanzi.trim() !== incomingItem.hanzi.trim()) return false;
@@ -4321,6 +4353,7 @@
             if (normalizeCompareText(existingItem.sinoViet) !== normalizeCompareText(incomingItem.sinoViet)) return false;
             if (normalizeCompareText(existingItem.meaning) !== normalizeCompareText(incomingItem.meaning)) return false;
             if (normalizeCompareText(existingItem.hint) !== normalizeCompareText(incomingItem.hint)) return false;
+            if (normalizeCompareText(existingItem.generalExample) !== normalizeCompareText(incomingItem.generalExample)) return false;
             if (normalizeUsagesSignature(existingItem) !== normalizeUsagesSignature(incomingItem)) return false;
             return true;
         }
@@ -4337,24 +4370,22 @@
         }
 
         function formatUsagesPreviewForModal(item) {
-            const usages = Array.isArray(item.usages) && item.usages.length > 0
-                ? item.usages
-                : ((item.usageFormula || (item.examples && item.examples.length > 0))
-                    ? [{ formula: item.usageFormula || '', examples: item.examples || [] }]
-                    : []);
-
+            const usages = Array.isArray(item.usages) ? item.usages : [];
             if (usages.length === 0) {
-                return `<span class="text-slate-400 italic">(Chưa có cách dùng / ví dụ)</span>`;
+                return `<span class="text-slate-400 italic">(Chưa có cách dùng Tầng 3)</span>`;
             }
 
             return usages.map((u, idx) => {
                 const f = u.formula
                     ? `<div class="font-bold text-slate-800"><span class="text-cyan-700">• Cách dùng ${idx + 1}:</span> ${escapeHtml(u.formula)}</div>`
-                    : `<div class="font-bold text-cyan-700">• Cách dùng ${idx + 1} (Ví dụ chung):</div>`;
+                    : `<div class="font-bold text-cyan-700">• Cách dùng ${idx + 1}:</div>`;
+                const noteHtml = u.note
+                    ? `<div class="text-[11px] text-amber-700 italic pl-2.5">Lưu ý: ${escapeHtml(u.note)}</div>`
+                    : '';
                 const ex = (u.examples && u.examples.length > 0)
                     ? `<div class="font-hanzi text-[11px] text-slate-600 pl-2.5 border-l-2 border-cyan-300 mt-0.5 space-y-0.5">${u.examples.map(e => `<div>→ ${escapeHtml(e)}</div>`).join('')}</div>`
                     : '';
-                return `<div class="py-1">${f}${ex}</div>`;
+                return `<div class="py-1">${f}${noteHtml}${ex}</div>`;
             }).join('<hr class="border-slate-200 my-1">');
         }
 
@@ -4365,34 +4396,44 @@
             incomingUsages.forEach(newU => {
                 const newFormula = String(newU.formula || '').trim();
                 const newExamples = Array.isArray(newU.examples) ? newU.examples.filter(Boolean) : [];
-                if (!newFormula && newExamples.length === 0) return;
+                const newNote = String(newU.note || '').trim();
+                if (!newFormula && newExamples.length === 0 && !newNote) return;
 
-                // Nếu trùng công thức thì gộp danh sách ví dụ, ngược lại đẩy thành 1 Cách dùng mới vào mảng usages
+                // Nếu trùng công thức thì gộp ví dụ và ghi chú, ngược lại đẩy thành Cách dùng mới vào mảng usages
                 const sameFormulaUsage = existingUsages.find(u =>
                     normalizeCompareText(u.formula) === normalizeCompareText(newFormula)
                 );
 
                 if (sameFormulaUsage) {
                     sameFormulaUsage.examples = Array.from(new Set([...(sameFormulaUsage.examples || []), ...newExamples]));
+                    if (newNote && !normalizeCompareText(sameFormulaUsage.note).includes(normalizeCompareText(newNote))) {
+                        sameFormulaUsage.note = sameFormulaUsage.note ? `${sameFormulaUsage.note} | ${newNote}` : newNote;
+                    }
                 } else {
                     existingUsages.push({
                         formula: newFormula,
-                        examples: newExamples
+                        examples: newExamples,
+                        note: newNote
                     });
                 }
             });
 
-            // Gộp thêm Nghĩa tiếng Việt nếu nghĩa mới khác nghĩa cũ
+            // Gộp Nghĩa tiếng Việt (Tầng 2)
             let mergedMeaning = existingItem.meaning || '';
             if (incomingItem.meaning && !normalizeCompareText(mergedMeaning).includes(normalizeCompareText(incomingItem.meaning))) {
                 mergedMeaning = `${mergedMeaning}; ${incomingItem.meaning}`;
             }
 
-            // Gộp Gợi ý nhớ từ (Tầng 2) nếu từ cũ chưa có hoặc khác biệt
+            // Gộp Gợi ý nhớ từ (Tầng 2)
             let mergedHint = existingItem.hint || '';
             if (incomingItem.hint && !normalizeCompareText(mergedHint).includes(normalizeCompareText(incomingItem.hint))) {
                 mergedHint = mergedHint ? `${mergedHint} | ${incomingItem.hint}` : incomingItem.hint;
             }
+
+            // Gộp Ví dụ chung (Tầng 2)
+            const oldGenLines = (existingItem.generalExample || '').split(/[\n;；]+/).map(s => s.trim()).filter(Boolean);
+            const newGenLines = (incomingItem.generalExample || '').split(/[\n;；]+/).map(s => s.trim()).filter(Boolean);
+            const mergedGeneralExample = Array.from(new Set([...oldGenLines, ...newGenLines])).join('\n');
 
             const mergedCollections = Array.from(new Set([
                 ...(existingItem.collections || []),
@@ -4420,6 +4461,7 @@
                 sinoViet: existingItem.sinoViet || incomingItem.sinoViet,
                 meaning: mergedMeaning,
                 hint: mergedHint,
+                generalExample: mergedGeneralExample,
                 usages: existingUsages,
                 synonyms: mergedSynonyms,
                 antonyms: mergedAntonyms,
@@ -4441,19 +4483,21 @@
             }
         }
 
-        // BƯỚC 2: Hiển thị Modal so sánh trực quan khi phát hiện trùng (hanzi + pos) nhưng khác nội dung
-        function promptDuplicateVocabModal(existingItem, incomingItem, remainingCount = 1) {
+        // BƯỚC 2: Hiển thị Modal so sánh trực quan và KHÓA LUỒNG chờ người dùng chọn xong
+        function promptDuplicateVocabModal(existingItem, incomingItem, progressLabel = '1 mục') {
             return new Promise((resolve) => {
                 currentDuplicateResolver = resolve;
+                isDuplicateModalActionLocked = false;
 
                 document.getElementById('dupModalHanziTitle').textContent = incomingItem.hanzi;
                 document.getElementById('dupModalPosTitle').textContent = incomingItem.pos || 'Chung';
                 const badgeEl = document.getElementById('duplicateQueueCounterBadge');
-                if (badgeEl) badgeEl.textContent = remainingCount > 1 ? `Còn ${remainingCount} mục cần duyệt` : `1 mục trùng lặp`;
+                if (badgeEl) badgeEl.textContent = progressLabel;
 
                 const diffMeaning = normalizeCompareText(existingItem.meaning) !== normalizeCompareText(incomingItem.meaning) ||
                                     normalizeCompareText(existingItem.pinyin) !== normalizeCompareText(incomingItem.pinyin);
                 const diffHint = normalizeCompareText(existingItem.hint) !== normalizeCompareText(incomingItem.hint);
+                const diffGenEx = normalizeCompareText(existingItem.generalExample) !== normalizeCompareText(incomingItem.generalExample);
                 const diffUsages = normalizeUsagesSignature(existingItem) !== normalizeUsagesSignature(incomingItem);
 
                 const tbody = document.getElementById('duplicateComparisonTableBody');
@@ -4474,8 +4518,13 @@
                             <td class="p-3 border-l border-slate-200 text-slate-700">${existingItem.hint ? escapeHtml(existingItem.hint) : '<span class="text-slate-400 italic">(Trống)</span>'}</td>
                             <td class="p-3 border-l border-slate-200 text-cyan-950">${incomingItem.hint ? escapeHtml(incomingItem.hint) : '<span class="text-slate-400 italic">(Trống)</span>'}</td>
                         </tr>
+                        <tr class="${diffGenEx ? 'bg-amber-50/60' : ''}">
+                            <td class="p-3 font-bold text-slate-600 bg-slate-50">Ví dụ chung (Tầng 2) ${diffGenEx ? '<span class="block text-[10px] text-amber-600 font-extrabold">(Khác biệt)</span>' : ''}</td>
+                            <td class="p-3 border-l border-slate-200 font-hanzi text-slate-700 whitespace-pre-line">${existingItem.generalExample ? escapeHtml(existingItem.generalExample) : '<span class="font-sans text-slate-400 italic">(Trống)</span>'}</td>
+                            <td class="p-3 border-l border-slate-200 font-hanzi text-cyan-950 whitespace-pre-line">${incomingItem.generalExample ? escapeHtml(incomingItem.generalExample) : '<span class="font-sans text-slate-400 italic">(Trống)</span>'}</td>
+                        </tr>
                         <tr class="${diffUsages ? 'bg-amber-50/60' : ''}">
-                            <td class="p-3 font-bold text-slate-600 bg-slate-50">Cách dùng & Ví dụ (<code class="text-cyan-700">usages</code>) ${diffUsages ? '<span class="block text-[10px] text-amber-600 font-extrabold">(Khác biệt)</span>' : ''}</td>
+                            <td class="p-3 font-bold text-slate-600 bg-slate-50">Cách dùng (Tầng 3 <code class="text-cyan-700">usages</code>) ${diffUsages ? '<span class="block text-[10px] text-amber-600 font-extrabold">(Khác biệt)</span>' : ''}</td>
                             <td class="p-3 border-l border-slate-200">${formatUsagesPreviewForModal(existingItem)}</td>
                             <td class="p-3 border-l border-slate-200">${formatUsagesPreviewForModal(incomingItem)}</td>
                         </tr>
@@ -4490,21 +4539,29 @@
             });
         }
 
+        // Giải phóng khóa luồng tuần tự sau khi người dùng bấm chọn phương án xử lý ở Modal
         window.resolveDuplicateVocabChoice = function(action) {
+            if (isDuplicateModalActionLocked || typeof currentDuplicateResolver !== 'function') return;
+            isDuplicateModalActionLocked = true;
+
             const modal = document.getElementById('duplicateMergeModal');
             if (modal) {
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
             }
-            if (typeof currentDuplicateResolver === 'function') {
-                const r = currentDuplicateResolver;
-                currentDuplicateResolver = null;
-                r(action);
-            }
+
+            const resolver = currentDuplicateResolver;
+            currentDuplicateResolver = null;
+
+            // Tạm nghỉ 120ms giữa 2 lần pop-up để trình duyệt đóng hẳn Modal của từ thứ 1 rồi mới mở tiếp Modal của từ thứ 2
+            setTimeout(() => {
+                isDuplicateModalActionLocked = false;
+                resolver(action);
+            }, 120);
         };
 
         // BƯỚC 1 -> BƯỚC 2 -> BƯỚC 3: Điều phối xử lý từ vựng trùng lặp
-        async function insertOrPromptDuplicateVocab(sanitizedNewRecord, remainingDuplicatesHint = 1) {
+        async function insertOrPromptDuplicateVocab(sanitizedNewRecord, progressLabel = '1 mục') {
             if (!sanitizedNewRecord) return 'SKIPPED';
             const existing = findDuplicateVocabRecord(sanitizedNewRecord.hanzi, sanitizedNewRecord.pos);
 
@@ -4514,7 +4571,7 @@
                 return 'ADDED';
             }
 
-            // BƯỚC 1 (Lọc tự động): Nếu toàn bộ thông tin giống hệt 100% -> Tự động bỏ qua từ đang nạp (chỉ gộp tên Bộ từ nếu có)
+            // BƯỚC 1 (Lọc tự động): Nếu toàn bộ thông tin giống hệt 100% -> Tự động bỏ qua và chỉ gộp tên Bộ từ
             if (isVocabRecordIdentical100(existing, sanitizedNewRecord)) {
                 const mergedDecks = Array.from(new Set([...(existing.collections || []), ...(sanitizedNewRecord.collections || [])]));
                 existing.collections = mergedDecks;
@@ -4522,15 +4579,13 @@
                 return 'AUTO_IDENTICAL_SKIPPED';
             }
 
-            // BƯỚC 2 & 3: Có sự khác biệt nội dung -> Hiển thị Modal cho người dùng chọn 1 trong 3 phương án
-            const choice = await promptDuplicateVocabModal(existing, sanitizedNewRecord, remainingDuplicatesHint);
+            // BƯỚC 2 & 3: Có sự khác biệt nội dung -> Khóa luồng chờ người dùng bấm nút trên Modal
+            const choice = await promptDuplicateVocabModal(existing, sanitizedNewRecord, progressLabel);
 
             if (choice === 'MERGE') {
-                // Lựa chọn 1: Gộp chung (Đẩy cách dùng mới vào mảng usages của từ cũ)
                 mergeIncomingVocabIntoExisting(existing, sanitizedNewRecord);
                 return 'MERGED';
             } else if (choice === 'OVERWRITE') {
-                // Lựa chọn 2: Giữ lại nội dung MỚI (Xóa hẳn data cũ, lấy hoàn toàn data đang nạp)
                 const idx = vocabList.findIndex(v => v.id === existing.id);
                 if (idx >= 0) {
                     vocabList[idx] = {
@@ -4542,19 +4597,39 @@
                 return 'OVERWRITTEN';
             }
 
-            // Lựa chọn 3 (SKIP): Giữ lại nội dung CŨ (Bỏ qua từ đang nạp)
             return 'SKIPPED';
         }
 
-        // Bóc tách đa Cách dùng (Tầng 3) từ 1 dòng Excel (Hỗ trợ cột Cách dùng 1, 2, 3... hoặc ký tự ||)
+        // Lấy chính xác giá trị cột Excel không bị chồng chéo giữa "Ví dụ chung" và "Ví dụ 1", "Cách dùng 1"
+        function pickExactOrIncludedRowField(rowObj, exactAliases, partialAliases = []) {
+            const keys = Object.keys(rowObj);
+            // 1. Ưu tiên khớp chính xác tên cột đã chuẩn hóa
+            for (const rawKey of keys) {
+                const norm = normalizeColumnKey(rawKey);
+                if (exactAliases.includes(norm)) {
+                    return String(rowObj[rawKey] ?? '').trim();
+                }
+            }
+            // 2. Khớp một phần nhưng loại trừ các cột đánh số 1..5 hoặc cột viduchung
+            for (const rawKey of keys) {
+                const norm = normalizeColumnKey(rawKey);
+                if (/[1-5]$/.test(norm) || norm.includes('viduchung') || norm.includes('generalexample')) continue;
+                if (partialAliases.some(a => norm.includes(a))) {
+                    return String(rowObj[rawKey] ?? '').trim();
+                }
+            }
+            return '';
+        }
+
+        // Bóc tách "Ví dụ chung" (Tầng 2) và mảng `usages` (Tầng 3: [{ formula, examples, note }]) từ 1 dòng Excel
         function extractUsagesFromExcelRow(r, rawUsage, rawExamples, hint) {
             const usages = [];
 
             // 1. Kiểm tra các cột đánh số: Cách dùng 1..5, Ví dụ 1..5, Ghi chú 1..5
             for (let i = 1; i <= 5; i++) {
-                const f = pickRowField(r, [`cachdung${i}`, `cachsudung${i}`, `congthuc${i}`, `usage${i}`]);
-                const exRaw = pickRowField(r, [`vidu${i}`, `cauvidu${i}`, `example${i}`]);
-                const note = pickRowField(r, [`ghichu${i}`, `goiy${i}`, `note${i}`]);
+                const f = pickExactOrIncludedRowField(r, [`cachdung${i}`, `cachsudung${i}`, `congthuc${i}`, `usage${i}`]);
+                const exRaw = pickExactOrIncludedRowField(r, [`vidu${i}`, `cauvidu${i}`, `example${i}`]);
+                const note = pickExactOrIncludedRowField(r, [`ghichu${i}`, `luuy${i}`, `note${i}`]);
 
                 if (f || exRaw || note) {
                     const exList = exRaw ? exRaw.split(/[\n;；]+/).map(s => s.trim()).filter(Boolean) : [];
@@ -4567,7 +4642,6 @@
             }
 
             if (usages.length > 0) {
-                if (hint && !usages[0].note) usages[0].note = hint;
                 return usages;
             }
 
@@ -4585,28 +4659,29 @@
                         usages.push({
                             formula: isLegacyAutoFormulaString(f) ? '' : f,
                             examples: exList,
-                            note: i === 0 ? hint : ''
+                            note: ''
                         });
                     }
                 }
                 if (usages.length > 0) return usages;
             }
 
-            // 3. Mặc định 1 cách dùng
+            // 3. Nếu có Công thức ở cột Cách sử dụng cũ -> Đưa vào usages[0]
             const cleanF = isLegacyAutoFormulaString(rawUsage) ? '' : rawUsage;
             const cleanEx = rawExamples ? rawExamples.split(/[\n;；]+/).map(s => s.trim()).filter(Boolean) : [];
-            if (cleanF || cleanEx.length > 0 || hint) {
+            if (cleanF) {
                 usages.push({
                     formula: cleanF,
                     examples: cleanEx,
-                    note: hint
+                    note: ''
                 });
             }
             return usages;
         }
 
         window.handleExcelUpload = async function(event) {
-            const files = Array.from(event.target.files || []);
+            const inputEl = event.target;
+            const files = Array.from(inputEl.files || []);
             if (files.length === 0) return;
 
             if (typeof XLSX === 'undefined') {
@@ -4617,6 +4692,7 @@
             let totalAddedVocab = 0;
             let totalMergedVocab = 0;
             let totalOverwrittenVocab = 0;
+            let totalSkippedVocab = 0;
             let totalAddedGrammar = 0;
             let totalAddedIdiom = 0;
             let totalAddedFib = 0;
@@ -4633,11 +4709,11 @@
                     const pendingFibMap = new Map();
                     const incomingVocabQueue = [];
 
-                    workbook.SheetNames.forEach(sheetName => {
+                    for (const sheetName of workbook.SheetNames) {
                         const sheetNorm = normalizeColumnKey(sheetName);
                         const worksheet = workbook.Sheets[sheetName];
                         const rows = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
-                        if (!rows || rows.length === 0) return;
+                        if (!rows || rows.length === 0) continue;
 
                         const firstRowKeys = Object.keys(rows[0]).map(normalizeColumnKey);
 
@@ -4716,16 +4792,20 @@
                                 }
                             });
                         } else {
-                            // Sheet 1: Từ vựng (Hỗ trợ đầy đủ Cấu trúc 3 Tầng + Đa cách dùng)
+                            // Sheet 1: Từ vựng (Bóc tách tách biệt "Ví dụ chung" Tầng 2 và các cột "Cách dùng 1..5" Tầng 3)
                             rows.forEach(r => {
                                 const hanzi = pickRowField(r, ['chuhan', 'hanzi', 'tuvung', 'tiengtrung']);
                                 const pinyin = pickRowField(r, ['pinyin', 'phienam']);
                                 const pos = pickRowField(r, ['loaitu', 'tuloai', 'pos']);
                                 const sinoViet = pickRowField(r, ['hanviet', 'amhanviet']);
                                 const meaning = pickRowField(r, ['nghiatiengviet', 'nghia', 'meaning', 'dichnghia']);
-                                const rawUsage = pickRowField(r, ['cachsudung', 'cachdung', 'congthuccau', 'usage']);
-                                const rawExamples = pickRowField(r, ['vidu', 'example', 'cauvidu']);
-                                const hint = pickRowField(r, ['goiy', 'meonho', 'chiettu', 'hint']);
+                                const hint = pickRowField(r, ['goiynhotu', 'goiy', 'meonho', 'chiettu', 'hint']);
+
+                                // Đọc cột "Ví dụ chung" (Tầng 2) tách biệt với "Ví dụ 1", "Ví dụ 2"
+                                const rawGeneralExample = pickExactOrIncludedRowField(r, ['viduchung', 'generalexample', 'viduchungtuloai']);
+                                const rawUsage = pickExactOrIncludedRowField(r, ['cachsudung', 'cachdung', 'congthuccau', 'usage'], ['cachsudung', 'cachdung']);
+                                const rawExamples = pickExactOrIncludedRowField(r, ['vidu', 'example', 'cauvidu'], ['vidu', 'example']);
+
                                 const synRaw = pickRowField(r, ['tudongnghia', 'dongnghia', 'synonym']);
                                 const synCompareRaw = pickRowField(r, ['sosanhcachsudung', 'sosanhcachdung', 'sosanh', 'phanbiet']);
                                 const antRaw = pickRowField(r, ['tutrainnghia', 'trainghia', 'antonym']);
@@ -4734,14 +4814,18 @@
 
                                 if (hanzi && (pinyin || meaning)) {
                                     const extractedUsages = extractUsagesFromExcelRow(r, rawUsage, rawExamples, hint);
+                                    // Nếu file Excel cũ không có cột "Ví dụ chung" và không có công thức nhưng có cột "Ví dụ", tự động gán vào generalExample
+                                    const finalGeneralExample = rawGeneralExample || ((extractedUsages.length === 0 && rawExamples) ? rawExamples : '');
+
                                     const sanitizedVoc = sanitizeVocabRecord({
                                         hanzi,
                                         pinyin: pinyin || '...',
                                         pos,
                                         sinoViet,
                                         meaning: meaning || '...',
-                                        usages: extractedUsages,
                                         hint,
+                                        generalExample: finalGeneralExample,
+                                        usages: extractedUsages,
                                         synonyms: parseExcelSynonyms(synRaw, synCompareRaw),
                                         antonyms: parseExcelAntonyms(antRaw),
                                         fibSentences: inlineFib ? inlineFib.split(/[\n;；]+/) : [],
@@ -4753,12 +4837,14 @@
                                 }
                             });
                         }
-                    });
+                    }
 
-                    // Duyệt tuần tự qua hàng đợi từ vựng để kiểm tra trùng lặp (Chữ Hán + Loại từ)
+                    // KHÓA LUỒNG TUẦN TỰ (ASYNC/AWAIT): Chờ người dùng xử lý xong Modal của từ thứ i rồi mới xét tiếp từ thứ i + 1
                     for (let i = 0; i < incomingVocabQueue.length; i++) {
                         const vocItem = incomingVocabQueue[i];
-                        const res = await insertOrPromptDuplicateVocab(vocItem, incomingVocabQueue.length - i);
+                        const progressText = `Từ ${i + 1} / ${incomingVocabQueue.length} trong file`;
+                        const res = await insertOrPromptDuplicateVocab(vocItem, progressText);
+
                         if (res === 'ADDED') {
                             fileVocabAdded++;
                             totalAddedVocab++;
@@ -4768,6 +4854,8 @@
                         } else if (res === 'OVERWRITTEN') {
                             fileVocabAdded++;
                             totalOverwrittenVocab++;
+                        } else if (res === 'SKIPPED') {
+                            totalSkippedVocab++;
                         }
                     }
 
@@ -4795,15 +4883,15 @@
             }
 
             autoLinkVocabRelationsInStore();
-            event.target.value = '';
+            inputEl.value = '';
             await persistCurrentAccountData();
             showToast(
-                `Hoàn tất nạp Excel: +${totalAddedVocab} từ mới, gộp ${totalMergedVocab} từ, ghi đè ${totalOverwrittenVocab} từ, +${totalAddedGrammar} ngữ pháp, +${totalAddedIdiom} thành ngữ!`,
+                `Hoàn tất nạp Excel: +${totalAddedVocab} từ mới, gộp ${totalMergedVocab} từ, ghi đè ${totalOverwrittenVocab} từ, bỏ qua ${totalSkippedVocab} từ!`,
                 "success"
             );
         };
 
-        // Xuất File Excel Mẫu Chuẩn 4 Sheet Mới Nhất (.xlsx) - Có sẵn cột Cách dùng 1, Ví dụ 1, Cách dùng 2, Ví dụ 2
+        // Xuất File Excel Mẫu Chuẩn 4 Sheet Mới Nhất (.xlsx) - Bổ sung cột "Ví dụ chung" (Tầng 2) tách biệt với "Cách dùng 1", "Ví dụ 1"... (Tầng 3)
         window.downloadStandardExcelTemplate = function() {
             if (typeof XLSX === 'undefined') {
                 showToast("Không thể tạo file .xlsx khi thiếu thư viện SheetJS.", "error");
@@ -4811,7 +4899,7 @@
             }
             const wb = XLSX.utils.book_new();
 
-            // Sheet 1: "Từ vựng" (Hỗ trợ nạp nhiều cách dùng qua Cách dùng 1, Ví dụ 1, Cách dùng 2, Ví dụ 2...)
+            // Sheet 1: "Từ vựng" (Có cột "Ví dụ chung" Tầng 2 riêng biệt với "Cách dùng 1", "Ví dụ 1", "Ghi chú 1" Tầng 3)
             const vocabRows = [
                 {
                     "Chữ Hán*": "代表",
@@ -4819,9 +4907,11 @@
                     "Loại từ": "Danh từ",
                     "Hán Việt": "ĐẠI BIỂU",
                     "Nghĩa tiếng Việt*": "Người đại diện, đại biểu",
+                    "Gợi ý nhớ từ": "Chữ 代 có bộ Nhân đứng (亻) chỉ người đại diện; 表 là biểu đạt.",
+                    "Ví dụ chung": "他是我们的代表。\n各位代表已经到了。",
                     "Cách dùng 1": "Số từ + 位/名 + 代表",
-                    "Ví dụ 1": "他是我们的代表。; 各位代表已经到了。",
-                    "Ghi chú 1": "Chữ 代 có bộ Nhân đứng (亻) chỉ người đại diện; 表 là biểu đạt.",
+                    "Ví dụ 1": "我们选出了三位代表参加会议。",
+                    "Ghi chú 1": "Dùng lượng từ 位 khi muốn thể hiện sự trang trọng.",
                     "Cách dùng 2": "",
                     "Ví dụ 2": "",
                     "Ghi chú 2": "",
@@ -4836,12 +4926,14 @@
                     "Loại từ": "Động từ",
                     "Hán Việt": "ĐẠI BIỂU",
                     "Nghĩa tiếng Việt*": "Đại diện cho, thay mặt cho, tượng trưng cho",
+                    "Gợi ý nhớ từ": "Động từ mang nghĩa thay mặt hoặc biểu trưng cho sự vật/tập thể.",
+                    "Ví dụ chung": "这仅代表我个人的意见。",
                     "Cách dùng 1": "Chủ ngữ (Người/Tổ chức) + 代表 + Tân ngữ + Động từ (Không mang 了)",
                     "Ví dụ 1": "我代表公司欢迎你。",
                     "Ghi chú 1": "Thay mặt một tập thể hoặc tổ chức để thực hiện hành động.",
-                    "Cách dùng 2": "Sự vật A + 代表 + Ý nghĩa B (Biểu thị / tượng trưng cho điều gì)",
+                    "Cách dùng 2": "Sự vật A + 代表 + Ý nghĩa B",
                     "Ví dụ 2": "红玫瑰代表热情的爱情。",
-                    "Ghi chú 2": "Thường dùng khi nói về biểu tượng hoặc ý nghĩa tượng trưng.",
+                    "Ghi chú 2": "Biểu thị hoặc tượng trưng cho điều gì đó.",
                     "Từ đồng nghĩa": "代替",
                     "So sánh cách sử dụng": "代表 là thay mặt về danh nghĩa/tư cách; 代替 là thay thế hoàn toàn vị trí hoặc làm thay công việc.",
                     "Từ trái nghĩa": "",
@@ -4853,9 +4945,11 @@
                     "Loại từ": "Động từ",
                     "Hán Việt": "ĐẠI THẾ",
                     "Nghĩa tiếng Việt*": "Thay thế, làm thay",
+                    "Gợi ý nhớ từ": "Chữ 替 gồm hai chữ 夫 ở trên, mang nghĩa người này thế chỗ người kia.",
+                    "Ví dụ chung": "没有咖啡，用茶代替也可以。",
                     "Cách dùng 1": "A + 代替 + B (+ Động từ)",
                     "Ví dụ 1": "今天王老师生病了，李老师代替他来上课。",
-                    "Ghi chú 1": "Chữ 替 gồm hai chữ 夫 ở trên, mang nghĩa người này thế chỗ người kia.",
+                    "Ghi chú 1": "A thế chỗ hoàn toàn và làm thay phần việc của B.",
                     "Cách dùng 2": "",
                     "Ví dụ 2": "",
                     "Ghi chú 2": "",
@@ -4931,7 +5025,7 @@
             XLSX.utils.book_append_sheet(wb, wsIdiom, "Thành ngữ");
 
             XLSX.writeFile(wb, "Mau_Chuan_TiengTrungLyThu_4Sheet.xlsx");
-            showToast("Đã tải File Excel Mẫu Chuẩn 4 Sheet (Hỗ trợ nhiều cách dùng)!", "success");
+            showToast("Đã tải File Excel Mẫu Chuẩn 4 Sheet (Có cột Ví dụ chung & Đa cách dùng)!", "success");
         };
 
         window.loadSampleChineseData = async function() {
@@ -5726,7 +5820,7 @@
             renderModalRelationsAndDecks();
         };
 
-// Quản lý danh sách Cách dùng động (Tầng 3) trong Modal Thêm/Sửa Từ vựng
+// Quản lý danh sách Cách dùng động (Tầng 3: formula, examples, note) trong Modal Thêm/Sửa Từ vựng
         let currentModalUsages = [];
 
         function syncDynamicUsageInputsFromDOM() {
@@ -5738,12 +5832,14 @@
             currentModalUsages = Array.from(rows).map(row => {
                 const formulaInput = row.querySelector('.usage-formula-input');
                 const examplesInput = row.querySelector('.usage-examples-input');
+                const noteInput = row.querySelector('.usage-note-input');
                 const formula = (formulaInput ? formulaInput.value : '').trim();
                 const examples = (examplesInput ? examplesInput.value : '')
                     .split(/[\n;；]+/)
                     .map(s => s.trim())
                     .filter(Boolean);
-                return { formula, examples };
+                const note = (noteInput ? noteInput.value : '').trim();
+                return { formula, examples, note };
             });
         }
 
@@ -5752,7 +5848,7 @@
             if (!container) return;
 
             if (!Array.isArray(currentModalUsages) || currentModalUsages.length === 0) {
-                currentModalUsages = [{ formula: '', examples: [] }];
+                currentModalUsages = [{ formula: '', examples: [], note: '' }];
             }
 
             container.innerHTML = currentModalUsages.map((u, idx) => {
@@ -5762,29 +5858,37 @@
                         <div class="flex items-center justify-between border-b border-slate-100 pb-1.5">
                             <span class="text-xs font-extrabold text-cyan-800 flex items-center gap-1.5">
                                 <span class="w-5 h-5 rounded-md bg-cyan-600 text-white text-[11px] font-black flex items-center justify-center">${idx + 1}</span>
-                                <span>Cách dùng #${idx + 1}</span>
+                                <span>Cách dùng cụ thể #${idx + 1} (Tầng 3)</span>
                             </span>
                             ${currentModalUsages.length > 1 ? `
                                 <button type="button" onclick="removeDynamicUsageRow(${idx})" class="px-2 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer">
                                     <i class="fa-solid fa-trash-can"></i> Xóa nhánh này
                                 </button>
                             ` : `
-                                <span class="text-[10px] font-semibold text-slate-400">Nhánh mặc định</span>
+                                <span class="text-[10px] font-semibold text-slate-400">Nhánh Tầng 3</span>
                             `}
                         </div>
 
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-700 mb-1">
-                                Công thức / Cách sử dụng ${idx + 1} (Để trống nếu chỉ nhập ví dụ chung)
-                            </label>
-                            <input type="text" value="${escapeHtmlAttr(u.formula || '')}" placeholder="VD: A + 把 + B + 当作 + C..." class="usage-formula-input font-hanzi w-full px-3 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm font-semibold focus:outline-none focus:border-cyan-600">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                                    Công thức / Cấu trúc ${idx + 1}
+                                </label>
+                                <input type="text" value="${escapeHtmlAttr(u.formula || '')}" placeholder="VD: A + 代表 + B + Động từ..." class="usage-formula-input font-hanzi w-full px-3 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm font-semibold focus:outline-none focus:border-cyan-600">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                                    Ghi chú riêng cho Cách dùng ${idx + 1} (Tùy chọn)
+                                </label>
+                                <input type="text" value="${escapeHtmlAttr(u.note || '')}" placeholder="VD: Không mang trợ từ 了 sau động từ..." class="usage-note-input w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:outline-none focus:border-cyan-600">
+                            </div>
                         </div>
 
                         <div>
                             <label class="block text-[11px] font-bold text-slate-700 mb-1">
-                                Ví dụ minh họa cho Cách dùng ${idx + 1} (Mỗi câu 1 dòng)
+                                Ví dụ riêng của Cách dùng ${idx + 1} (Mỗi câu 1 dòng)
                             </label>
-                            <textarea rows="2" placeholder="VD:&#10;我把你当作最好的朋友。&#10;别把玩笑当作真的。" class="usage-examples-input font-hanzi w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:outline-none focus:border-cyan-600">${escapeHtml(examplesText)}</textarea>
+                            <textarea rows="2" placeholder="VD:&#10;我代表公司欢迎你。" class="usage-examples-input font-hanzi w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:outline-none focus:border-cyan-600">${escapeHtml(examplesText)}</textarea>
                         </div>
                     </div>
                 `;
@@ -5793,14 +5897,14 @@
 
         window.addDynamicUsageRow = function() {
             syncDynamicUsageInputsFromDOM();
-            currentModalUsages.push({ formula: '', examples: [] });
+            currentModalUsages.push({ formula: '', examples: [], note: '' });
             renderDynamicUsageRows();
         };
 
         window.removeDynamicUsageRow = function(index) {
             syncDynamicUsageInputsFromDOM();
             if (currentModalUsages.length <= 1) {
-                currentModalUsages = [{ formula: '', examples: [] }];
+                currentModalUsages = [{ formula: '', examples: [], note: '' }];
             } else {
                 currentModalUsages.splice(index, 1);
             }
@@ -5822,20 +5926,18 @@
                     document.getElementById('inputVocabSino').value = item.sinoViet || '';
                     document.getElementById('inputVocabMeaning').value = item.meaning || '';
                     document.getElementById('inputVocabHint').value = item.hint || '';
+                    document.getElementById('inputVocabGeneralExample').value = item.generalExample || '';
                     document.getElementById('inputVocabFibList').value = (item.fibSentences || []).join('\n');
 
                     // Nạp mảng usages Tầng 3 vào các khối động
                     if (Array.isArray(item.usages) && item.usages.length > 0) {
                         currentModalUsages = item.usages.map(u => ({
                             formula: isLegacyAutoFormulaString(u.formula) ? '' : (u.formula || ''),
-                            examples: Array.isArray(u.examples) ? [...u.examples] : []
+                            examples: Array.isArray(u.examples) ? [...u.examples] : [],
+                            note: String(u.note || '').trim()
                         }));
                     } else {
-                        const fallbackFormula = isLegacyAutoFormulaString(item.usageFormula) ? '' : (item.usageFormula || '');
-                        const fallbackExamples = Array.isArray(item.examples) && item.examples.length > 0
-                            ? [...item.examples]
-                            : (item.example ? String(item.example).split(/\n+/).filter(Boolean) : []);
-                        currentModalUsages = [{ formula: fallbackFormula, examples: fallbackExamples }];
+                        currentModalUsages = [{ formula: '', examples: [], note: '' }];
                     }
 
                     currentModalSynonyms = [...(item.synonyms || [])];
@@ -5843,7 +5945,8 @@
                     currentModalDecks = [...(item.collections || [item.fileSource || 'Mặc định'])];
                 }
             } else {
-                currentModalUsages = [{ formula: '', examples: [] }];
+                document.getElementById('inputVocabGeneralExample').value = '';
+                currentModalUsages = [{ formula: '', examples: [], note: '' }];
                 currentModalSynonyms = [];
                 currentModalAntonyms = [];
                 currentModalDecks = collectionsList.length > 0 ? [collectionsList[0]] : ['Mặc định'];
@@ -5870,20 +5973,22 @@
             const pos = document.getElementById('inputVocabPos').value.trim();
             const sinoViet = document.getElementById('inputVocabSino').value.trim();
             const meaning = document.getElementById('inputVocabMeaning').value.trim();
-            const hint = document.getElementById('inputVocabHint').value.trim(); // Gợi ý nhớ từ ở Tầng 2
+            const hint = document.getElementById('inputVocabHint').value.trim();                     // Tầng 2: Gợi ý nhớ từ
+            const generalExample = document.getElementById('inputVocabGeneralExample').value.trim(); // Tầng 2: Ví dụ chung
             const fibSentences = document.getElementById('inputVocabFibList').value.split('\n').map(s => s.trim()).filter(Boolean);
 
             const typedNewDeck = document.getElementById('inputVocabFile').value.trim();
             if (typedNewDeck && !currentModalDecks.includes(typedNewDeck)) currentModalDecks.push(typedNewDeck);
             const finalDecks = currentModalDecks.length > 0 ? currentModalDecks : ['Mặc định'];
 
-            // Lọc bỏ các khối cách dùng rỗng hoàn toàn (không có cả công thức lẫn ví dụ)
+            // Lọc bỏ các khối cách dùng Tầng 3 rỗng hoàn toàn
             const cleanedUsages = currentModalUsages
                 .map(u => ({
                     formula: String(u.formula || '').trim(),
-                    examples: Array.isArray(u.examples) ? u.examples.map(ex => String(ex || '').trim()).filter(Boolean) : []
+                    examples: Array.isArray(u.examples) ? u.examples.map(ex => String(ex || '').trim()).filter(Boolean) : [],
+                    note: String(u.note || '').trim()
                 }))
-                .filter(u => u.formula || u.examples.length > 0);
+                .filter(u => u.formula || u.examples.length > 0 || u.note);
 
             const sanitizedRecord = sanitizeVocabRecord({
                 id: editId || ('voc_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7)),
@@ -5893,7 +5998,8 @@
                 sinoViet,
                 meaning,
                 hint,                  // Tầng 2
-                usages: cleanedUsages, // Tầng 3: [{ formula, examples }]
+                generalExample,        // Tầng 2
+                usages: cleanedUsages, // Tầng 3: [{ formula, examples, note }]
                 fibSentences,
                 synonyms: currentModalSynonyms,
                 antonyms: currentModalAntonyms,
@@ -5917,25 +6023,18 @@
                 await persistCurrentAccountData();
                 showToast(`Đã cập nhật từ vựng "${hanzi}"!`, "success");
             } else if (sanitizedRecord) {
-                // Nếu đã tích hợp hàm kiểm tra trùng lặp insertOrPromptDuplicateVocab thì gọi, ngược lại thêm trực tiếp
-                if (typeof insertOrPromptDuplicateVocab === 'function') {
-                    const actionResult = await insertOrPromptDuplicateVocab(sanitizedRecord, 1);
-                    await persistCurrentAccountData();
-                    if (actionResult === 'AUTO_IDENTICAL_SKIPPED') {
-                        showToast(`Từ "${hanzi}" (${pos || 'Chung'}) giống hệt 100% với từ trong kho nên đã tự động lược bỏ trùng lặp!`, "info");
-                    } else if (actionResult === 'MERGED') {
-                        showToast(`Đã gộp chung Cách dùng mới vào từ "${hanzi}" (${pos || 'Chung'})!`, "success");
-                    } else if (actionResult === 'OVERWRITTEN') {
-                        showToast(`Đã xóa nội dung cũ và giữ lại nội dung MỚI cho từ "${hanzi}"!`, "info");
-                    } else if (actionResult === 'SKIPPED') {
-                        showToast(`Đã giữ lại nội dung CŨ của từ "${hanzi}" (Bỏ qua từ mới)!`, "info");
-                    } else if (actionResult === 'ADDED') {
-                        showToast(`Đã thêm từ vựng mới "${hanzi}"!`, "success");
-                    }
-                } else {
-                    vocabList.push(sanitizedRecord);
-                    await persistCurrentAccountData();
-                    showToast(`Đã lưu từ vựng "${hanzi}"!`, "success");
+                const actionResult = await insertOrPromptDuplicateVocab(sanitizedRecord, 'Thêm thủ công');
+                await persistCurrentAccountData();
+                if (actionResult === 'AUTO_IDENTICAL_SKIPPED') {
+                    showToast(`Từ "${hanzi}" (${pos || 'Chung'}) giống hệt 100% với từ trong kho nên đã tự động lược bỏ trùng lặp!`, "info");
+                } else if (actionResult === 'MERGED') {
+                    showToast(`Đã gộp chung dữ liệu mới vào từ "${hanzi}" (${pos || 'Chung'})!`, "success");
+                } else if (actionResult === 'OVERWRITTEN') {
+                    showToast(`Đã xóa nội dung cũ và giữ lại nội dung MỚI cho từ "${hanzi}"!`, "info");
+                } else if (actionResult === 'SKIPPED') {
+                    showToast(`Đã giữ lại nội dung CŨ của từ "${hanzi}" (Bỏ qua từ mới)!`, "info");
+                } else if (actionResult === 'ADDED') {
+                    showToast(`Đã thêm từ vựng mới "${hanzi}"!`, "success");
                 }
             }
         };
