@@ -93,8 +93,16 @@
         }
         @media screen and (max-width: 768px) {
             input, select, textarea {
-                font-size: 16px !important;
+                font-size: 14px !important;
+                line-height: 1.4 !important;
             }
+        }
+        /* Khóa cuộn ngang tuyệt đối cho các hộp thoại Modal trên điện thoại */
+        #vocabModal form, #grammarModal form, #idiomModal form,
+        #userManagerModal > div, #mobileGuideModal > div, #duplicateMergeModal > div {
+            overflow-x: hidden !important;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
         }
         .custom-scroll::-webkit-scrollbar {
             width: 6px;
@@ -379,23 +387,75 @@
                         </button>
                     </div>
 
-                    <!-- Công cụ Flashcard Thành ngữ -->
-                    <div id="idiomFlashcardControls" style="display: none;" class="hidden items-center gap-2 w-full sm:w-auto justify-end">
-                        <button type="button" onclick="shuffleIdiomFlashcards()" class="flex-1 sm:flex-initial min-h-[38px] md:min-h-[42px] px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 border border-slate-200/80 text-xs md:text-sm font-bold transition flex items-center justify-center gap-1.5 cursor-pointer touch-manipulation">
-                            <i class="fa-solid fa-shuffle text-amber-600"></i> <span>Xáo trộn</span>
+                    <!-- Công cụ Flashcard Thành ngữ (3 nút đồng bộ) -->
+                    <div id="idiomFlashcardControls" style="display: none;" class="hidden grid-cols-3 sm:flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto justify-end">
+                        <!-- Nút 1: Hiển thị Thành ngữ -->
+                        <div class="relative flex-1 sm:flex-initial">
+                            <button type="button" id="idiomDisplayFilterBtn" onclick="toggleSubjectDisplayDropdown('idiom', event)" class="w-full min-h-[38px] md:min-h-[42px] px-2.5 sm:px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 border border-slate-200/80 text-xs md:text-sm font-bold transition flex items-center justify-center gap-1.5 cursor-pointer touch-manipulation">
+                                <i class="fa-solid fa-sliders text-amber-600"></i>
+                                <span id="idiomDisplayFilterLabel" class="truncate">Hiển thị</span>
+                                <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 shrink-0"></i>
+                            </button>
+                            <div id="idiomDisplayDropdownPanel" onclick="event.stopPropagation()" class="hidden absolute left-0 sm:right-0 sm:left-auto mt-1.5 w-52 bg-white text-slate-800 rounded-2xl shadow-2xl border border-slate-200 z-50 p-2.5 space-y-1.5">
+                                <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider px-2 pb-1 border-b border-slate-100">
+                                    Lọc trạng thái Thành ngữ
+                                </div>
+                                <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-xl hover:bg-slate-100 cursor-pointer transition text-xs md:text-sm font-bold text-slate-700">
+                                    <input type="checkbox" id="chkIdiomFilterMastered" onchange="handleSubjectDisplayCheckboxChange('idiom')" class="w-4 h-4 rounded accent-emerald-600 cursor-pointer">
+                                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-emerald-500 text-xs"></i> Đã thuộc</span>
+                                </label>
+                                <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-xl hover:bg-slate-100 cursor-pointer transition text-xs md:text-sm font-bold text-slate-700">
+                                    <input type="checkbox" id="chkIdiomFilterNeedReview" onchange="handleSubjectDisplayCheckboxChange('idiom')" class="w-4 h-4 rounded accent-amber-500 cursor-pointer">
+                                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-rotate text-amber-500 text-xs"></i> Cần ôn thêm</span>
+                                </label>
+                            </div>
+                            <input type="hidden" id="idiomMasteryFilter" value="ALL">
+                        </div>
+
+                        <!-- Nút 2: Xáo trộn -->
+                        <button type="button" onclick="shuffleIdiomFlashcards()" class="min-h-[38px] md:min-h-[42px] px-2.5 sm:px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 border border-slate-200/80 text-xs md:text-sm font-bold transition flex items-center justify-center gap-1.5 cursor-pointer touch-manipulation">
+                            <i class="fa-solid fa-shuffle text-amber-600"></i> <span class="truncate">Xáo trộn</span>
                         </button>
-                        <button type="button" onclick="openIdiomModal()" class="flex-1 sm:flex-initial min-h-[38px] md:min-h-[42px] px-3.5 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 active:scale-95 text-amber-800 border border-amber-200 text-xs md:text-sm font-bold transition flex items-center justify-center gap-1.5 cursor-pointer touch-manipulation">
-                            <i class="fa-solid fa-plus"></i> <span>Thêm Thành ngữ</span>
+
+                        <!-- Nút 3: + Thêm Thành ngữ -->
+                        <button type="button" onclick="openIdiomModal()" class="min-h-[38px] md:min-h-[42px] px-2.5 sm:px-3.5 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 active:scale-95 text-amber-800 border border-amber-200 text-xs md:text-sm font-bold transition flex items-center justify-center gap-1.5 cursor-pointer touch-manipulation">
+                            <i class="fa-solid fa-plus"></i> <span class="truncate">Thêm Thành ngữ</span>
                         </button>
                     </div>
 
-                    <!-- Công cụ Flashcard Ngữ pháp -->
-                    <div id="grammarFlashcardControls" style="display: none;" class="hidden items-center gap-2 w-full sm:w-auto justify-end">
-                        <button type="button" onclick="shuffleGrammarFlashcards()" class="flex-1 sm:flex-initial min-h-[38px] md:min-h-[42px] px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 border border-slate-200/80 text-xs md:text-sm font-bold transition flex items-center justify-center gap-1.5 cursor-pointer touch-manipulation">
-                            <i class="fa-solid fa-shuffle text-indigo-600"></i> <span>Xáo trộn</span>
+                    <!-- Công cụ Flashcard Ngữ pháp (3 nút đồng bộ) -->
+                    <div id="grammarFlashcardControls" style="display: none;" class="hidden grid-cols-3 sm:flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto justify-end">
+                        <!-- Nút 1: Hiển thị Ngữ pháp -->
+                        <div class="relative flex-1 sm:flex-initial">
+                            <button type="button" id="grammarDisplayFilterBtn" onclick="toggleSubjectDisplayDropdown('grammar', event)" class="w-full min-h-[38px] md:min-h-[42px] px-2.5 sm:px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 border border-slate-200/80 text-xs md:text-sm font-bold transition flex items-center justify-center gap-1.5 cursor-pointer touch-manipulation">
+                                <i class="fa-solid fa-sliders text-indigo-600"></i>
+                                <span id="grammarDisplayFilterLabel" class="truncate">Hiển thị</span>
+                                <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 shrink-0"></i>
+                            </button>
+                            <div id="grammarDisplayDropdownPanel" onclick="event.stopPropagation()" class="hidden absolute left-0 sm:right-0 sm:left-auto mt-1.5 w-52 bg-white text-slate-800 rounded-2xl shadow-2xl border border-slate-200 z-50 p-2.5 space-y-1.5">
+                                <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider px-2 pb-1 border-b border-slate-100">
+                                    Lọc trạng thái Ngữ pháp
+                                </div>
+                                <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-xl hover:bg-slate-100 cursor-pointer transition text-xs md:text-sm font-bold text-slate-700">
+                                    <input type="checkbox" id="chkGrammarFilterMastered" onchange="handleSubjectDisplayCheckboxChange('grammar')" class="w-4 h-4 rounded accent-emerald-600 cursor-pointer">
+                                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-emerald-500 text-xs"></i> Đã thuộc</span>
+                                </label>
+                                <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-xl hover:bg-slate-100 cursor-pointer transition text-xs md:text-sm font-bold text-slate-700">
+                                    <input type="checkbox" id="chkGrammarFilterNeedReview" onchange="handleSubjectDisplayCheckboxChange('grammar')" class="w-4 h-4 rounded accent-amber-500 cursor-pointer">
+                                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-rotate text-amber-500 text-xs"></i> Cần ôn thêm</span>
+                                </label>
+                            </div>
+                            <input type="hidden" id="grammarMasteryFilter" value="ALL">
+                        </div>
+
+                        <!-- Nút 2: Xáo trộn -->
+                        <button type="button" onclick="shuffleGrammarFlashcards()" class="min-h-[38px] md:min-h-[42px] px-2.5 sm:px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 border border-slate-200/80 text-xs md:text-sm font-bold transition flex items-center justify-center gap-1.5 cursor-pointer touch-manipulation">
+                            <i class="fa-solid fa-shuffle text-indigo-600"></i> <span class="truncate">Xáo trộn</span>
                         </button>
-                        <button type="button" onclick="openGrammarModal()" class="flex-1 sm:flex-initial min-h-[38px] md:min-h-[42px] px-3.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 active:scale-95 text-indigo-700 border border-indigo-200 text-xs md:text-sm font-bold transition flex items-center justify-center gap-1.5 cursor-pointer touch-manipulation">
-                            <i class="fa-solid fa-plus"></i> <span>Thêm Ngữ pháp</span>
+
+                        <!-- Nút 3: + Thêm Ngữ pháp -->
+                        <button type="button" onclick="openGrammarModal()" class="min-h-[38px] md:min-h-[42px] px-2.5 sm:px-3.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 active:scale-95 text-indigo-700 border border-indigo-200 text-xs md:text-sm font-bold transition flex items-center justify-center gap-1.5 cursor-pointer touch-manipulation">
+                            <i class="fa-solid fa-plus"></i> <span class="truncate">Thêm Ngữ pháp</span>
                         </button>
                     </div>
 
@@ -1095,30 +1155,32 @@
 
                     <!-- 2. KHÔNG GIAN LÀM VIỆC (MẶC ĐỊNH ẨN - CHỈ XỔ RA KHI BẤM VÀO 1 TRONG 3 TABS) -->
                     <div id="dataManagementWorkspace" class="hidden border-t border-slate-200">
-                        <!-- THANH CÔNG CỤ (TOOLBAR) GỌN GÀNG TRÊN CÙNG -->
-                        <div class="p-3 sm:p-4 bg-slate-50/70 border-b border-slate-200 space-y-3">
-                            <!-- Hàng 1: Nút [+ Thêm mới], Tìm kiếm nhanh, Dropdown Sắp xếp & Dropdown Bộ từ (Chọn nhiều A-Z) -->
-                            <div class="flex flex-wrap items-center gap-2">
-                                <!-- Nút Thêm mới tương ứng với Tab đang mở -->
-                                <button type="button" id="dataDynamicAddBtn" onclick="triggerDataTabAddNew()" class="min-h-[40px] px-3.5 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700 active:scale-95 text-white text-xs font-extrabold shadow-sm transition flex items-center gap-1.5 shrink-0 cursor-pointer touch-manipulation">
+                        <!-- THANH CÔNG CỤ (TOOLBAR) ĐỒNG BỘ CỠ CHỮ & KÍCH THƯỚC TRÊN MOBILE -->
+                        <div class="p-3 sm:p-4 bg-slate-50/70 border-b border-slate-200 space-y-2.5">
+                            <!-- Hàng 1: Nút [+ Thêm mới], Tìm kiếm nhanh, Dropdown Sắp xếp & Dropdown Bộ từ -->
+                            <div class="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2">
+                                <!-- Nút Thêm mới -->
+                                <button type="button" id="dataDynamicAddBtn" onclick="triggerDataTabAddNew()" class="col-span-1 h-10 px-3.5 rounded-xl bg-cyan-600 hover:bg-cyan-700 active:scale-95 text-white text-xs font-extrabold shadow-sm transition flex items-center justify-center gap-1.5 shrink-0 cursor-pointer touch-manipulation">
                                     <i class="fa-solid fa-plus"></i>
-                                    <span id="dataDynamicAddBtnLabel">Thêm mới</span>
+                                    <span id="dataDynamicAddBtnLabel" class="truncate">Thêm Từ vựng</span>
                                 </button>
 
                                 <!-- Ô tìm kiếm nhanh -->
-                                <div class="relative flex-1 min-w-[140px]">
+                                <div class="col-span-1 sm:flex-1 min-w-[140px] relative">
                                     <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                                    <input type="text" id="dataSearchInput" oninput="renderDataManagementTable()" placeholder="Tìm nhanh..." class="w-full min-h-[40px] pl-8 pr-2.5 py-1.5 rounded-xl border border-slate-300 bg-white text-xs font-medium focus:outline-none focus:border-cyan-600">
+                                    <input type="text" id="dataSearchInput" oninput="renderDataManagementTable()" placeholder="Tìm nhanh..." class="w-full h-10 pl-8 pr-2.5 rounded-xl border border-slate-300 bg-white text-xs font-semibold focus:outline-none focus:border-cyan-600">
                                 </div>
 
-                                <!-- Dropdown Sắp xếp (Bấm Mặc định lần 2 tự đảo chiều A-Z ⇄ Z-A) -->
-                                <div class="relative">
-                                    <button type="button" id="dataSortDropdownBtn" onclick="toggleDataSortDropdown(event)" class="min-h-[40px] px-3 py-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-slate-800 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer touch-manipulation">
-                                        <i class="fa-solid fa-arrow-down-a-z text-cyan-600"></i>
-                                        <span id="dataSortCurrentLabel">Mặc định (A-Z)</span>
-                                        <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
+                                <!-- Dropdown Sắp xếp -->
+                                <div class="col-span-1 relative">
+                                    <button type="button" id="dataSortDropdownBtn" onclick="toggleDataSortDropdown(event)" class="w-full sm:w-auto h-10 px-3 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-slate-800 text-xs font-bold flex items-center justify-between sm:justify-start gap-1.5 transition cursor-pointer touch-manipulation">
+                                        <span class="flex items-center gap-1.5 truncate">
+                                            <i class="fa-solid fa-arrow-down-a-z text-cyan-600"></i>
+                                            <span id="dataSortCurrentLabel" class="truncate">Mặc định (A-Z)</span>
+                                        </span>
+                                        <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 shrink-0"></i>
                                     </button>
-                                    <div id="dataSortDropdownPanel" onclick="event.stopPropagation()" class="hidden absolute right-0 mt-1.5 w-48 bg-white text-slate-800 rounded-2xl shadow-2xl border border-slate-200 z-50 p-1.5 space-y-1">
+                                    <div id="dataSortDropdownPanel" onclick="event.stopPropagation()" class="hidden absolute left-0 sm:right-0 sm:left-auto mt-1.5 w-48 bg-white text-slate-800 rounded-2xl shadow-2xl border border-slate-200 z-50 p-1.5 space-y-1">
                                         <button type="button" id="sortOptDefaultBtn" onclick="selectDataSortMode('DEFAULT')" class="w-full px-3 py-2 rounded-xl text-left text-xs font-extrabold flex items-center justify-between bg-cyan-50 text-cyan-900 transition cursor-pointer">
                                             <span id="sortOptDefaultText">Mặc định (A-Z)</span>
                                             <i class="fa-solid fa-arrows-up-down text-cyan-600 text-[11px]"></i>
@@ -1134,69 +1196,68 @@
                                     </div>
                                 </div>
 
-                                <!-- Dropdown Lọc Bộ từ (Hỗ trợ chọn nhiều, tự sắp xếp A-Z) -->
-                                <div class="relative">
-                                    <button type="button" id="dataDeckFilterBtn" onclick="toggleDataDeckFilterDropdown(event)" class="min-h-[40px] px-3 py-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-slate-800 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer touch-manipulation">
-                                        <i class="fa-solid fa-filter text-emerald-600"></i>
-                                        <span id="dataDeckFilterSummary" class="max-w-[120px] truncate">Bộ từ: Tất cả</span>
-                                        <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
+                                <!-- Dropdown Lọc Bộ từ -->
+                                <div class="col-span-1 relative">
+                                    <button type="button" id="dataDeckFilterBtn" onclick="toggleDataDeckFilterDropdown(event)" class="w-full sm:w-auto h-10 px-3 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-slate-800 text-xs font-bold flex items-center justify-between sm:justify-start gap-1.5 transition cursor-pointer touch-manipulation">
+                                        <span class="flex items-center gap-1.5 truncate">
+                                            <i class="fa-solid fa-filter text-emerald-600"></i>
+                                            <span id="dataDeckFilterSummary" class="truncate max-w-[115px] sm:max-w-[140px]">Bộ từ: Tất cả</span>
+                                        </span>
+                                        <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 shrink-0"></i>
                                     </button>
                                     <div id="dataDeckFilterPanel" onclick="event.stopPropagation()" class="hidden absolute right-0 mt-1.5 w-64 sm:w-72 bg-white text-slate-800 rounded-2xl shadow-2xl border border-slate-200 z-50 p-3 space-y-2">
                                         <div class="flex items-center justify-between border-b border-slate-100 pb-1.5">
                                             <span class="text-[11px] font-extrabold text-slate-700 uppercase">Lọc Bộ từ (A-Z)</span>
-                                            <div class="flex items-center gap-1.5">
-                                                <button type="button" onclick="clearDataTableDeckFilter()" class="text-[11px] font-bold text-cyan-700 hover:underline cursor-pointer">Tất cả</button>
-                                            </div>
+                                            <button type="button" onclick="clearDataTableDeckFilter()" class="text-[11px] font-bold text-cyan-700 hover:underline cursor-pointer">Tất cả</button>
                                         </div>
                                         <div id="dataDeckFilterCheckboxList" class="max-h-56 overflow-y-auto custom-scroll space-y-1 pr-1"></div>
                                     </div>
                                 </div>
-                                <!-- Giữ select ẩn để tương thích ngược với các hàm cũ -->
                                 <select id="dataTableFileFilter" class="hidden"><option value="ALL">ALL</option></select>
                             </div>
 
-                            <!-- Hàng 2: Khối Điều chỉnh nhóm (Bulk Actions: Gán bộ từ, Trạng thái, Xóa) -->
+                            <!-- Hàng 2: Khối Điều chỉnh nhóm (Bulk Actions đồng bộ kích thước) -->
                             <div class="bg-white border border-slate-200 rounded-2xl p-2.5 sm:p-3 flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
                                 <div class="flex items-center justify-between lg:justify-start gap-2 text-xs font-extrabold text-slate-800">
                                     <div class="flex items-center gap-1.5">
                                         <span class="w-6 h-6 rounded-lg bg-slate-900 text-white flex items-center justify-center text-[11px]">
                                             <i class="fa-solid fa-check-double"></i>
                                         </span>
-                                        <span>Đang chọn: <strong id="selectedCountBadge" class="px-1.5 py-0.5 rounded bg-cyan-600 text-white">0</strong></span>
+                                        <span>Đang chọn: <strong id="selectedCountBadge" class="px-2 py-0.5 rounded-md bg-cyan-600 text-white">0</strong></span>
                                     </div>
-                                    <button type="button" onclick="openBulkDeleteConfirmModal()" id="bulkDeleteBtn" class="lg:hidden px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white border border-rose-200 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer">
-                                        <i class="fa-solid fa-trash-can"></i> Xóa
+                                    <button type="button" onclick="openBulkDeleteConfirmModal()" id="bulkDeleteBtn" class="lg:hidden h-8 px-3 rounded-xl bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white border border-rose-200 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
+                                        <i class="fa-solid fa-trash-can"></i> <span>Xóa</span>
                                     </button>
                                 </div>
 
-                                <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                                <div class="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2">
                                     <!-- Gán / Bớt Bộ từ -->
-                                    <div class="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-300 w-full sm:w-auto">
-                                        <select id="bulkDeckSelect" onchange="handleBulkDeckSelectChange(this)" class="flex-1 sm:flex-initial text-xs font-bold text-slate-800 bg-transparent focus:outline-none px-1.5 py-1 max-w-[140px] sm:max-w-[160px]">
-                                            <option value="">-- Bộ từ --</option>
+                                    <div class="flex items-center gap-1.5 bg-slate-50 p-1 rounded-xl border border-slate-300">
+                                        <select id="bulkDeckSelect" onchange="handleBulkDeckSelectChange(this)" class="flex-1 min-w-0 h-8 text-xs font-bold text-slate-800 bg-transparent focus:outline-none px-2">
+                                            <option value="">-- Chọn Bộ từ --</option>
                                             <option value="__CREATE_NEW__">+ Tạo Bộ mới...</option>
                                         </select>
-                                        <button type="button" onclick="executeBulkAssignCollection('ADD')" title="Thêm vào Bộ từ" class="px-2 py-1 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white text-[11px] font-bold transition shrink-0 cursor-pointer">
+                                        <button type="button" onclick="executeBulkAssignCollection('ADD')" title="Thêm vào Bộ từ" class="h-8 px-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold transition shrink-0 cursor-pointer">
                                             +Gán
                                         </button>
-                                        <button type="button" onclick="executeBulkAssignCollection('REMOVE')" title="Gỡ khỏi Bộ từ" class="px-2 py-1 rounded-lg bg-amber-100 hover:bg-amber-600 text-amber-900 hover:text-white border border-amber-300 text-[11px] font-bold transition shrink-0 cursor-pointer">
+                                        <button type="button" onclick="executeBulkAssignCollection('REMOVE')" title="Gỡ khỏi Bộ từ" class="h-8 px-3 rounded-lg bg-amber-100 hover:bg-amber-600 text-amber-900 hover:text-white border border-amber-300 text-xs font-bold transition shrink-0 cursor-pointer">
                                             -Gỡ
                                         </button>
                                     </div>
 
                                     <!-- Đánh dấu Trạng thái -->
-                                    <div class="flex items-center gap-1.5">
-                                        <button type="button" onclick="executeBulkMasteryStatus(true)" class="px-2.5 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white border border-emerald-200 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer">
-                                            <i class="fa-solid fa-circle-check"></i> Đã thuộc
+                                    <div class="grid grid-cols-2 sm:flex items-center gap-1.5">
+                                        <button type="button" onclick="executeBulkMasteryStatus(true)" class="h-9 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white border border-emerald-200 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
+                                            <i class="fa-solid fa-circle-check"></i> <span>Đã thuộc</span>
                                         </button>
-                                        <button type="button" onclick="executeBulkMasteryStatus(false)" class="px-2.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-500 text-amber-800 hover:text-white border border-amber-200 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer">
-                                            <i class="fa-solid fa-rotate-left"></i> Cần ôn
+                                        <button type="button" onclick="executeBulkMasteryStatus(false)" class="h-9 px-3 rounded-xl bg-amber-50 hover:bg-amber-500 text-amber-800 hover:text-white border border-amber-200 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
+                                            <i class="fa-solid fa-rotate-left"></i> <span>Cần ôn</span>
                                         </button>
                                     </div>
 
                                     <!-- Xóa nhóm (Desktop) -->
-                                    <button type="button" onclick="openBulkDeleteConfirmModal()" class="hidden lg:flex px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white border border-rose-200 text-[11px] font-bold transition items-center gap-1 cursor-pointer">
-                                        <i class="fa-solid fa-trash-can"></i> Xóa nhóm
+                                    <button type="button" onclick="openBulkDeleteConfirmModal()" class="hidden lg:flex h-9 px-3 rounded-xl bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white border border-rose-200 text-xs font-bold transition items-center gap-1.5 cursor-pointer">
+                                        <i class="fa-solid fa-trash-can"></i> <span>Xóa nhóm</span>
                                     </button>
                                 </div>
                             </div>
@@ -1320,35 +1381,37 @@
         </div>
     </div>
 
-<!-- MODAL THÊM / SỬA TỪ VỰNG NÂNG CẤP -->
-<div id="vocabModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 hidden items-center justify-center p-3 sm:p-4">
-    <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 max-w-2xl w-full overflow-hidden">
-        <div class="px-5 sm:px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
-            <h3 id="vocabModalTitle" class="text-sm sm:text-base font-extrabold flex items-center gap-2">
-                <i class="fa-solid fa-pen-to-square text-cyan-400"></i> Thêm / Chỉnh Sửa Từ Vựng
+<!-- MODAL THÊM / SỬA TỪ VỰNG NÂNG CẤP (ĐỒNG BỘ CỠ CHỮ & KHÓA TRÀN NGANG MOBILE) -->
+<div id="vocabModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 hidden items-center justify-center p-2.5 sm:p-4 overscroll-contain">
+    <div onclick="event.stopPropagation()" class="bg-white rounded-3xl shadow-2xl border border-slate-200 max-w-2xl w-full overflow-hidden flex flex-col max-h-[90vh]">
+        <div class="px-4 sm:px-6 py-3.5 bg-slate-900 text-white flex items-center justify-between shrink-0">
+            <h3 id="vocabModalTitle" class="text-sm sm:text-base font-extrabold flex items-center gap-2 truncate">
+                <i class="fa-solid fa-pen-to-square text-cyan-400"></i>
+                <span>Thêm / Chỉnh Sửa Từ Vựng</span>
             </h3>
-            <button type="button" onclick="closeVocabModal()" class="text-slate-400 hover:text-white text-lg">
+            <button type="button" onclick="closeVocabModal()" class="w-8 h-8 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 flex items-center justify-center text-lg cursor-pointer">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
-        <form id="vocabForm" onsubmit="saveVocabModal(event)" class="p-5 sm:p-6 space-y-4 max-h-[84vh] overflow-y-auto custom-scroll">
+
+        <form id="vocabForm" onsubmit="saveVocabModal(event)" class="p-4 sm:p-6 space-y-4 overflow-y-auto overflow-x-hidden overscroll-contain custom-scroll flex-1">
             <input type="hidden" id="editVocabId">
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                <div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="min-w-0">
                     <label class="block text-xs font-bold text-slate-700 mb-1">Chữ Hán <span class="text-rose-600">*</span></label>
-                    <input type="text" id="inputVocabHanzi" required placeholder="VD: 代表" class="font-hanzi w-full px-3.5 py-2 rounded-xl border border-slate-300 text-base font-bold focus:outline-none focus:border-cyan-600">
+                    <input type="text" id="inputVocabHanzi" required placeholder="VD: 代表" class="font-hanzi w-full h-10 px-3.5 rounded-xl border border-slate-300 text-sm font-bold focus:outline-none focus:border-cyan-600">
                 </div>
-                <div>
+                <div class="min-w-0">
                     <label class="block text-xs font-bold text-slate-700 mb-1">Pinyin <span class="text-rose-600">*</span></label>
-                    <input type="text" id="inputVocabPinyin" required placeholder="VD: dàibiǎo" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-cyan-600">
+                    <input type="text" id="inputVocabPinyin" required placeholder="VD: dàibiǎo" class="w-full h-10 px-3.5 rounded-xl border border-slate-300 text-sm font-medium focus:outline-none focus:border-cyan-600">
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-<div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="min-w-0">
                     <label class="block text-xs font-bold text-slate-700 mb-1">Loại từ</label>
-                    <input type="text" id="inputVocabPos" list="posPresetList" placeholder="VD: Danh từ, Động từ, Tính từ..." class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-cyan-600">
+                    <input type="text" id="inputVocabPos" list="posPresetList" placeholder="VD: Danh từ, Động từ, Tính từ..." class="w-full h-10 px-3.5 rounded-xl border border-slate-300 text-sm font-medium focus:outline-none focus:border-cyan-600">
                     <datalist id="posPresetList">
                         <option value="Danh từ"></option>
                         <option value="Động từ"></option>
@@ -1358,161 +1421,155 @@
                         <option value="Lượng từ"></option>
                     </datalist>
                 </div>
-                <div>
+                <div class="min-w-0">
                     <label class="block text-xs font-bold text-slate-700 mb-1">Hán Việt</label>
-                    <input type="text" id="inputVocabSino" placeholder="VD: ĐẠI BIỂU" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-cyan-600">
+                    <input type="text" id="inputVocabSino" placeholder="VD: ĐẠI BIỂU" class="w-full h-10 px-3.5 rounded-xl border border-slate-300 text-sm font-medium focus:outline-none focus:border-cyan-600">
                 </div>
             </div>
 
-            <!-- KHUNG NGHĨA: NGHĨA TIẾNG VIỆT, GỢI Ý NHỚ TỪ & VÍ DỤ CHUNG (THEO LOẠI TỪ) -->
-            <div class="p-3.5 sm:p-4 rounded-2xl bg-amber-50/40 border border-amber-200/80 space-y-3">
+            <!-- KHUNG NGHĨA: NGHĨA TIẾNG VIỆT, GỢI Ý NHỚ TỪ & VÍ DỤ CHUNG -->
+            <div class="p-3.5 sm:p-4 rounded-2xl bg-amber-50/50 border border-amber-200/80 space-y-3">
                 <div class="text-xs font-extrabold text-amber-950 uppercase tracking-wider flex items-center gap-1.5">
                     <i class="fa-solid fa-layer-group text-amber-600"></i>
                     <span>Khung nghĩa & Ví dụ chung (Theo Loại từ)</span>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    <div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="min-w-0">
                         <label class="block text-xs font-bold text-slate-700 mb-1">Nghĩa tiếng Việt <span class="text-rose-600">*</span></label>
-                        <input type="text" id="inputVocabMeaning" required placeholder="VD: Coi như, xem như..." class="w-full px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-sm focus:outline-none focus:border-cyan-600">
+                        <input type="text" id="inputVocabMeaning" required placeholder="VD: Người đại diện, đại biểu..." class="w-full h-10 px-3.5 rounded-xl border border-slate-300 bg-white text-sm font-medium focus:outline-none focus:border-cyan-600">
                     </div>
-                    <div>
+                    <div class="min-w-0">
                         <label class="block text-xs font-bold text-slate-700 mb-1">
-                            <i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i>Gợi ý nhớ từ (Dùng chung cho loại từ này)
+                            <i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i>Gợi ý nhớ từ (Dùng chung)
                         </label>
-                        <textarea id="inputVocabHint" rows="2" placeholder="VD: Câu chuyện chiết tự, mẹo nhớ chung cho loại từ này..." class="w-full px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-xs focus:outline-none focus:border-cyan-600"></textarea>
+                        <textarea id="inputVocabHint" rows="2" placeholder="VD: Câu chuyện chiết tự, mẹo nhớ từ..." class="w-full p-2.5 rounded-xl border border-slate-300 bg-white text-sm focus:outline-none focus:border-cyan-600"></textarea>
                     </div>
                 </div>
 
-                <!-- Textarea dành riêng cho Ví dụ chung -->
-                <div>
+                <div class="min-w-0">
                     <label class="block text-xs font-bold text-slate-700 mb-1">
-                        <i class="fa-solid fa-quote-left text-emerald-600 mr-1"></i>Ví dụ chung (Không bắt buộc theo công thức riêng; mỗi câu 1 dòng)
+                        <i class="fa-solid fa-quote-left text-emerald-600 mr-1"></i>Ví dụ chung (Mỗi câu 1 dòng)
                     </label>
-                    <textarea id="inputVocabGeneralExample" rows="2" placeholder="VD:&#10;他是我们的代表。&#10;各位代表已经到达会场了。" class="font-hanzi w-full px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-xs sm:text-sm focus:outline-none focus:border-emerald-600"></textarea>
+                    <textarea id="inputVocabGeneralExample" rows="2" placeholder="VD:&#10;他是我们的代表。&#10;各位代表已经到达会场了。" class="font-hanzi w-full p-2.5 rounded-xl border border-slate-300 bg-white text-sm focus:outline-none focus:border-emerald-600"></textarea>
                 </div>
             </div>
 
             <!-- CÁCH DÙNG CỤ THỂ & VÍ DỤ LIÊN KẾT -->
             <div class="p-3.5 sm:p-4 rounded-2xl bg-cyan-50/50 border border-cyan-200 space-y-3">
                 <div class="flex flex-wrap items-center justify-between gap-2">
-                    <div>
+                    <div class="min-w-0 flex-1">
                         <label class="block text-xs font-extrabold text-cyan-950 uppercase tracking-wider">
-                            <i class="fa-solid fa-code-branch mr-1 text-cyan-600"></i>Các Cách dùng cụ thể & Ví dụ đi kèm
+                            <i class="fa-solid fa-code-branch mr-1 text-cyan-600"></i>Phân nhánh Cách dùng & Ví dụ
                         </label>
-                        <p class="text-[11px] text-slate-500 mt-0.5">
-                            Mỗi cách dùng gồm Công thức/Cấu trúc, Lưu ý riêng và các câu Ví dụ tương ứng.
+                        <p class="text-[11px] text-slate-500 mt-0.5 leading-snug">
+                            Nếu từ có cấu trúc hoặc cách dùng riêng, hãy bấm <strong>+ Thêm cách dùng</strong> bên cạnh.
                         </p>
                     </div>
-                    <button type="button" onclick="addDynamicUsageRow()" class="px-3 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700 active:scale-95 text-white text-xs font-extrabold shadow-sm transition flex items-center gap-1.5 cursor-pointer touch-manipulation">
+                    <button type="button" onclick="addDynamicUsageRow()" class="h-9 px-3 rounded-xl bg-cyan-600 hover:bg-cyan-700 active:scale-95 text-white text-xs font-extrabold shadow-sm transition flex items-center gap-1.5 shrink-0 cursor-pointer touch-manipulation">
                         <i class="fa-solid fa-plus"></i> <span>Thêm cách dùng</span>
                     </button>
                 </div>
 
-                <!-- Container động chứa các khối [Input: Công thức] + [Textarea: Ví dụ] -->
                 <div id="dynamicUsagesContainer" class="space-y-3"></div>
             </div>
 
-            <!-- TỪ ĐỒNG NGHĨA (HỖ TRỢ SỬA TRỰC TIẾP & PHÂN LOẠI 2 CẤP ĐỘ ĐỒNG NGHĨA) -->
+            <!-- TỪ ĐỒNG NGHĨA -->
             <div class="p-3.5 rounded-2xl bg-indigo-50/60 border border-indigo-200 space-y-3">
                 <div class="flex flex-wrap items-center justify-between gap-2">
                     <label class="block text-xs font-extrabold text-indigo-950">
                         <i class="fa-solid fa-equals mr-1 text-indigo-600"></i>Từ đồng nghĩa (Phân loại & So sánh cách dùng)
                     </label>
-                    <span id="synonymEditingNotice" class="hidden text-[11px] font-bold text-amber-700 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-lg animate-pulse">
-                        <i class="fa-solid fa-pen mr-1"></i>Đang sửa từ đồng nghĩa — Hãy bấm "+ Lưu Đồng Nghĩa" sau khi sửa xong
+                    <span id="synonymEditingNotice" class="hidden text-[11px] font-bold text-amber-700 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-lg">
+                        <i class="fa-solid fa-pen mr-1"></i>Đang sửa — Bấm "+ Lưu Đồng Nghĩa" khi xong
                     </span>
                 </div>
 
-                <!-- Danh sách các từ đồng nghĩa đã thêm (Có nút Sửa & Xóa) -->
                 <div id="modalSynonymsList" class="space-y-1.5"></div>
 
-                <!-- Bước 1: Tìm và chọn từ đồng nghĩa -->
                 <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
-                    <div class="sm:col-span-5 relative">
+                    <div class="sm:col-span-5 relative min-w-0">
                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-indigo-400 text-xs"></i>
-                        <input type="text" id="synonymSearchInput" oninput="filterVocabRelationSearch('synonym')" placeholder="Gõ Chữ Hán, Pinyin hoặc Nghĩa để tìm..." class="w-full pl-8 pr-2.5 py-2 rounded-xl border border-indigo-300 bg-white text-xs font-semibold focus:outline-none focus:border-indigo-600">
+                        <input type="text" id="synonymSearchInput" oninput="filterVocabRelationSearch('synonym')" placeholder="Gõ Chữ Hán, Pinyin, Nghĩa..." class="w-full h-10 pl-8 pr-2.5 rounded-xl border border-indigo-300 bg-white text-sm font-medium focus:outline-none focus:border-indigo-600">
                     </div>
-                    <select id="synonymTargetSelect" class="sm:col-span-7 px-2.5 py-2 rounded-xl border border-indigo-300 bg-white text-xs font-bold">
+                    <select id="synonymTargetSelect" class="sm:col-span-7 w-full h-10 px-2.5 rounded-xl border border-indigo-300 bg-white text-sm font-semibold min-w-0">
                         <option value="">-- Chọn từ trong danh sách lọc --</option>
                     </select>
                 </div>
 
-                <!-- Bước 2: Chọn loại đồng nghĩa (Hoàn toàn vs Tương đối) -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-0.5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <label class="flex items-start gap-2 p-2.5 rounded-xl border border-indigo-200 bg-white cursor-pointer hover:bg-indigo-50/50 transition">
-                        <input type="radio" name="synonymTypeRadio" id="synTypeRelative" value="PARTIAL" checked onchange="handleSynonymTypeChange('PARTIAL')" class="mt-0.5 accent-indigo-600 cursor-pointer">
-                        <div class="text-[11px] leading-snug">
-                            <div class="font-extrabold text-indigo-950">Đồng nghĩa tương đối / Có thể thay thế</div>
-                            <div class="text-slate-500">Bắt buộc nhập bảng so sánh / ghi chú khác biệt giữa 2 từ</div>
+                        <input type="radio" name="synonymTypeRadio" id="synTypeRelative" value="PARTIAL" checked onchange="handleSynonymTypeChange('PARTIAL')" class="mt-0.5 accent-indigo-600 cursor-pointer shrink-0">
+                        <div class="text-xs leading-snug min-w-0">
+                            <div class="font-extrabold text-indigo-950">Đồng nghĩa tương đối</div>
+                            <div class="text-[11px] text-slate-500">Có khác biệt về ngữ cảnh sử dụng</div>
                         </div>
                     </label>
                     <label class="flex items-start gap-2 p-2.5 rounded-xl border border-emerald-200 bg-white cursor-pointer hover:bg-emerald-50/50 transition">
-                        <input type="radio" name="synonymTypeRadio" id="synTypeExact" value="EXACT" onchange="handleSynonymTypeChange('EXACT')" class="mt-0.5 accent-emerald-600 cursor-pointer">
-                        <div class="text-[11px] leading-snug">
+                        <input type="radio" name="synonymTypeRadio" id="synTypeExact" value="EXACT" onchange="handleSynonymTypeChange('EXACT')" class="mt-0.5 accent-emerald-600 cursor-pointer shrink-0">
+                        <div class="text-xs leading-snug min-w-0">
                             <div class="font-extrabold text-emerald-900">Đồng nghĩa hoàn toàn</div>
-                            <div class="text-slate-500">Thay thế cho nhau mọi lúc (Tự động gán nhãn, ẩn ô so sánh)</div>
+                            <div class="text-[11px] text-slate-500">Thay thế cho nhau mọi lúc</div>
                         </div>
                     </label>
                 </div>
 
-                <!-- Bước 3: Ô nhập so sánh (Tự ẩn khi chọn Đồng nghĩa hoàn toàn) & Nút Thêm/Lưu -->
                 <div class="flex flex-col sm:flex-row gap-2">
-                    <input type="text" id="synonymComparisonInput" placeholder="Nhập so sánh cách sử dụng / ngữ cảnh khác biệt giữa 2 từ (Bắt buộc)..." class="flex-1 px-3 py-2 rounded-xl border border-indigo-300 bg-white text-xs focus:outline-none focus:border-indigo-600">
-                    <button type="button" id="btnAddOrUpdateSynonym" onclick="addSynonymLinkToForm()" class="py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-xs font-extrabold shadow-sm shrink-0 transition cursor-pointer">
+                    <input type="text" id="synonymComparisonInput" placeholder="Nhập so sánh cách sử dụng / ngữ cảnh khác biệt..." class="flex-1 min-w-0 h-10 px-3 rounded-xl border border-indigo-300 bg-white text-sm focus:outline-none focus:border-indigo-600">
+                    <button type="button" id="btnAddOrUpdateSynonym" onclick="addSynonymLinkToForm()" class="h-10 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-xs font-extrabold shadow-sm shrink-0 transition cursor-pointer">
                         + Thêm Đồng Nghĩa
                     </button>
                 </div>
             </div>
 
-            <!-- TỪ TRÁI NGHĨA (CÓ Ô GÕ TÌM KIẾM NHANH) -->
+            <!-- TỪ TRÁI NGHĨA -->
             <div class="p-3.5 rounded-2xl bg-rose-50/50 border border-rose-200 space-y-2.5">
                 <label class="block text-xs font-extrabold text-rose-950">
-                    <i class="fa-solid fa-arrows-left-right mr-1 text-rose-600"></i>Từ trái nghĩa (Gõ Chữ Hán / Pinyin / Nghĩa để tìm nhanh)
+                    <i class="fa-solid fa-arrows-left-right mr-1 text-rose-600"></i>Từ trái nghĩa
                 </label>
                 <div id="modalAntonymsList" class="flex flex-wrap gap-1.5"></div>
                 <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
-                    <div class="sm:col-span-5 relative">
+                    <div class="sm:col-span-5 relative min-w-0">
                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-rose-400 text-xs"></i>
-                        <input type="text" id="antonymSearchInput" oninput="filterVocabRelationSearch('antonym')" placeholder="Gõ từ cần tìm..." class="w-full pl-8 pr-2.5 py-2 rounded-xl border border-rose-300 bg-white text-xs font-semibold focus:outline-none focus:border-rose-600">
+                        <input type="text" id="antonymSearchInput" oninput="filterVocabRelationSearch('antonym')" placeholder="Gõ từ cần tìm..." class="w-full h-10 pl-8 pr-2.5 rounded-xl border border-rose-300 bg-white text-sm font-medium focus:outline-none focus:border-rose-600">
                     </div>
-                    <select id="antonymTargetSelect" class="sm:col-span-5 px-2.5 py-2 rounded-xl border border-rose-300 bg-white text-xs font-bold">
+                    <select id="antonymTargetSelect" class="sm:col-span-5 w-full h-10 px-2.5 rounded-xl border border-rose-300 bg-white text-sm font-semibold min-w-0">
                         <option value="">-- Chọn từ trái nghĩa --</option>
                     </select>
-                    <button type="button" onclick="addAntonymLinkToForm()" class="sm:col-span-2 py-2 px-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold">
+                    <button type="button" onclick="addAntonymLinkToForm()" class="sm:col-span-2 h-10 px-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-extrabold cursor-pointer">
                         + Thêm
                     </button>
                 </div>
             </div>
 
             <!-- BÀI TẬP ĐIỀN CHỖ TRỐNG THỦ CÔNG -->
-            <div>
+            <div class="min-w-0">
                 <label class="block text-xs font-bold text-slate-700 mb-1">
-                    Các câu bài tập điền vào chỗ trống thủ công (Tùy chọn — Nếu để trống hệ thống sẽ tự đục lỗ câu Ví dụ)
+                    Câu bài tập điền chỗ trống thủ công (Tùy chọn — Để trống sẽ tự đục lỗ câu Ví dụ)
                 </label>
-                <textarea id="inputVocabFibList" rows="2" placeholder="VD: 我 ___ 全体同学向老师表示感谢。" class="font-hanzi w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs focus:outline-none focus:border-cyan-600"></textarea>
+                <textarea id="inputVocabFibList" rows="2" placeholder="VD: 我 ___ 全体同学向老师表示感谢。" class="font-hanzi w-full p-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-cyan-600"></textarea>
             </div>
 
-            <!-- QUẢN LÝ BỘ TỪ (QUAN HỆ NHIỀU - NHIỀU) -->
-            <div class="p-3.5 rounded-2xl bg-slate-100 border border-slate-200 space-y-2">
+            <!-- QUẢN LÝ BỘ TỪ -->
+            <div class="p-3.5 rounded-2xl bg-slate-100 border border-slate-200 space-y-2.5">
                 <label class="block text-xs font-extrabold text-slate-800">
                     <i class="fa-solid fa-folder-tree mr-1 text-cyan-600"></i>Gán vào Bộ từ (1 từ có thể thuộc nhiều Bộ từ)
                 </label>
                 <div id="modalSelectedDecksContainer" class="flex flex-wrap gap-1.5 min-h-[28px]"></div>
                 <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
-                    <select id="modalDeckSelectDropdown" onchange="addDeckToModalSelection(this.value); this.value='';" class="sm:col-span-5 px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-bold">
+                    <select id="modalDeckSelectDropdown" onchange="addDeckToModalSelection(this.value); this.value='';" class="sm:col-span-5 w-full h-10 px-3 rounded-xl border border-slate-300 bg-white text-sm font-semibold min-w-0">
                         <option value="">+ Chọn Bộ từ có sẵn...</option>
                     </select>
-                    <input type="text" id="inputVocabFile" placeholder="Hoặc gõ tên Bộ từ mới tại đây..." class="sm:col-span-5 px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs">
-                    <button type="button" onclick="createAndSelectNewDeckInModal()" class="sm:col-span-2 py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold">
+                    <input type="text" id="inputVocabFile" placeholder="Hoặc gõ tên Bộ từ mới..." class="sm:col-span-5 w-full h-10 px-3 rounded-xl border border-slate-300 bg-white text-sm min-w-0">
+                    <button type="button" onclick="createAndSelectNewDeckInModal()" class="sm:col-span-2 h-10 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-extrabold cursor-pointer">
                         + Gán mới
                     </button>
                 </div>
             </div>
 
             <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
-                <button type="button" onclick="closeVocabModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold">Hủy</button>
-                <button type="submit" class="px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold shadow">
+                <button type="button" onclick="closeVocabModal()" class="h-10 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold cursor-pointer">Hủy</button>
+                <button type="submit" class="h-10 px-5 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-extrabold shadow cursor-pointer">
                     <i class="fa-solid fa-floppy-disk mr-1"></i> Lưu Từ Vựng
                 </button>
             </div>
@@ -2120,6 +2177,7 @@
                 example: String(g.example || '').trim(),
                 collections,
                 fileSource: collections[0],
+                passedQuiz: Boolean(g.passedQuiz || g.isMastered),
                 createdAt: Number(g.createdAt) || Date.now()
             };
         }
@@ -2139,6 +2197,7 @@
                 example: String(idm.example || '').trim(),
                 collections,
                 fileSource: collections[0],
+                passedQuiz: Boolean(idm.passedQuiz || idm.isMastered),
                 createdAt: Number(idm.createdAt) || Date.now()
             };
         }
@@ -3363,8 +3422,10 @@
             if (badgeIdiom) badgeIdiom.className = activeSubjectTab === 'idiom' ? activeBadgeClass : inactiveBadgeClass;
             if (badgeGrammar) badgeGrammar.className = activeSubjectTab === 'grammar' ? activeBadgeClass : inactiveBadgeClass;
 
-            // Đóng dropdown lọc Hiển thị nếu đang mở khi chuyển tab
+            // Đóng tất cả các dropdown lọc Hiển thị nếu đang mở khi chuyển tab
             document.getElementById('vocabDisplayDropdownPanel')?.classList.add('hidden');
+            document.getElementById('idiomDisplayDropdownPanel')?.classList.add('hidden');
+            document.getElementById('grammarDisplayDropdownPanel')?.classList.add('hidden');
 
             // Dùng cả class hidden lẫn inline style.display để triệt tiêu hoàn toàn xung đột với sm:flex của Tailwind
             const vocabCtrl = document.getElementById('vocabFlashcardControls');
@@ -3382,11 +3443,13 @@
             }
             if (idiomCtrl) {
                 idiomCtrl.classList.toggle('hidden', !showIdiomCtrl);
-                idiomCtrl.style.display = showIdiomCtrl ? 'flex' : 'none';
+                idiomCtrl.classList.toggle('grid', showIdiomCtrl);
+                idiomCtrl.style.display = showIdiomCtrl ? '' : 'none';
             }
             if (grammarCtrl) {
                 grammarCtrl.classList.toggle('hidden', !showGrammarCtrl);
-                grammarCtrl.style.display = showGrammarCtrl ? 'flex' : 'none';
+                grammarCtrl.classList.toggle('grid', showGrammarCtrl);
+                grammarCtrl.style.display = showGrammarCtrl ? '' : 'none';
             }
             if (quizBadge) {
                 quizBadge.classList.toggle('hidden', !isQuiz);
@@ -3438,26 +3501,68 @@
         };
 
         // ---------------------------------------------------------------------------
-        // 10. FLASHCARD TỪ VỰNG & BỘ LỌC DROPDOWN "HIỂN THỊ"
+        // 10. FLASHCARD TỪ VỰNG & BỘ LỌC DROPDOWN "HIỂN THỊ" CHO CẢ 3 TAB
         // ---------------------------------------------------------------------------
         window.toggleVocabDisplayDropdown = function(e) {
+            window.toggleSubjectDisplayDropdown('vocab', e);
+        };
+
+        window.toggleSubjectDisplayDropdown = function(subject, e) {
             if (e) e.stopPropagation();
-            const panel = document.getElementById('vocabDisplayDropdownPanel');
-            if (panel) panel.classList.toggle('hidden');
+            const map = {
+                vocab: 'vocabDisplayDropdownPanel',
+                idiom: 'idiomDisplayDropdownPanel',
+                grammar: 'grammarDisplayDropdownPanel'
+            };
+            Object.keys(map).forEach(k => {
+                const panel = document.getElementById(map[k]);
+                if (!panel) return;
+                if (k === subject) panel.classList.toggle('hidden');
+                else panel.classList.add('hidden');
+            });
         };
 
         document.addEventListener('click', () => {
-            const panel = document.getElementById('vocabDisplayDropdownPanel');
-            if (panel && !panel.classList.contains('hidden')) {
-                panel.classList.add('hidden');
-            }
+            ['vocabDisplayDropdownPanel', 'idiomDisplayDropdownPanel', 'grammarDisplayDropdownPanel'].forEach(id => {
+                const panel = document.getElementById(id);
+                if (panel && !panel.classList.contains('hidden')) panel.classList.add('hidden');
+            });
         });
 
         window.handleVocabDisplayCheckboxChange = function() {
-            const chkMastered = document.getElementById('chkFilterMastered')?.checked;
-            const chkNeedReview = document.getElementById('chkFilterNeedReview')?.checked;
-            const hiddenInput = document.getElementById('vocabMasteryFilter');
-            const labelEl = document.getElementById('vocabDisplayFilterLabel');
+            window.handleSubjectDisplayCheckboxChange('vocab');
+        };
+
+        window.handleSubjectDisplayCheckboxChange = function(subject) {
+            const cfg = {
+                vocab: {
+                    masteredId: 'chkFilterMastered',
+                    reviewId: 'chkFilterNeedReview',
+                    inputId: 'vocabMasteryFilter',
+                    labelId: 'vocabDisplayFilterLabel',
+                    rebuildFn: () => { currentVocabCardIndex = 0; rebuildVocabFlashcardDeck(); }
+                },
+                idiom: {
+                    masteredId: 'chkIdiomFilterMastered',
+                    reviewId: 'chkIdiomFilterNeedReview',
+                    inputId: 'idiomMasteryFilter',
+                    labelId: 'idiomDisplayFilterLabel',
+                    rebuildFn: () => { currentIdiomCardIndex = 0; if (typeof rebuildIdiomFlashcardDeck === 'function') rebuildIdiomFlashcardDeck(); }
+                },
+                grammar: {
+                    masteredId: 'chkGrammarFilterMastered',
+                    reviewId: 'chkGrammarFilterNeedReview',
+                    inputId: 'grammarMasteryFilter',
+                    labelId: 'grammarDisplayFilterLabel',
+                    rebuildFn: () => { currentGrammarCardIndex = 0; rebuildGrammarFlashcardDeck(); }
+                }
+            }[subject];
+
+            if (!cfg) return;
+            const chkMastered = document.getElementById(cfg.masteredId)?.checked;
+            const chkNeedReview = document.getElementById(cfg.reviewId)?.checked;
+            const hiddenInput = document.getElementById(cfg.inputId);
+            const labelEl = document.getElementById(cfg.labelId);
 
             let filterMode = 'ALL';
             let labelText = 'Hiển thị';
@@ -3475,7 +3580,7 @@
 
             if (hiddenInput) hiddenInput.value = filterMode;
             if (labelEl) labelEl.textContent = labelText;
-            resetVocabFlashcardIndex();
+            cfg.rebuildFn();
         };
 
         function rebuildVocabFlashcardDeck() {
@@ -3544,7 +3649,6 @@
             framesContainer.scrollTop = 0;
 
             framesContainer.innerHTML = card.senses.map((sense, idx) => {
-                // TẦNG 2: Tiêu đề Khung nghĩa (Theo Loại từ)
                 const headerTag = card.senses.length > 1
                     ? `<div class="text-[10px] uppercase tracking-wider font-extrabold text-amber-400 mb-1.5 flex items-center justify-between border-b border-white/10 pb-1">
                            <span><i class="fa-solid fa-layer-group mr-1"></i>Khung nghĩa #${idx + 1} (${escapeHtml(sense.pos || 'Chung')})</span>
@@ -3552,7 +3656,6 @@
                        </div>`
                     : '';
 
-                // TẦNG 2: Gợi ý nhớ từ (Dùng chung cho toàn bộ Khung nghĩa / Loại từ này)
                 const hintHtml = sense.hint
                     ? `<div class="mt-2.5 p-2.5 rounded-xl bg-amber-500/15 border border-amber-400/30 text-xs text-amber-100 leading-relaxed">
                            <span class="font-extrabold text-amber-300"><i class="fa-solid fa-lightbulb mr-1"></i>Gợi ý nhớ từ:</span>
@@ -3560,7 +3663,6 @@
                        </div>`
                     : '';
 
-                // TẦNG 2 (MỚI): Ví dụ chung (Nằm ngay dưới Gợi ý nhớ từ, trước vòng lặp Cách dùng Tầng 3)
                 const generalExLines = sense.generalExample
                     ? String(sense.generalExample).split(/[\n;；]+/).map(s => s.trim()).filter(Boolean)
                     : [];
@@ -3581,7 +3683,6 @@
                        </div>`
                     : '';
 
-                // TẦNG 3: Hiển thị phân cụm mảng usages (Công thức + Ví dụ riêng + Note riêng của cách dùng đó)
                 const usagesList = Array.isArray(sense.usages) ? sense.usages : [];
                 const hasMultipleUsages = usagesList.length > 1;
 
@@ -3660,8 +3761,9 @@
                        </div>`
                     : '';
 
+                // BỎ onclick="toggleVocabCardFlip()" ở khung cuộn mặt sau để lướt đọc trên Mobile không bị tự lật thẻ
                 return `
-                    <div onclick="toggleVocabCardFlip()" class="bg-white/10 hover:bg-white/15 transition rounded-2xl p-3.5 border border-white/15 text-left cursor-pointer">
+                    <div class="bg-white/10 rounded-2xl p-3.5 border border-white/15 text-left cursor-default">
                         ${headerTag}
                         <div class="text-sm sm:text-lg leading-relaxed break-words">${formatSingleVocabSenseLine(sense)}</div>
                         ${hintHtml}
@@ -3770,8 +3872,7 @@
         };
 
         // ---------------------------------------------------------------------------
-        // TINDER SWIPE ĐA NỀN TẢNG: ĐỒNG BỘ TOUCH (MOBILE) & MOUSE DRAG (DESKTOP)
-        // Khóa trượt màn hình ngang trên điện thoại (touch-action: pan-y + preventDefault)
+        // TINDER SWIPE ĐA NỀN TẢNG: KHÓA CẢM ỨNG LẬT/VUỐT KHI CUỘN NỘI DUNG MẶT SAU
         // ---------------------------------------------------------------------------
         function attachSwipeGestures(elementId, onSwipeLeft, onSwipeRight) {
             const el = document.getElementById(elementId);
@@ -3781,17 +3882,19 @@
             let startY = 0;
             let currentDx = 0;
             let currentDy = 0;
+            let maxMoveDist = 0;
             let isDragging = false;
             let isHorizontalSwipe = false;
-            let isScrollingBackContent = false;
+            let isInsideScrollableArea = false;
             let isAnimatingOut = false;
 
             el.style.touchAction = 'pan-y';
             el.classList.add('cursor-grab', 'active:cursor-grabbing');
 
-            // Chặn sự kiện click lật thẻ ngay ở pha Capture nếu người dùng vừa thực hiện thao tác kéo/vuốt
+            // Chặn sự kiện click lật thẻ ngay ở pha Capture nếu chạm vào vùng cuộn (.custom-scroll) hoặc vừa kéo/cuộn
             el.addEventListener('click', e => {
-                if (el.dataset.justSwiped === 'true') {
+                const touchedScrollZone = e.target && e.target.closest && e.target.closest('.custom-scroll, .synonym-tooltip-trigger');
+                if (touchedScrollZone || el.dataset.justSwiped === 'true' || el.dataset.suppressFlip === 'true') {
                     e.stopPropagation();
                     e.preventDefault();
                 }
@@ -3800,60 +3903,65 @@
             const startDrag = (clientX, clientY, targetEl, isTouch) => {
                 if (isAnimatingOut) return;
 
-                const flipInner = el.querySelector('.flip-card-inner');
-                const isFlipped = flipInner && flipInner.classList.contains('is-flipped');
-                const scrollContainer = targetEl && targetEl.closest ? targetEl.closest('.custom-scroll') : null;
-
-                // Trên cảm ứng điện thoại: Nếu đang ở mặt sau và chạm vào vùng cuộn (.custom-scroll) -> Ưu tiên cuộn dọc
-                if (isTouch && isFlipped && scrollContainer) {
-                    isScrollingBackContent = true;
+                // Nếu sự kiện bắt đầu bên trong vùng cuộn nội dung (.custom-scroll) -> VÔ HIỆU HÓA hoàn toàn vuốt & lật thẻ
+                const scrollContainer = targetEl && targetEl.closest ? targetEl.closest('.custom-scroll, .synonym-tooltip-trigger') : null;
+                if (scrollContainer) {
+                    isInsideScrollableArea = true;
                     isDragging = false;
                     isHorizontalSwipe = false;
+                    el.dataset.suppressFlip = 'true';
                     return;
                 }
 
-                isScrollingBackContent = false;
+                isInsideScrollableArea = false;
                 isHorizontalSwipe = false;
                 isDragging = true;
                 startX = clientX;
                 startY = clientY;
                 currentDx = 0;
                 currentDy = 0;
+                maxMoveDist = 0;
 
                 el.style.transition = 'none';
                 el.style.willChange = 'transform, opacity';
             };
 
             const moveDrag = (clientX, clientY, isTouch, rawEvent = null) => {
-                if (!isDragging || isScrollingBackContent || isAnimatingOut) return;
+                if (!isDragging || isInsideScrollableArea || isAnimatingOut) return;
 
                 currentDx = clientX - startX;
                 currentDy = clientY - startY;
+                maxMoveDist = Math.max(maxMoveDist, Math.hypot(currentDx, currentDy));
 
-                // Xác định hướng vuốt ngay khi vượt ngưỡng 8px
+                // Nếu người dùng di chuyển ngón tay > 10px -> Đánh dấu đang cuộn/kéo để khóa lật thẻ
+                if (maxMoveDist > 10) {
+                    el.dataset.justSwiped = 'true';
+                }
+
                 if (!isHorizontalSwipe && isTouch) {
-                    if (Math.abs(currentDy) > Math.abs(currentDx) * 1.2 && Math.abs(currentDy) > 10) {
-                        // Người dùng đang cuộn dọc -> Hủy kéo thẻ
-                        isScrollingBackContent = true;
+                    // Nếu hướng di chuyển dọc lớn hơn hoặc bằng hướng ngang -> Ưu tiên cuộn dọc hoàn toàn, hủy kéo thẻ
+                    if (Math.abs(currentDy) > Math.abs(currentDx) * 0.85 && Math.abs(currentDy) > 8) {
+                        isInsideScrollableArea = true;
                         isDragging = false;
-                        el.style.transition = 'transform 0.25s ease-out, opacity 0.2s ease';
+                        el.style.transition = 'transform 0.2s ease-out, opacity 0.2s ease';
                         el.style.transform = 'translate3d(0, 0, 0) rotate(0deg) scale(1)';
                         el.style.opacity = '1';
+                        setTimeout(() => { el.dataset.justSwiped = 'false'; }, 260);
                         return;
                     }
-                    if (Math.abs(currentDx) > Math.abs(currentDy) && Math.abs(currentDx) > 8) {
+                    // Chỉ kích hoạt vuốt ngang khi độ lệch ngang > 22px và gấp ít nhất 1.8 lần độ lệch dọc
+                    if (Math.abs(currentDx) > 22 && Math.abs(currentDx) > Math.abs(currentDy) * 1.8) {
                         isHorizontalSwipe = true;
                     }
                 }
 
-                // Nếu đang vuốt ngang trên điện thoại -> Khóa cuộn màn hình bằng preventDefault()
                 if (isTouch && isHorizontalSwipe && rawEvent && rawEvent.cancelable) {
                     rawEvent.preventDefault();
                 }
 
-                if (Math.abs(currentDx) > 8) {
+                if (isHorizontalSwipe || (!isTouch && Math.abs(currentDx) > 14)) {
                     const rotateDeg = Math.max(-15, Math.min(15, currentDx * 0.055));
-                    const dampedDy = isTouch ? 0 : (currentDy * 0.2);
+                    const dampedDy = isTouch ? 0 : (currentDy * 0.15);
                     const opacityVal = Math.max(0.55, 1 - Math.abs(currentDx) / (window.innerWidth * 1.1));
                     el.style.transform = `translate3d(${currentDx}px, ${dampedDy}px, 0) rotate(${rotateDeg}deg)`;
                     el.style.opacity = String(opacityVal);
@@ -3861,23 +3969,34 @@
             };
 
             const finishDrag = () => {
-                if (!isDragging || isScrollingBackContent || isAnimatingOut) {
+                if (isInsideScrollableArea) {
                     isDragging = false;
                     isHorizontalSwipe = false;
-                    isScrollingBackContent = false;
+                    isInsideScrollableArea = false;
+                    setTimeout(() => {
+                        el.dataset.suppressFlip = 'false';
+                        el.dataset.justSwiped = 'false';
+                    }, 220);
+                    return;
+                }
+
+                if (!isDragging || isAnimatingOut) {
+                    isDragging = false;
+                    isHorizontalSwipe = false;
                     return;
                 }
                 isDragging = false;
                 isHorizontalSwipe = false;
 
+                // Tăng ngưỡng vuốt ngang lên 95px và tỷ lệ ngang/dọc >= 2.0 để tránh vuốt nhầm khi lướt đọc
                 const isValidHorizontalSwipe =
-                    Math.abs(currentDx) > 85 &&
-                    Math.abs(currentDx) > Math.abs(currentDy) * 1.8;
+                    Math.abs(currentDx) > 95 &&
+                    Math.abs(currentDx) > Math.abs(currentDy) * 2.0;
 
                 if (isValidHorizontalSwipe) {
                     isAnimatingOut = true;
                     el.dataset.justSwiped = 'true';
-                    setTimeout(() => { el.dataset.justSwiped = 'false'; }, 360);
+                    setTimeout(() => { el.dataset.justSwiped = 'false'; }, 380);
 
                     const direction = currentDx < 0 ? -1 : 1;
                     const flyOutX = direction * (window.innerWidth * 0.85);
@@ -3908,9 +4027,9 @@
                         });
                     }, 230);
                 } else {
-                    if (Math.abs(currentDx) > 10 || Math.abs(currentDy) > 10) {
+                    if (maxMoveDist > 10) {
                         el.dataset.justSwiped = 'true';
-                        setTimeout(() => { el.dataset.justSwiped = 'false'; }, 220);
+                        setTimeout(() => { el.dataset.justSwiped = 'false'; }, 260);
                     }
                     el.style.transition = 'transform 0.32s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease';
                     el.style.transform = 'translate3d(0, 0, 0) rotate(0deg) scale(1)';
@@ -3918,7 +4037,6 @@
                 }
             };
 
-            // 1. Sự kiện Cảm ứng (Mobile / Tablet) - passive: false ở touchmove để gọi e.preventDefault() chống trượt màn hình
             el.addEventListener('touchstart', e => {
                 if (!e.touches?.[0]) return;
                 startDrag(e.touches[0].clientX, e.touches[0].clientY, e.target, true);
@@ -3932,7 +4050,6 @@
             el.addEventListener('touchend', finishDrag, { passive: true });
             el.addEventListener('touchcancel', finishDrag, { passive: true });
 
-            // 2. Sự kiện Chuột (Desktop / Laptop)
             el.addEventListener('mousedown', e => {
                 if (e.button !== 0) return;
                 startDrag(e.clientX, e.clientY, e.target, false);
@@ -4355,10 +4472,15 @@
         }
 
         // ---------------------------------------------------------------------------
-        // 12. FLASHCARD & KIỂM TRA NGỮ PHÁP
+        // 12. FLASHCARD & KIỂM TRA NGỮ PHÁP (HỖ TRỢ LỌC ĐÃ THUỘC / CẦN ÔN THÊM)
         // ---------------------------------------------------------------------------
         function rebuildGrammarFlashcardDeck() {
-            filteredGrammarCards = grammarList.filter(g => itemBelongsToCollection(g, null));
+            const masteryFilter = document.getElementById('grammarMasteryFilter')?.value || 'ALL';
+            let list = grammarList.filter(g => itemBelongsToCollection(g, null));
+            if (masteryFilter === 'NEED_REVIEW') list = list.filter(g => !g.passedQuiz);
+            else if (masteryFilter === 'MASTERED') list = list.filter(g => Boolean(g.passedQuiz));
+
+            filteredGrammarCards = list;
             if (currentGrammarCardIndex >= filteredGrammarCards.length) {
                 currentGrammarCardIndex = 0;
             }
@@ -4380,7 +4502,11 @@
 
             const item = filteredGrammarCards[currentGrammarCardIndex];
             document.getElementById('grammarCardPosition').textContent = `Ngữ pháp ${currentGrammarCardIndex + 1} / ${filteredGrammarCards.length}`;
-            document.getElementById('grammarCardFileSource').textContent = `Bộ từ: ${(item.collections || [item.fileSource]).join(', ')}`;
+            document.getElementById('grammarCardFileSource').innerHTML =
+                `<span>Bộ từ: ${escapeHtml((item.collections || [item.fileSource]).join(', '))}</span> ` +
+                (item.passedQuiz
+                    ? `<span class="ml-1.5 px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] font-extrabold"><i class="fa-solid fa-circle-check text-emerald-600"></i> Đã thuộc</span>`
+                    : `<span class="ml-1.5 px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-bold"><i class="fa-solid fa-clock-rotate-left text-amber-600"></i> Cần ôn</span>`);
 
             document.getElementById('grammarFrontTitle').textContent = item.pattern;
             document.getElementById('grammarBackTitle').textContent = item.pattern;
@@ -4442,7 +4568,6 @@
 
         function advanceToNextQuizQuestionIfAnswered() {
             if (activeTopCategory !== 'quiz') return false;
-            // Ngăn xung đột khi vừa nhấn Enter nộp bài tự luận
             if (Date.now() - lastQuizAnswerTimestamp < 220) return false;
 
             if (activeSubjectTab === 'vocab') {
@@ -4472,24 +4597,50 @@
             return false;
         }
 
-        // Gắn xử lý Double Tap trên mặt thẻ Flashcard (Mobile) để chuyển thẻ tiếp theo
+        // Gắn xử lý Chạm đơn / Chạm đúp trên mặt thẻ Flashcard (Bỏ qua hoàn toàn nếu chạm/cuộn trong .custom-scroll)
         function attachFlashcardDoubleTap(surfaceId, flipFn, nextCardFn) {
             const surface = document.getElementById(surfaceId);
             if (!surface) return;
 
             let lastTapTime = 0;
             let singleTapTimer = null;
+            let touchStartX = 0;
+            let touchStartY = 0;
+            let touchMoved = false;
+            let startedInScrollZone = false;
+
+            surface.addEventListener('touchstart', (e) => {
+                if (!e.touches?.[0]) return;
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                touchMoved = false;
+                // Nếu chạm bắt đầu bên trong vùng cuộn nội dung mặt sau -> Tuyệt đối không lật thẻ
+                startedInScrollZone = Boolean(
+                    e.target && e.target.closest && e.target.closest('.custom-scroll, .synonym-tooltip-trigger')
+                );
+            }, { passive: true });
+
+            surface.addEventListener('touchmove', (e) => {
+                if (!e.touches?.[0]) return;
+                const dx = e.touches[0].clientX - touchStartX;
+                const dy = e.touches[0].clientY - touchStartY;
+                if (Math.hypot(dx, dy) > 10) {
+                    touchMoved = true;
+                }
+            }, { passive: true });
 
             surface.addEventListener('touchend', (e) => {
-                if (surface.dataset.justSwiped === 'true') return;
-                // Không can thiệp nếu chạm vào nút tooltip đồng nghĩa hoặc đang cuộn nội dung mặt sau
-                if (e.target && e.target.closest && e.target.closest('.synonym-tooltip-trigger')) return;
+                // Nếu người dùng đang cuộn nội dung (.custom-scroll) hoặc vừa di chuyển ngón tay > 10px -> Vô hiệu hóa lật thẻ
+                if (startedInScrollZone || touchMoved || surface.dataset.justSwiped === 'true') {
+                    surface.dataset.suppressFlip = 'true';
+                    setTimeout(() => { surface.dataset.suppressFlip = 'false'; }, 260);
+                    return;
+                }
 
                 const now = Date.now();
                 const timeDiff = now - lastTapTime;
 
                 if (timeDiff > 0 && timeDiff < 280) {
-                    // Phát hiện Double Tap -> Hủy lật thẻ và chuyển sang thẻ tiếp theo
                     if (singleTapTimer) {
                         clearTimeout(singleTapTimer);
                         singleTapTimer = null;
@@ -4503,12 +4654,11 @@
                     nextCardFn(false);
                 } else {
                     lastTapTime = now;
-                    // Chặn onclick mặc định của trình duyệt trên cảm ứng để điều phối qua bộ đếm 230ms
                     surface.dataset.suppressFlip = 'true';
                     if (singleTapTimer) clearTimeout(singleTapTimer);
                     singleTapTimer = setTimeout(() => {
                         surface.dataset.suppressFlip = 'false';
-                        if (surface.dataset.justSwiped !== 'true') {
+                        if (!touchMoved && !startedInScrollZone && surface.dataset.justSwiped !== 'true') {
                             flipFn();
                         }
                         singleTapTimer = null;
@@ -4517,9 +4667,79 @@
             }, { passive: false });
         }
 
-        // Khởi tạo đồng bộ hiệu ứng cho Thành ngữ, Double Tap Quiz & Phím tắt Máy tính sau khi DOM tải xong
         window.addEventListener('DOMContentLoaded', () => {
-            // Đồng bộ hiệu ứng bay thẻ cho Thành ngữ
+            // Đồng bộ bộ lọc Hiển thị (Đã thuộc / Cần ôn thêm) cho Thành ngữ
+            window.rebuildIdiomFlashcardDeck = function() {
+                const masteryFilter = document.getElementById('idiomMasteryFilter')?.value || 'ALL';
+                let list = idiomList.filter(i => itemBelongsToCollection(i, null));
+                if (masteryFilter === 'NEED_REVIEW') list = list.filter(i => !i.passedQuiz);
+                else if (masteryFilter === 'MASTERED') list = list.filter(i => Boolean(i.passedQuiz));
+
+                filteredIdiomCards = list;
+                if (currentIdiomCardIndex >= filteredIdiomCards.length) {
+                    currentIdiomCardIndex = 0;
+                }
+                if (typeof renderCurrentIdiomFlashcard === 'function') {
+                    renderCurrentIdiomFlashcard();
+                }
+                const item = filteredIdiomCards[currentIdiomCardIndex];
+                const deckEl = document.getElementById('idiomCardDeckSource');
+                if (item && deckEl) {
+                    deckEl.innerHTML =
+                        `<span>Bộ từ: ${escapeHtml((item.collections || [item.fileSource]).join(', '))}</span> ` +
+                        (item.passedQuiz
+                            ? `<span class="ml-1.5 px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] font-extrabold"><i class="fa-solid fa-circle-check text-emerald-600"></i> Đã thuộc</span>`
+                            : `<span class="ml-1.5 px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-bold"><i class="fa-solid fa-clock-rotate-left text-amber-600"></i> Cần ôn</span>`);
+                }
+            };
+
+            // Đồng bộ hàm tạo dòng Cách dùng động trong Modal (Loại bỏ hoàn toàn chữ "Tầng 3" & chuẩn hóa cỡ chữ Mobile)
+            window.addDynamicUsageRow = function(formulaVal = '', examplesVal = '', noteVal = '') {
+                const container = document.getElementById('dynamicUsagesContainer');
+                if (!container) return;
+
+                const rowIndex = container.querySelectorAll('.dynamic-usage-row').length + 1;
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'dynamic-usage-row p-3 sm:p-3.5 rounded-2xl bg-white border border-cyan-200 shadow-sm space-y-2.5';
+
+                const exText = Array.isArray(examplesVal) ? examplesVal.join('\n') : String(examplesVal || '');
+
+                rowDiv.innerHTML = `
+                    <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-1.5">
+                        <span class="usage-row-title text-xs font-extrabold text-cyan-800 uppercase tracking-wide flex items-center gap-1.5">
+                            <i class="fa-solid fa-code-branch text-cyan-600"></i>
+                            <span>Cách dùng #${rowIndex}</span>
+                        </span>
+                        <button type="button" onclick="this.closest('.dynamic-usage-row').remove(); renumberDynamicUsageRows();" class="h-7 px-2.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold transition flex items-center gap-1 cursor-pointer">
+                            <i class="fa-solid fa-trash-can text-[10px]"></i> <span>Xóa</span>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <div class="min-w-0">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Công thức / Cấu trúc cách dùng</label>
+                            <input type="text" value="${escapeHtmlAttr(formulaVal)}" placeholder="VD: A + 代表 + B + Động từ..." class="usage-formula-input font-hanzi w-full h-10 px-3 rounded-xl border border-slate-300 text-sm font-semibold focus:outline-none focus:border-cyan-600">
+                        </div>
+                        <div class="min-w-0">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Lưu ý riêng cho cách dùng này</label>
+                            <input type="text" value="${escapeHtmlAttr(noteVal)}" placeholder="VD: Thay mặt tập thể, không mang 了..." class="usage-note-input w-full h-10 px-3 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-cyan-600">
+                        </div>
+                    </div>
+                    <div class="min-w-0">
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Ví dụ tương ứng (Mỗi câu 1 dòng)</label>
+                        <textarea rows="2" placeholder="VD: 我代表公司欢迎你。" class="usage-examples-input font-hanzi w-full p-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-cyan-600">${escapeHtml(exText)}</textarea>
+                    </div>
+                `;
+                container.appendChild(rowDiv);
+            };
+
+            window.renumberDynamicUsageRows = function() {
+                const rows = document.querySelectorAll('#dynamicUsagesContainer .dynamic-usage-row');
+                rows.forEach((row, idx) => {
+                    const titleSpan = row.querySelector('.usage-row-title span');
+                    if (titleSpan) titleSpan.textContent = `Cách dùng #${idx + 1}`;
+                });
+            };
+
             window.toggleIdiomCardFlip = function() {
                 const surface = document.getElementById('idiomTouchSurface');
                 if (surface && (surface.dataset.justSwiped === 'true' || surface.dataset.suppressFlip === 'true')) return;
@@ -4556,12 +4776,12 @@
                 }
             };
 
-            // 1. Gắn Double Tap cho 3 mặt thẻ Flashcard trên Mobile
+            // 1. Gắn Chạm đơn / Chạm đúp thông minh cho cả 3 mặt thẻ Flashcard
             attachFlashcardDoubleTap('vocabTouchSurface', () => document.getElementById('vocabFlipInner')?.classList.toggle('is-flipped'), window.nextVocabCard);
             attachFlashcardDoubleTap('grammarTouchSurface', () => document.getElementById('grammarFlipInner')?.classList.toggle('is-flipped'), window.nextGrammarCard);
             attachFlashcardDoubleTap('idiomTouchSurface', () => document.getElementById('idiomFlipInner')?.classList.toggle('is-flipped'), window.nextIdiomCard);
 
-            // 2. Gắn Double Tap trên màn hình khi đang ở chế độ Quiz (Đã trả lời xong 1 câu -> Chuyển câu tiếp theo)
+            // 2. Gắn Double Tap trên màn hình khi đang ở chế độ Quiz
             let lastQuizTouchTime = 0;
             document.addEventListener('touchend', (e) => {
                 if (activeTopCategory !== 'quiz' || isAnyModalOpen()) return;
@@ -4579,14 +4799,14 @@
                 }
             }, { passive: false });
 
-            // 3. Ghi nhận thời điểm vừa submit câu trả lời Quiz (tránh phím Enter nộp bài nhảy luôn sang câu kế)
+            // 3. Ghi nhận thời điểm vừa submit câu trả lời Quiz
             document.addEventListener('submit', () => {
                 if (activeTopCategory === 'quiz') {
                     lastQuizAnswerTimestamp = Date.now();
                 }
             }, true);
 
-            // 4. Phím tắt trên Máy tính cho chế độ Quiz (Enter, Space, ArrowRight khi đã hiện bảng Feedback)
+            // 4. Phím tắt trên Máy tính cho chế độ Quiz
             document.addEventListener('keydown', (e) => {
                 if (activeTopCategory !== 'quiz' || isAnyModalOpen()) return;
                 if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowRight') {
@@ -4691,7 +4911,13 @@
             grammarQuizAnswered = true;
             const q = grammarQuizQuestions[grammarQuizCurrentIndex];
             const isCorrect = (q.options[idx] === q.correctAnswer);
-            if (isCorrect) grammarQuizScore++;
+            if (isCorrect) {
+                grammarQuizScore++;
+                if (q.item) {
+                    q.item.passedQuiz = true;
+                    persistCurrentAccountData();
+                }
+            }
 
             q.options.forEach((opt, i) => {
                 const btn = document.getElementById(`gramOpt_${i}`);
@@ -6445,7 +6671,7 @@
 
         window.executeBulkMasteryStatus = async function(markMastered) {
             if (selectedBulkIds.size === 0) {
-                return showToast("Hãy tích chọn các từ vựng cần đánh dấu trạng thái!", "info");
+                return showToast("Hãy tích chọn các mục cần đánh dấu trạng thái!", "info");
             }
             const targetHanziSet = new Set();
             let count = 0;
@@ -6467,6 +6693,20 @@
                     v.passedFIB = markMastered;
                     v.passedTyping = markMastered;
                     v.passedSynonym = markMastered;
+                }
+            });
+
+            grammarList.forEach(g => {
+                if (selectedBulkIds.has(g.id)) {
+                    g.passedQuiz = markMastered;
+                    count++;
+                }
+            });
+
+            idiomList.forEach(i => {
+                if (selectedBulkIds.has(i.id)) {
+                    i.passedQuiz = markMastered;
+                    count++;
                 }
             });
 
