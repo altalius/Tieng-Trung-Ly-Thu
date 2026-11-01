@@ -22,6 +22,7 @@
 
     <style>
         :root {
+            --safe-top: env(safe-area-inset-top, 0px);
             --safe-bottom: env(safe-area-inset-bottom, 0px);
         }
         *, *::before, *::after {
@@ -35,6 +36,11 @@
             padding: 0;
             -webkit-tap-highlight-color: transparent;
             overscroll-behavior-y: none;
+            overflow-x: hidden;
+        }
+        /* Đẩy Header xuống khỏi vùng Dynamic Island / Notch khi cài PWA trên iPhone */
+        .header-safe-top {
+            padding-top: max(env(safe-area-inset-top, 0px), 10px);
         }
         /* Hệ thống Font chữ Hán Offline sẵn có trên mọi thiết bị Windows / macOS / iOS / Android */
         .font-hanzi {
@@ -43,13 +49,14 @@
         .font-calligraphy {
             font-family: 'Ma Shan Zheng', 'KaiTi', 'STKaiti', 'BiauKai', 'Noto Sans SC', serif;
         }
-.font-condensed-title {
+        .font-condensed-title {
             font-family: 'Oswald', 'Inter', sans-serif;
         }
-        /* Hiệu ứng lật thẻ Flashcard 3D mượt trên cả iOS, Android và PC */
+        /* Hiệu ứng lật thẻ Flashcard 3D & Khóa trượt ngang màn hình trên Mobile (touch-action: pan-y) */
         .perspective-1000 {
             perspective: 1200px;
             -webkit-perspective: 1200px;
+            touch-action: pan-y;
         }
         .flip-card-inner {
             position: relative;
@@ -58,6 +65,7 @@
             transition: transform 0.52s cubic-bezier(0.4, 0, 0.2, 1);
             transform-style: preserve-3d;
             -webkit-transform-style: preserve-3d;
+            touch-action: pan-y;
         }
         .flip-card-inner.is-flipped {
             transform: rotateY(180deg);
@@ -100,7 +108,7 @@
         .pb-safe-mobile {
             padding-bottom: calc(5.2rem + var(--safe-bottom));
         }
-.bottom-nav-safe {
+        .bottom-nav-safe {
             padding-bottom: var(--safe-bottom);
         }
         /* Điện thoại (< 768px): Ẩn thanh danh mục trên Header, chỉ giữ thanh dưới đáy */
@@ -194,8 +202,8 @@
     <!-- 2. GIAO DIỆN CHÍNH CỦA WEB (MỞ TRỰC TIẾP VỚI USER MẶC ĐỊNH "HỌC VIÊN")   -->
     <!-- ======================================================================= -->
     <div id="appScreen" class="flex-1 flex flex-col min-h-screen pb-safe-mobile md:pb-6">
-<!-- Thanh Điều Hướng Trên Cùng (Luôn hiển thị 3 Danh mục chính: Ôn luyện | Kiểm tra | Quản lý dữ liệu) -->
-        <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <!-- Thanh Điều Hướng Trên Cùng (Có vùng đệm Safe Area chống che bởi Dynamic Island / Notch trên iOS) -->
+        <header class="header-safe-top bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
             <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
                 <div class="flex flex-wrap items-center justify-between py-2.5 sm:py-3 gap-2">
                     <!-- Logo & Tên Thương Hiệu Tiếng Trung Lý Thú (Giữ nguyên cố định, bấm vào về trang Ôn luyện) -->
@@ -1015,111 +1023,167 @@
                     </div>
                 </div>
 
-                <!-- KHỐI DƯỚI: BẢNG DỮ LIỆU ĐỂ TỰ Ý SỬA, THÊM THỦ CÔNG, SẮP XẾP THEO FILE/CHỮ HÁN & CHỌN NHIỀU ĐỂ XÓA -->
-                <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-                    <!-- Thanh công cụ quản lý bảng dữ liệu -->
-                    <div class="p-4 sm:p-5 border-b border-slate-200 space-y-4">
-<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-    <div class="grid grid-cols-3 sm:flex items-center gap-2">
-        <button type="button" id="dataTabVocabBtn" onclick="switchDataTableTab('vocab')" class="px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 text-white shadow-sm transition">
-            <i class="fa-solid fa-font mr-1"></i> Từ Vựng (<span id="tableVocabCount">0</span>)
-        </button>
-        <button type="button" id="dataTabGrammarBtn" onclick="switchDataTableTab('grammar')" class="px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
-            <i class="fa-solid fa-book mr-1"></i> Ngữ Pháp (<span id="tableGrammarCount">0</span>)
-        </button>
-        <button type="button" id="dataTabIdiomBtn" onclick="switchDataTableTab('idiom')" class="px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
-            <i class="fa-solid fa-scroll mr-1"></i> Thành Ngữ (<span id="tableIdiomCount">0</span>)
-        </button>
-    </div>
+                <!-- KHỐI DƯỚI: QUẢN LÝ DỮ LIỆU TỐI ƯU MOBILE 100% (MẶC ĐỊNH CHỈ HIỆN 3 TABS, BẤM VÀO MỚI XỔ RA) -->
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-visible">
+                    <!-- 1. THANH 3 TABS MẶC ĐỊNH: TỪ VỰNG | NGỮ PHÁP | THÀNH NGỮ -->
+                    <div class="p-3 sm:p-4">
+                        <div class="flex items-center justify-between mb-2 px-1">
+                            <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-500">
+                                <i class="fa-solid fa-layer-group mr-1 text-cyan-600"></i>Chọn danh mục để mở bảng dữ liệu & công cụ:
+                            </span>
+                            <span id="dataTabCollapseHint" class="hidden text-[11px] font-bold text-cyan-700 cursor-pointer hover:underline" onclick="collapseDataManagementWorkspace()">
+                                <i class="fa-solid fa-chevron-up mr-0.5"></i>Thu gọn bảng
+                            </span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button type="button" id="dataTabVocabBtn" onclick="switchDataTableTab('vocab')" class="py-3 px-2 sm:px-4 rounded-2xl text-xs sm:text-sm font-extrabold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 border border-slate-200 cursor-pointer touch-manipulation">
+                                <div class="flex items-center gap-1.5">
+                                    <i class="fa-solid fa-font text-cyan-600"></i>
+                                    <span>Từ Vựng</span>
+                                </div>
+                                <span id="tableVocabCount" class="px-2 py-0.5 rounded-full text-[10px] sm:text-xs bg-white text-slate-700 font-black shadow-sm">0</span>
+                            </button>
 
-<!-- Các nút Thêm thủ công (Công thức Loại từ đã được đồng bộ ngầm tự động) -->
-    <div class="flex flex-wrap items-center gap-2">
-        <button type="button" onclick="openVocabModal()" class="px-3 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5">
-            <i class="fa-solid fa-plus"></i> Thêm Từ Vựng
-        </button>
-        <button type="button" onclick="openGrammarModal()" class="px-3 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5">
-            <i class="fa-solid fa-plus"></i> Thêm Ngữ Pháp
-        </button>
-        <button type="button" onclick="openIdiomModal()" class="px-3 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5">
-            <i class="fa-solid fa-plus"></i> Thêm Thành Ngữ
-        </button>
-    </div>
-</div>
+                            <button type="button" id="dataTabGrammarBtn" onclick="switchDataTableTab('grammar')" class="py-3 px-2 sm:px-4 rounded-2xl text-xs sm:text-sm font-extrabold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 border border-slate-200 cursor-pointer touch-manipulation">
+                                <div class="flex items-center gap-1.5">
+                                    <i class="fa-solid fa-book text-indigo-600"></i>
+                                    <span>Ngữ Pháp</span>
+                                </div>
+                                <span id="tableGrammarCount" class="px-2 py-0.5 rounded-full text-[10px] sm:text-xs bg-white text-slate-700 font-black shadow-sm">0</span>
+                            </button>
 
-<!-- THANH ĐIỀU CHỈNH NHÓM HÀNG LOẠT (THÊM/BỚT BỘ TỪ, ĐÁNH DẤU, XÓA) -->
-<div class="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 flex flex-col xl:flex-row xl:items-center justify-between gap-3">
-    <div class="flex items-center gap-2 text-xs font-extrabold text-slate-800">
-        <span class="w-7 h-7 rounded-lg bg-cyan-600 text-white flex items-center justify-center shadow-sm">
-            <i class="fa-solid fa-layer-group"></i>
-        </span>
-        <span>Điều chỉnh nhóm đang chọn: <strong id="selectedCountBadge" class="px-2 py-0.5 rounded-md bg-slate-900 text-white">0</strong> mục</span>
-    </div>
-
-    <div class="flex flex-wrap items-center gap-2">
-        <!-- 1. Nhóm thao tác Thêm / Bớt Bộ từ -->
-        <div class="flex flex-wrap items-center gap-1.5 bg-white p-1.5 rounded-xl border border-slate-300 shadow-sm">
-            <select id="bulkDeckSelect" onchange="handleBulkDeckSelectChange(this)" class="text-xs font-bold text-slate-800 bg-transparent focus:outline-none px-2 py-1">
-                <option value="">-- Chọn Bộ từ --</option>
-                <option value="__CREATE_NEW__">+ Tạo Bộ từ mới ngay...</option>
-            </select>
-            <button type="button" onclick="executeBulkAssignCollection('ADD')" title="Thêm các từ đã chọn vào Bộ từ này (Giữ nguyên các bộ từ cũ)" class="px-2.5 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold transition flex items-center gap-1">
-                <i class="fa-solid fa-folder-plus"></i> + Thêm vào Bộ
-            </button>
-            <button type="button" onclick="executeBulkAssignCollection('REMOVE')" title="Gỡ các từ đã chọn khỏi Bộ từ này (Nếu bộ từ trống sẽ tự xóa)" class="px-2.5 py-1.5 rounded-lg bg-amber-100 hover:bg-amber-600 text-amber-900 hover:text-white border border-amber-300 text-xs font-bold transition flex items-center gap-1">
-                <i class="fa-solid fa-folder-minus"></i> - Bớt khỏi Bộ
-            </button>
-        </div>
-
-        <!-- 2. Nhóm thao tác Đánh dấu tiến độ -->
-        <div class="flex items-center gap-1.5">
-            <button type="button" onclick="executeBulkMasteryStatus(true)" class="px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white border border-emerald-200 text-xs font-bold transition flex items-center gap-1.5">
-                <i class="fa-solid fa-check-double"></i> Đánh dấu: Đã thuộc
-            </button>
-            <button type="button" onclick="executeBulkMasteryStatus(false)" class="px-3 py-2 rounded-xl bg-amber-50 hover:bg-amber-500 text-amber-800 hover:text-white border border-amber-200 text-xs font-bold transition flex items-center gap-1.5">
-                <i class="fa-solid fa-rotate-left"></i> Đánh dấu: Cần ôn thêm
-            </button>
-        </div>
-
-        <!-- 3. Xóa nhóm đã chọn -->
-        <button type="button" id="bulkDeleteBtn" onclick="openBulkDeleteConfirmModal()" class="px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white border border-rose-200 text-xs font-bold transition flex items-center gap-1.5">
-            <i class="fa-solid fa-trash-can"></i> Xóa nhóm chọn
-        </button>
-    </div>
-</div>
-
-                        <!-- Bộ tìm kiếm và Sắp xếp theo File đã tải hoặc Chữ Hán -->
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 pt-1">
-                            <div class="relative">
-                                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                                <input type="text" id="dataSearchInput" oninput="renderDataManagementTable()" placeholder="Tìm Chữ Hán, Pinyin, Nghĩa, File..." class="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-300 text-xs font-medium focus:outline-none focus:border-cyan-600">
-                            </div>
-
-                            <div class="flex items-center gap-2">
-                                <label class="text-xs font-bold text-slate-600 shrink-0"><i class="fa-solid fa-arrow-down-a-z mr-1 text-cyan-600"></i>Xếp:</label>
-<select id="dataSortSelect" onchange="renderDataManagementTable()" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:border-cyan-600">
-                                    <option value="FILE_ASC">Theo các File đã tải (Cũ -> Mới)</option>
-                                    <option value="FILE_DESC">Theo các File đã tải (Mới -> Cũ)</option>
-                                    <option value="HANZI_ASC">Theo Chữ Hán (Nhóm từ giống nhau)</option>
-                                    <option value="PINYIN_ASC">Theo Pinyin chữ cái (A -> Z)</option>
-                                    <option value="STATUS">Theo Trạng thái (Cần ôn -> Đã thuộc)</option>
-                                </select>
-                            </div>
-
-                            <div class="flex items-center gap-2">
-                                <label class="text-xs font-bold text-slate-600 shrink-0"><i class="fa-solid fa-filter mr-1 text-emerald-600"></i>File:</label>
-                                <select id="dataTableFileFilter" onchange="renderDataManagementTable()" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:border-cyan-600">
-                                    <option value="ALL">Tất cả các file</option>
-                                </select>
-                            </div>
+                            <button type="button" id="dataTabIdiomBtn" onclick="switchDataTableTab('idiom')" class="py-3 px-2 sm:px-4 rounded-2xl text-xs sm:text-sm font-extrabold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 border border-slate-200 cursor-pointer touch-manipulation">
+                                <div class="flex items-center gap-1.5">
+                                    <i class="fa-solid fa-scroll text-amber-600"></i>
+                                    <span>Thành Ngữ</span>
+                                </div>
+                                <span id="tableIdiomCount" class="px-2 py-0.5 rounded-full text-[10px] sm:text-xs bg-white text-slate-700 font-black shadow-sm">0</span>
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Bảng dữ liệu chi tiết có ô vuông chọn nhiều dòng -->
-                    <div class="overflow-x-auto max-h-[540px] custom-scroll">
-                        <table class="w-full text-left border-collapse text-xs min-w-[640px]">
-                            <thead id="dataTableHead" class="bg-slate-100 text-slate-700 sticky top-0 z-10 border-b border-slate-200 uppercase tracking-wider text-[11px]"></thead>
-                            <tbody id="dataTableBody" class="divide-y divide-slate-200 bg-white"></tbody>
-                        </table>
+                    <!-- 2. KHÔNG GIAN LÀM VIỆC (MẶC ĐỊNH ẨN - CHỈ XỔ RA KHI BẤM VÀO 1 TRONG 3 TABS) -->
+                    <div id="dataManagementWorkspace" class="hidden border-t border-slate-200">
+                        <!-- THANH CÔNG CỤ (TOOLBAR) GỌN GÀNG TRÊN CÙNG -->
+                        <div class="p-3 sm:p-4 bg-slate-50/70 border-b border-slate-200 space-y-3">
+                            <!-- Hàng 1: Nút [+ Thêm mới], Tìm kiếm nhanh, Dropdown Sắp xếp & Dropdown Bộ từ (Chọn nhiều A-Z) -->
+                            <div class="flex flex-wrap items-center gap-2">
+                                <!-- Nút Thêm mới tương ứng với Tab đang mở -->
+                                <button type="button" id="dataDynamicAddBtn" onclick="triggerDataTabAddNew()" class="min-h-[40px] px-3.5 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700 active:scale-95 text-white text-xs font-extrabold shadow-sm transition flex items-center gap-1.5 shrink-0 cursor-pointer touch-manipulation">
+                                    <i class="fa-solid fa-plus"></i>
+                                    <span id="dataDynamicAddBtnLabel">Thêm mới</span>
+                                </button>
+
+                                <!-- Ô tìm kiếm nhanh -->
+                                <div class="relative flex-1 min-w-[140px]">
+                                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                                    <input type="text" id="dataSearchInput" oninput="renderDataManagementTable()" placeholder="Tìm nhanh..." class="w-full min-h-[40px] pl-8 pr-2.5 py-1.5 rounded-xl border border-slate-300 bg-white text-xs font-medium focus:outline-none focus:border-cyan-600">
+                                </div>
+
+                                <!-- Dropdown Sắp xếp (Bấm Mặc định lần 2 tự đảo chiều A-Z ⇄ Z-A) -->
+                                <div class="relative">
+                                    <button type="button" id="dataSortDropdownBtn" onclick="toggleDataSortDropdown(event)" class="min-h-[40px] px-3 py-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-slate-800 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer touch-manipulation">
+                                        <i class="fa-solid fa-arrow-down-a-z text-cyan-600"></i>
+                                        <span id="dataSortCurrentLabel">Mặc định (A-Z)</span>
+                                        <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
+                                    </button>
+                                    <div id="dataSortDropdownPanel" onclick="event.stopPropagation()" class="hidden absolute right-0 mt-1.5 w-48 bg-white text-slate-800 rounded-2xl shadow-2xl border border-slate-200 z-50 p-1.5 space-y-1">
+                                        <button type="button" id="sortOptDefaultBtn" onclick="selectDataSortMode('DEFAULT')" class="w-full px-3 py-2 rounded-xl text-left text-xs font-extrabold flex items-center justify-between bg-cyan-50 text-cyan-900 transition cursor-pointer">
+                                            <span id="sortOptDefaultText">Mặc định (A-Z)</span>
+                                            <i class="fa-solid fa-arrows-up-down text-cyan-600 text-[11px]"></i>
+                                        </button>
+                                        <button type="button" id="sortOptStatusBtn" onclick="selectDataSortMode('STATUS')" class="w-full px-3 py-2 rounded-xl text-left text-xs font-bold flex items-center justify-between text-slate-700 hover:bg-slate-100 transition cursor-pointer">
+                                            <span>Trạng thái</span>
+                                            <i class="fa-solid fa-circle-check text-emerald-500 text-[11px]"></i>
+                                        </button>
+                                        <button type="button" id="sortOptDeckBtn" onclick="selectDataSortMode('DECK')" class="w-full px-3 py-2 rounded-xl text-left text-xs font-bold flex items-center justify-between text-slate-700 hover:bg-slate-100 transition cursor-pointer">
+                                            <span>Bộ từ</span>
+                                            <i class="fa-solid fa-folder-tree text-amber-500 text-[11px]"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Dropdown Lọc Bộ từ (Hỗ trợ chọn nhiều, tự sắp xếp A-Z) -->
+                                <div class="relative">
+                                    <button type="button" id="dataDeckFilterBtn" onclick="toggleDataDeckFilterDropdown(event)" class="min-h-[40px] px-3 py-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-slate-800 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer touch-manipulation">
+                                        <i class="fa-solid fa-filter text-emerald-600"></i>
+                                        <span id="dataDeckFilterSummary" class="max-w-[120px] truncate">Bộ từ: Tất cả</span>
+                                        <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
+                                    </button>
+                                    <div id="dataDeckFilterPanel" onclick="event.stopPropagation()" class="hidden absolute right-0 mt-1.5 w-64 sm:w-72 bg-white text-slate-800 rounded-2xl shadow-2xl border border-slate-200 z-50 p-3 space-y-2">
+                                        <div class="flex items-center justify-between border-b border-slate-100 pb-1.5">
+                                            <span class="text-[11px] font-extrabold text-slate-700 uppercase">Lọc Bộ từ (A-Z)</span>
+                                            <div class="flex items-center gap-1.5">
+                                                <button type="button" onclick="clearDataTableDeckFilter()" class="text-[11px] font-bold text-cyan-700 hover:underline cursor-pointer">Tất cả</button>
+                                            </div>
+                                        </div>
+                                        <div id="dataDeckFilterCheckboxList" class="max-h-56 overflow-y-auto custom-scroll space-y-1 pr-1"></div>
+                                    </div>
+                                </div>
+                                <!-- Giữ select ẩn để tương thích ngược với các hàm cũ -->
+                                <select id="dataTableFileFilter" class="hidden"><option value="ALL">ALL</option></select>
+                            </div>
+
+                            <!-- Hàng 2: Khối Điều chỉnh nhóm (Bulk Actions: Gán bộ từ, Trạng thái, Xóa) -->
+                            <div class="bg-white border border-slate-200 rounded-2xl p-2.5 sm:p-3 flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
+                                <div class="flex items-center justify-between lg:justify-start gap-2 text-xs font-extrabold text-slate-800">
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="w-6 h-6 rounded-lg bg-slate-900 text-white flex items-center justify-center text-[11px]">
+                                            <i class="fa-solid fa-check-double"></i>
+                                        </span>
+                                        <span>Đang chọn: <strong id="selectedCountBadge" class="px-1.5 py-0.5 rounded bg-cyan-600 text-white">0</strong></span>
+                                    </div>
+                                    <button type="button" onclick="openBulkDeleteConfirmModal()" id="bulkDeleteBtn" class="lg:hidden px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white border border-rose-200 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer">
+                                        <i class="fa-solid fa-trash-can"></i> Xóa
+                                    </button>
+                                </div>
+
+                                <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                                    <!-- Gán / Bớt Bộ từ -->
+                                    <div class="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-300 w-full sm:w-auto">
+                                        <select id="bulkDeckSelect" onchange="handleBulkDeckSelectChange(this)" class="flex-1 sm:flex-initial text-xs font-bold text-slate-800 bg-transparent focus:outline-none px-1.5 py-1 max-w-[140px] sm:max-w-[160px]">
+                                            <option value="">-- Bộ từ --</option>
+                                            <option value="__CREATE_NEW__">+ Tạo Bộ mới...</option>
+                                        </select>
+                                        <button type="button" onclick="executeBulkAssignCollection('ADD')" title="Thêm vào Bộ từ" class="px-2 py-1 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white text-[11px] font-bold transition shrink-0 cursor-pointer">
+                                            +Gán
+                                        </button>
+                                        <button type="button" onclick="executeBulkAssignCollection('REMOVE')" title="Gỡ khỏi Bộ từ" class="px-2 py-1 rounded-lg bg-amber-100 hover:bg-amber-600 text-amber-900 hover:text-white border border-amber-300 text-[11px] font-bold transition shrink-0 cursor-pointer">
+                                            -Gỡ
+                                        </button>
+                                    </div>
+
+                                    <!-- Đánh dấu Trạng thái -->
+                                    <div class="flex items-center gap-1.5">
+                                        <button type="button" onclick="executeBulkMasteryStatus(true)" class="px-2.5 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white border border-emerald-200 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer">
+                                            <i class="fa-solid fa-circle-check"></i> Đã thuộc
+                                        </button>
+                                        <button type="button" onclick="executeBulkMasteryStatus(false)" class="px-2.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-500 text-amber-800 hover:text-white border border-amber-200 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer">
+                                            <i class="fa-solid fa-rotate-left"></i> Cần ôn
+                                        </button>
+                                    </div>
+
+                                    <!-- Xóa nhóm (Desktop) -->
+                                    <button type="button" onclick="openBulkDeleteConfirmModal()" class="hidden lg:flex px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white border border-rose-200 text-[11px] font-bold transition items-center gap-1 cursor-pointer">
+                                        <i class="fa-solid fa-trash-can"></i> Xóa nhóm
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gợi ý nhỏ cho Mobile: Chạm vào Chữ Hán để xem chi tiết -->
+                        <div class="px-3 py-1.5 bg-cyan-50/70 border-b border-cyan-100 text-[11px] font-semibold text-cyan-800 flex items-center justify-between">
+                            <span><i class="fa-solid fa-hand-pointer mr-1 text-cyan-600"></i>Chạm trực tiếp vào <strong>Chữ Hán</strong> để mở/đóng toàn bộ chi tiết</span>
+                            <span id="dataVisibleRowsCounter" class="text-[10px] font-bold text-slate-500">0 mục</span>
+                        </div>
+
+                        <!-- BẢNG DỮ LIỆU TINH GIẢN 5 CỘT (KHÔNG CUỘN NGANG TRÊN ĐIỆN THOẠI) -->
+                        <div class="max-h-[560px] overflow-y-auto overflow-x-hidden custom-scroll rounded-b-3xl">
+                            <table class="w-full text-left border-collapse text-xs table-fixed sm:table-auto">
+                                <thead id="dataTableHead" class="bg-slate-100 text-slate-700 sticky top-0 z-10 border-b border-slate-200 uppercase tracking-wider text-[10px] sm:text-[11px]"></thead>
+                                <tbody id="dataTableBody" class="divide-y divide-slate-200 bg-white"></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -2366,7 +2430,36 @@
                 .replace(/[^a-z0-9_\-]/g, '_') || ('user_' + Date.now());
         }
 
+        // Tính tổng số lượng mục dữ liệu của 1 bản ghi Học viên để ưu tiên giữ bản ghi giàu dữ liệu nhất
+        function getUserDataItemCount(ud) {
+            if (!ud || typeof ud !== 'object') return 0;
+            const vLen = safeJsonParse(ud.vocabJson, []).length;
+            const gLen = safeJsonParse(ud.grammarJson, []).length;
+            const iLen = safeJsonParse(ud.idiomsJson, []).length;
+            return vLen + gLen + iLen;
+        }
+
+        function pickRichestUserData(existingUd, candidateUd) {
+            if (!existingUd) return candidateUd;
+            if (!candidateUd) return existingUd;
+            const existingCount = getUserDataItemCount(existingUd);
+            const candidateCount = getUserDataItemCount(candidateUd);
+
+            // Không bao giờ để bản ghi rỗng (0 từ) ghi đè lên bản ghi đang có dữ liệu
+            if (existingCount > 0 && candidateCount === 0) return existingUd;
+            if (candidateCount > 0 && existingCount === 0) return candidateUd;
+
+            // Nếu cả hai cùng có dữ liệu, ưu tiên bản ghi cập nhật mới hơn hoặc nhiều từ hơn
+            const existingTime = Number(existingUd.updatedAt) || 0;
+            const candidateTime = Number(candidateUd.updatedAt) || 0;
+            if (candidateTime !== existingTime) {
+                return candidateTime > existingTime ? candidateUd : existingUd;
+            }
+            return candidateCount >= existingCount ? candidateUd : existingUd;
+        }
+
         async function hydrateAllSavedData() {
+            // 1. Đọc từ window.name cache
             const wn = readWindowNameCache();
             if (wn.accounts) {
                 Object.values(wn.accounts).forEach(acc => {
@@ -2375,19 +2468,49 @@
             }
             if (wn.userdata) {
                 Object.values(wn.userdata).forEach(ud => {
-                    if (ud && ud.accountKey) memoryUserDataStore.set(ud.accountKey, ud);
+                    if (ud && ud.accountKey) {
+                        const prev = memoryUserDataStore.get(ud.accountKey);
+                        memoryUserDataStore.set(ud.accountKey, pickRichestUserData(prev, ud));
+                    }
                 });
             }
 
+            // 2. Đọc từ localStorage (Quét cả accounts_map lẫn toàn bộ các khóa userdata_ đang tồn tại)
             const localAccountsMap = safeLocalGet('accounts_map') || {};
             Object.values(localAccountsMap).forEach(acc => {
                 if (acc && acc.accountKey) {
                     memoryAccountsStore.set(acc.accountKey, acc);
                     const ud = safeLocalGet('userdata_' + acc.accountKey);
-                    if (ud) memoryUserDataStore.set(acc.accountKey, ud);
+                    if (ud) {
+                        const prev = memoryUserDataStore.get(acc.accountKey);
+                        memoryUserDataStore.set(acc.accountKey, pickRichestUserData(prev, ud));
+                    }
                 }
             });
 
+            // Quét trực tiếp mọi key trong localStorage phòng trường hợp accounts_map bị thiếu sau khi update
+            try {
+                for (let i = 0; i < window.localStorage.length; i++) {
+                    const rawKey = window.localStorage.key(i);
+                    if (rawKey && rawKey.startsWith(STORAGE_PREFIX + 'userdata_')) {
+                        const accKey = rawKey.slice((STORAGE_PREFIX + 'userdata_').length);
+                        const ud = safeLocalGet('userdata_' + accKey);
+                        if (ud && accKey) {
+                            const prev = memoryUserDataStore.get(accKey);
+                            memoryUserDataStore.set(accKey, pickRichestUserData(prev, ud));
+                            if (!memoryAccountsStore.has(accKey)) {
+                                memoryAccountsStore.set(accKey, {
+                                    accountKey: accKey,
+                                    username: ud.username || DEFAULT_USER_NAME,
+                                    createdAt: ud.updatedAt || Date.now()
+                                });
+                            }
+                        }
+                    }
+                }
+            } catch (e) {}
+
+            // 3. Đọc từ IndexedDB và hợp nhất an toàn (Ưu tiên bản ghi có dữ liệu)
             try {
                 const idbAccounts = await idbGetAllRecords('accounts');
                 idbAccounts.forEach(acc => {
@@ -2396,32 +2519,48 @@
                 const idbUserData = await idbGetAllRecords('userdata');
                 idbUserData.forEach(ud => {
                     if (ud && ud.accountKey) {
-                        const existing = memoryUserDataStore.get(ud.accountKey);
-                        if (!existing || Number(ud.updatedAt || 0) >= Number(existing.updatedAt || 0)) {
-                            memoryUserDataStore.set(ud.accountKey, ud);
+                        const prev = memoryUserDataStore.get(ud.accountKey);
+                        memoryUserDataStore.set(ud.accountKey, pickRichestUserData(prev, ud));
+                        if (!memoryAccountsStore.has(ud.accountKey)) {
+                            memoryAccountsStore.set(ud.accountKey, {
+                                accountKey: ud.accountKey,
+                                username: ud.username || DEFAULT_USER_NAME,
+                                createdAt: ud.updatedAt || Date.now()
+                            });
                         }
                     }
                 });
             } catch (e) {}
 
+            // 4. Chỉ khởi tạo Học viên mặc định nếu hoàn toàn chưa có bất kỳ tài khoản nào
             if (memoryAccountsStore.size === 0) {
                 const defaultAcc = {
                     accountKey: DEFAULT_USER_KEY,
                     username: DEFAULT_USER_NAME,
                     createdAt: Date.now()
                 };
-                const defaultData = {
-                    accountKey: DEFAULT_USER_KEY,
-                    username: DEFAULT_USER_NAME,
-                    vocabJson: "[]",
-                    grammarJson: "[]",
-                    idiomsJson: "[]",
-                    filesJson: "[]",
-                    collectionsJson: "[]",
-                    updatedAt: Date.now()
-                };
                 await saveAccountEverywhere(defaultAcc);
-                await saveUserDataEverywhere(DEFAULT_USER_KEY, defaultData);
+
+                // Kiểm tra kỹ lần cuối xem có dữ liệu cũ của DEFAULT_USER_KEY không trước khi tạo mảng rỗng
+                const existingDefaultUd = memoryUserDataStore.get(DEFAULT_USER_KEY)
+                    || await idbGetRecord('userdata', DEFAULT_USER_KEY)
+                    || safeLocalGet('userdata_' + DEFAULT_USER_KEY);
+
+                if (existingDefaultUd) {
+                    memoryUserDataStore.set(DEFAULT_USER_KEY, existingDefaultUd);
+                } else {
+                    const defaultData = {
+                        accountKey: DEFAULT_USER_KEY,
+                        username: DEFAULT_USER_NAME,
+                        vocabJson: "[]",
+                        grammarJson: "[]",
+                        idiomsJson: "[]",
+                        filesJson: "[]",
+                        collectionsJson: "[]",
+                        updatedAt: 0
+                    };
+                    await saveUserDataEverywhere(DEFAULT_USER_KEY, defaultData);
+                }
             }
 
             renderBrandLogosEverywhere();
@@ -2468,12 +2607,16 @@
             selectedBulkIds.clear();
 
             const accountKey = currentAccount.accountKey;
-            let userData = memoryUserDataStore.get(accountKey)
-                || await idbGetRecord('userdata', accountKey)
-                || safeLocalGet('userdata_' + accountKey);
+            const memUd = memoryUserDataStore.get(accountKey);
+            const idbUd = await idbGetRecord('userdata', accountKey);
+            const locUd = safeLocalGet('userdata_' + accountKey);
+
+            // Luôn chọn bản ghi giàu dữ liệu nhất từ cả 3 tầng lưu trữ
+            const userData = pickRichestUserData(pickRichestUserData(memUd, idbUd), locUd);
 
             if (userData) {
                 migrateAndNormalizeUserData(userData);
+                // Chỉ ghi đồng bộ lại nếu dữ liệu hợp lệ (không ghi đè rỗng nếu trước đó có dữ liệu)
                 await persistCurrentAccountData();
             } else {
                 refreshAllUI();
@@ -3467,6 +3610,7 @@
 
         // ---------------------------------------------------------------------------
         // TINDER SWIPE ĐA NỀN TẢNG: ĐỒNG BỘ TOUCH (MOBILE) & MOUSE DRAG (DESKTOP)
+        // Khóa trượt màn hình ngang trên điện thoại (touch-action: pan-y + preventDefault)
         // ---------------------------------------------------------------------------
         function attachSwipeGestures(elementId, onSwipeLeft, onSwipeRight) {
             const el = document.getElementById(elementId);
@@ -3477,9 +3621,11 @@
             let currentDx = 0;
             let currentDy = 0;
             let isDragging = false;
+            let isHorizontalSwipe = false;
             let isScrollingBackContent = false;
             let isAnimatingOut = false;
 
+            el.style.touchAction = 'pan-y';
             el.classList.add('cursor-grab', 'active:cursor-grabbing');
 
             // Chặn sự kiện click lật thẻ ngay ở pha Capture nếu người dùng vừa thực hiện thao tác kéo/vuốt
@@ -3501,10 +3647,12 @@
                 if (isTouch && isFlipped && scrollContainer) {
                     isScrollingBackContent = true;
                     isDragging = false;
+                    isHorizontalSwipe = false;
                     return;
                 }
 
                 isScrollingBackContent = false;
+                isHorizontalSwipe = false;
                 isDragging = true;
                 startX = clientX;
                 startY = clientY;
@@ -3515,25 +3663,36 @@
                 el.style.willChange = 'transform, opacity';
             };
 
-            const moveDrag = (clientX, clientY, isTouch) => {
+            const moveDrag = (clientX, clientY, isTouch, rawEvent = null) => {
                 if (!isDragging || isScrollingBackContent || isAnimatingOut) return;
 
                 currentDx = clientX - startX;
                 currentDy = clientY - startY;
 
-                // Nếu người dùng vuốt dọc nhiều hơn vuốt ngang ngay từ đầu -> Hủy kéo thẻ để cuộn trang tự nhiên
-                if (isTouch && Math.abs(currentDy) > Math.abs(currentDx) * 1.2 && Math.abs(currentDy) > 12) {
-                    isScrollingBackContent = true;
-                    isDragging = false;
-                    el.style.transition = 'transform 0.25s ease-out, opacity 0.2s ease';
-                    el.style.transform = 'translate3d(0, 0, 0) rotate(0deg) scale(1)';
-                    el.style.opacity = '1';
-                    return;
+                // Xác định hướng vuốt ngay khi vượt ngưỡng 8px
+                if (!isHorizontalSwipe && isTouch) {
+                    if (Math.abs(currentDy) > Math.abs(currentDx) * 1.2 && Math.abs(currentDy) > 10) {
+                        // Người dùng đang cuộn dọc -> Hủy kéo thẻ
+                        isScrollingBackContent = true;
+                        isDragging = false;
+                        el.style.transition = 'transform 0.25s ease-out, opacity 0.2s ease';
+                        el.style.transform = 'translate3d(0, 0, 0) rotate(0deg) scale(1)';
+                        el.style.opacity = '1';
+                        return;
+                    }
+                    if (Math.abs(currentDx) > Math.abs(currentDy) && Math.abs(currentDx) > 8) {
+                        isHorizontalSwipe = true;
+                    }
+                }
+
+                // Nếu đang vuốt ngang trên điện thoại -> Khóa cuộn màn hình bằng preventDefault()
+                if (isTouch && isHorizontalSwipe && rawEvent && rawEvent.cancelable) {
+                    rawEvent.preventDefault();
                 }
 
                 if (Math.abs(currentDx) > 8) {
                     const rotateDeg = Math.max(-15, Math.min(15, currentDx * 0.055));
-                    const dampedDy = currentDy * 0.2;
+                    const dampedDy = isTouch ? 0 : (currentDy * 0.2);
                     const opacityVal = Math.max(0.55, 1 - Math.abs(currentDx) / (window.innerWidth * 1.1));
                     el.style.transform = `translate3d(${currentDx}px, ${dampedDy}px, 0) rotate(${rotateDeg}deg)`;
                     el.style.opacity = String(opacityVal);
@@ -3543,15 +3702,16 @@
             const finishDrag = () => {
                 if (!isDragging || isScrollingBackContent || isAnimatingOut) {
                     isDragging = false;
+                    isHorizontalSwipe = false;
                     isScrollingBackContent = false;
                     return;
                 }
                 isDragging = false;
+                isHorizontalSwipe = false;
 
-                // Điều kiện xác nhận vuốt ngang (Chống nhầm khi cuộn dọc đọc từ vựng)
                 const isValidHorizontalSwipe =
-                    Math.abs(currentDx) > 100 &&
-                    Math.abs(currentDx) > Math.abs(currentDy) * 2.5;
+                    Math.abs(currentDx) > 85 &&
+                    Math.abs(currentDx) > Math.abs(currentDy) * 1.8;
 
                 if (isValidHorizontalSwipe) {
                     isAnimatingOut = true;
@@ -3562,7 +3722,6 @@
                     const flyOutX = direction * (window.innerWidth * 0.85);
                     const flyRotate = direction * 20;
 
-                    // Thẻ cũ bay vút ra sau và mờ dần
                     el.style.transition = 'transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease-out';
                     el.style.transform = `translate3d(${flyOutX}px, -18px, 0) scale(0.78) rotate(${flyRotate}deg)`;
                     el.style.opacity = '0';
@@ -3588,8 +3747,7 @@
                         });
                     }, 230);
                 } else {
-                    // Nếu chỉ kéo nhẹ rồi thả -> Đàn hồi thẻ về giữa và chặn sự kiện click lật thẻ nhầm
-                    if (Math.abs(currentDx) > 12 || Math.abs(currentDy) > 12) {
+                    if (Math.abs(currentDx) > 10 || Math.abs(currentDy) > 10) {
                         el.dataset.justSwiped = 'true';
                         setTimeout(() => { el.dataset.justSwiped = 'false'; }, 220);
                     }
@@ -3599,7 +3757,7 @@
                 }
             };
 
-            // 1. Sự kiện Cảm ứng (Mobile / Tablet)
+            // 1. Sự kiện Cảm ứng (Mobile / Tablet) - passive: false ở touchmove để gọi e.preventDefault() chống trượt màn hình
             el.addEventListener('touchstart', e => {
                 if (!e.touches?.[0]) return;
                 startDrag(e.touches[0].clientX, e.touches[0].clientY, e.target, true);
@@ -3607,22 +3765,22 @@
 
             el.addEventListener('touchmove', e => {
                 if (!e.touches?.[0]) return;
-                moveDrag(e.touches[0].clientX, e.touches[0].clientY, true);
-            }, { passive: true });
+                moveDrag(e.touches[0].clientX, e.touches[0].clientY, true, e);
+            }, { passive: false });
 
             el.addEventListener('touchend', finishDrag, { passive: true });
             el.addEventListener('touchcancel', finishDrag, { passive: true });
 
             // 2. Sự kiện Chuột (Desktop / Laptop)
             el.addEventListener('mousedown', e => {
-                if (e.button !== 0) return; // Chỉ nhận chuột trái
+                if (e.button !== 0) return;
                 startDrag(e.clientX, e.clientY, e.target, false);
             });
 
             el.addEventListener('mousemove', e => {
                 if (!isDragging) return;
-                e.preventDefault(); // Ngăn bôi đen chữ khi đang kéo thẻ trên máy tính
-                moveDrag(e.clientX, e.clientY, false);
+                e.preventDefault();
+                moveDrag(e.clientX, e.clientY, false, e);
             });
 
             el.addEventListener('mouseup', finishDrag);
@@ -5243,190 +5401,504 @@
             document.getElementById('confirmDeleteModal').classList.add('flex');
         };
 
+        // ---------------------------------------------------------------------------
+        // QUẢN LÝ DỮ LIỆU TỐI ƯU MOBILE:
+        // - Mặc định ẩn bảng cho tới khi bấm vào 1 trong 3 Tabs
+        // - Sắp xếp Mặc định bấm lần 2 tự đảo chiều (A-Z) ⇄ (Z-A)
+        // - Lọc nhiều Bộ từ (A-Z)
+        // - Bảng tinh giản 5 cột, bấm vào Chữ Hán mở rộng Accordion xem chi tiết
+        // ---------------------------------------------------------------------------
+        let isDataWorkspaceOpen = false;
+        let dataSortMode = 'DEFAULT';       // 'DEFAULT' | 'STATUS' | 'DECK'
+        let dataSortDefaultDir = 'ASC';     // 'ASC' (A-Z) | 'DESC' (Z-A)
+        let selectedDataTableDecks = new Set();
+        let expandedDataDetailIds = new Set();
+        let currentVisibleRowIds = [];
+
+        // Đóng các menu dropdown Sắp xếp / Bộ từ khi bấm ra ngoài
+        document.addEventListener('click', () => {
+            document.getElementById('dataSortDropdownPanel')?.classList.add('hidden');
+            document.getElementById('dataDeckFilterPanel')?.classList.add('hidden');
+        });
+
         window.switchDataTableTab = function(tab) {
+            // Nếu bấm vào một Tab, mở khung dữ liệu và công cụ của Tab đó
             activeDataTableTab = tab;
+            isDataWorkspaceOpen = true;
             selectedBulkIds.clear();
-            const tabs = ['vocab', 'grammar', 'idiom'];
-            tabs.forEach(t => {
-                const btn = document.getElementById(`dataTab${t.charAt(0).toUpperCase() + t.slice(1)}Btn`);
-                if (btn) {
-                    btn.className = (t === tab)
-                        ? "px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 text-white shadow-sm transition"
-                        : "px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition";
+            expandedDataDetailIds.clear();
+
+            const workspace = document.getElementById('dataManagementWorkspace');
+            const collapseHint = document.getElementById('dataTabCollapseHint');
+            if (workspace) workspace.classList.remove('hidden');
+            if (collapseHint) collapseHint.classList.remove('hidden');
+
+            // Cập nhật giao diện 3 nút Tab
+            const tabConfig = {
+                vocab: { btnId: 'dataTabVocabBtn', countId: 'tableVocabCount', activeBg: 'bg-cyan-700 text-white border-cyan-700 shadow-md', addLabel: 'Thêm Từ vựng', addColor: 'bg-cyan-600 hover:bg-cyan-700' },
+                grammar: { btnId: 'dataTabGrammarBtn', countId: 'tableGrammarCount', activeBg: 'bg-indigo-600 text-white border-indigo-600 shadow-md', addLabel: 'Thêm Ngữ pháp', addColor: 'bg-indigo-600 hover:bg-indigo-700' },
+                idiom: { btnId: 'dataTabIdiomBtn', countId: 'tableIdiomCount', activeBg: 'bg-amber-600 text-white border-amber-600 shadow-md', addLabel: 'Thêm Thành ngữ', addColor: 'bg-amber-600 hover:bg-amber-700' }
+            };
+
+            Object.keys(tabConfig).forEach(t => {
+                const cfg = tabConfig[t];
+                const btn = document.getElementById(cfg.btnId);
+                if (!btn) return;
+                if (t === tab) {
+                    btn.className = `py-3 px-2 sm:px-4 rounded-2xl text-xs sm:text-sm font-extrabold transition flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 border cursor-pointer touch-manipulation ${cfg.activeBg}`;
+                } else {
+                    btn.className = "py-3 px-2 sm:px-4 rounded-2xl text-xs sm:text-sm font-extrabold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 border border-slate-200 cursor-pointer touch-manipulation";
                 }
             });
+
+            // Cập nhật nút [+ Thêm mới] theo Tab đang mở
+            const activeCfg = tabConfig[tab] || tabConfig.vocab;
+            const addBtn = document.getElementById('dataDynamicAddBtn');
+            const addLabel = document.getElementById('dataDynamicAddBtnLabel');
+            if (addBtn) {
+                addBtn.className = `min-h-[40px] px-3.5 py-2 rounded-xl ${activeCfg.addColor} active:scale-95 text-white text-xs font-extrabold shadow-sm transition flex items-center gap-1.5 shrink-0 cursor-pointer touch-manipulation`;
+            }
+            if (addLabel) addLabel.textContent = activeCfg.addLabel;
+
             renderDataManagementTable();
         };
 
+        window.collapseDataManagementWorkspace = function() {
+            isDataWorkspaceOpen = false;
+            document.getElementById('dataManagementWorkspace')?.classList.add('hidden');
+            document.getElementById('dataTabCollapseHint')?.classList.add('hidden');
+            ['dataTabVocabBtn', 'dataTabGrammarBtn', 'dataTabIdiomBtn'].forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) {
+                    btn.className = "py-3 px-2 sm:px-4 rounded-2xl text-xs sm:text-sm font-extrabold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 border border-slate-200 cursor-pointer touch-manipulation";
+                }
+            });
+        };
+
+        window.triggerDataTabAddNew = function() {
+            if (activeDataTableTab === 'grammar') openGrammarModal();
+            else if (activeDataTableTab === 'idiom') openIdiomModal();
+            else openVocabModal();
+        };
+
+        // Dropdown Sắp xếp: Nếu đang chọn "Mặc định", bấm thêm 1 lần nữa tự đảo chiều (A-Z) ⇄ (Z-A)
+        window.toggleDataSortDropdown = function(e) {
+            if (e) e.stopPropagation();
+            document.getElementById('dataDeckFilterPanel')?.classList.add('hidden');
+            document.getElementById('dataSortDropdownPanel')?.classList.toggle('hidden');
+        };
+
+        window.selectDataSortMode = function(mode) {
+            if (mode === 'DEFAULT') {
+                if (dataSortMode === 'DEFAULT') {
+                    dataSortDefaultDir = (dataSortDefaultDir === 'ASC') ? 'DESC' : 'ASC';
+                } else {
+                    dataSortMode = 'DEFAULT';
+                }
+            } else {
+                dataSortMode = mode;
+            }
+
+            const dirText = dataSortDefaultDir === 'ASC' ? 'Mặc định (A-Z)' : 'Mặc định (Z-A)';
+            const sortCurrentLabel = document.getElementById('dataSortCurrentLabel');
+            const sortOptDefaultText = document.getElementById('sortOptDefaultText');
+            if (sortOptDefaultText) sortOptDefaultText.textContent = dirText;
+
+            if (sortCurrentLabel) {
+                if (dataSortMode === 'DEFAULT') sortCurrentLabel.textContent = dirText;
+                else if (dataSortMode === 'STATUS') sortCurrentLabel.textContent = 'Trạng thái';
+                else if (dataSortMode === 'DECK') sortCurrentLabel.textContent = 'Bộ từ';
+            }
+
+            // Highlight lựa chọn đang kích hoạt
+            const btnMap = {
+                DEFAULT: document.getElementById('sortOptDefaultBtn'),
+                STATUS: document.getElementById('sortOptStatusBtn'),
+                DECK: document.getElementById('sortOptDeckBtn')
+            };
+            Object.keys(btnMap).forEach(k => {
+                const b = btnMap[k];
+                if (!b) return;
+                b.className = (k === dataSortMode)
+                    ? "w-full px-3 py-2 rounded-xl text-left text-xs font-extrabold flex items-center justify-between bg-cyan-50 text-cyan-900 transition cursor-pointer"
+                    : "w-full px-3 py-2 rounded-xl text-left text-xs font-bold flex items-center justify-between text-slate-700 hover:bg-slate-100 transition cursor-pointer";
+            });
+
+            document.getElementById('dataSortDropdownPanel')?.classList.add('hidden');
+            renderDataManagementTable();
+        };
+
+        // Dropdown Bộ từ trong Bảng Quản lý: Hỗ trợ chọn nhiều & tự sắp xếp danh sách từ A-Z
+        window.toggleDataDeckFilterDropdown = function(e) {
+            if (e) e.stopPropagation();
+            document.getElementById('dataSortDropdownPanel')?.classList.add('hidden');
+            renderDataDeckFilterList();
+            document.getElementById('dataDeckFilterPanel')?.classList.toggle('hidden');
+        };
+
+        window.toggleDataTableDeckItem = function(deckName, isChecked) {
+            if (isChecked) selectedDataTableDecks.add(deckName);
+            else selectedDataTableDecks.delete(deckName);
+            renderDataDeckFilterList();
+            renderDataManagementTable();
+        };
+
+        window.clearDataTableDeckFilter = function() {
+            selectedDataTableDecks.clear();
+            renderDataDeckFilterList();
+            renderDataManagementTable();
+        };
+
+        function renderDataDeckFilterList() {
+            const listEl = document.getElementById('dataDeckFilterCheckboxList');
+            const summaryEl = document.getElementById('dataDeckFilterSummary');
+            const sortedDecks = [...collectionsList].sort((a, b) => a.localeCompare(b, 'vi'));
+
+            // Loại bỏ các bộ từ đã bị xóa khỏi tập đang chọn
+            Array.from(selectedDataTableDecks).forEach(d => {
+                if (!sortedDecks.includes(d)) selectedDataTableDecks.delete(d);
+            });
+
+            if (summaryEl) {
+                if (selectedDataTableDecks.size === 0 || selectedDataTableDecks.size === sortedDecks.length) {
+                    summaryEl.textContent = 'Bộ từ: Tất cả';
+                } else {
+                    summaryEl.textContent = `Bộ từ (${selectedDataTableDecks.size}): ${Array.from(selectedDataTableDecks).join(', ')}`;
+                }
+            }
+
+            if (!listEl) return;
+            if (sortedDecks.length === 0) {
+                listEl.innerHTML = `<div class="text-xs text-slate-400 italic py-2 text-center">Chưa có Bộ từ nào.</div>`;
+                return;
+            }
+
+            listEl.innerHTML = sortedDecks.map(fn => {
+                const isChecked = selectedDataTableDecks.has(fn);
+                const count = vocabList.filter(v => (v.collections || []).includes(fn)).length +
+                              grammarList.filter(g => (g.collections || []).includes(fn)).length +
+                              idiomList.filter(i => (i.collections || []).includes(fn)).length;
+                return `
+                    <label class="flex items-center justify-between px-2.5 py-2 rounded-xl hover:bg-slate-100 cursor-pointer transition text-xs">
+                        <div class="flex items-center gap-2 min-w-0">
+                            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleDataTableDeckItem('${escapeHtmlAttr(fn)}', this.checked)" class="w-4 h-4 rounded accent-emerald-600 cursor-pointer shrink-0">
+                            <span class="font-bold text-slate-800 truncate">${escapeHtml(fn)}</span>
+                        </div>
+                        <span class="text-[10px] font-semibold bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded-md shrink-0">${count}</span>
+                    </label>
+                `;
+            }).join('');
+        }
+
+        function itemMatchesDataTableDecks(item) {
+            if (!selectedDataTableDecks || selectedDataTableDecks.size === 0) return true;
+            const itemDecks = Array.isArray(item.collections) && item.collections.length > 0
+                ? item.collections
+                : [item.fileSource || 'Mặc định'];
+            return itemDecks.some(d => selectedDataTableDecks.has(d));
+        }
+
+        // Bấm trực tiếp vào [Chữ Hán] để mở rộng / thu gọn Accordion chi tiết ngay dưới dòng đó
+        window.toggleDataItemDetailAccordion = function(id) {
+            if (expandedDataDetailIds.has(id)) expandedDataDetailIds.delete(id);
+            else expandedDataDetailIds.add(id);
+            renderDataManagementTable();
+        };
+
+        function buildVocabAccordionDetailHtml(v) {
+            const generalExLines = v.generalExample
+                ? String(v.generalExample).split(/[\n;；]+/).map(s => s.trim()).filter(Boolean)
+                : [];
+            const usages = Array.isArray(v.usages) ? v.usages : [];
+            const synHtml = (v.synonyms && v.synonyms.length > 0)
+                ? renderSynonymInteractiveBadges(v.synonyms, 'light')
+                : '<span class="text-slate-400 italic">Không có</span>';
+            const antHtml = (v.antonyms && v.antonyms.length > 0)
+                ? v.antonyms.map(a => `<span class="px-2 py-0.5 rounded-md bg-rose-50 text-rose-800 border border-rose-200 font-hanzi font-bold text-xs">${escapeHtml(a.targetHanzi)}</span>`).join(' ')
+                : '<span class="text-slate-400 italic">Không có</span>';
+
+            return `
+                <div class="p-3 sm:p-4 bg-slate-50 border-l-4 border-cyan-600 rounded-r-2xl space-y-2.5 text-xs">
+                    <!-- Tầng 2: Pinyin, Loại từ, Hán Việt, Nghĩa -->
+                    <div class="flex flex-wrap items-baseline gap-1.5 text-xs sm:text-sm">
+                        <span class="font-hanzi font-black text-base text-slate-900">${escapeHtml(v.hanzi)}</span>
+                        <span class="text-amber-700 font-extrabold">/${escapeHtml(v.pinyin)}/</span>
+                        ${v.pos ? `<span class="px-2 py-0.5 rounded-md bg-sky-100 text-sky-800 font-bold text-[11px]">(${escapeHtml(v.pos)})</span>` : ''}
+                        ${v.sinoViet ? `<span class="text-emerald-700 font-bold text-xs">&lt;${escapeHtml(v.sinoViet)}&gt;</span>` : ''}
+                        <span class="font-extrabold text-slate-900">— ${escapeHtml(v.meaning)}</span>
+                    </div>
+
+                    <!-- Gợi ý nhớ từ (Tầng 2) -->
+                    ${v.hint ? `
+                        <div class="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-950 leading-relaxed">
+                            <strong class="text-amber-800"><i class="fa-solid fa-lightbulb mr-1 text-amber-500"></i>Gợi ý nhớ từ:</strong> ${escapeHtml(v.hint)}
+                        </div>
+                    ` : ''}
+
+                    <!-- Ví dụ chung (Tầng 2) -->
+                    ${generalExLines.length > 0 ? `
+                        <div class="p-2.5 rounded-xl bg-emerald-50/80 border border-emerald-200 space-y-1">
+                            <div class="text-[11px] font-extrabold text-emerald-800 uppercase">
+                                <i class="fa-solid fa-quote-left mr-1"></i>Ví dụ chung (${generalExLines.length}):
+                            </div>
+                            <div class="font-hanzi text-xs sm:text-sm text-slate-800 space-y-0.5 pl-2 border-l-2 border-emerald-400">
+                                ${generalExLines.map(ex => `<div>→ ${escapeHtml(ex)}</div>`).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <!-- Mảng Cách dùng cụ thể (Tầng 3: usages) -->
+                    ${usages.length > 0 ? `
+                        <div class="space-y-1.5">
+                            <div class="text-[11px] font-extrabold text-cyan-900 uppercase">
+                                <i class="fa-solid fa-code-branch mr-1 text-cyan-600"></i>Phân nhánh Cách dùng (Tầng 3):
+                            </div>
+                            ${usages.map((u, uIdx) => `
+                                <div class="p-2.5 rounded-xl bg-white border border-slate-200 space-y-1">
+                                    ${u.formula ? `<div class="font-bold text-cyan-900"><span class="text-cyan-600">• Cách dùng ${uIdx + 1}:</span> <span class="font-hanzi">${escapeHtml(u.formula)}</span></div>` : `<div class="font-bold text-slate-700">• Cách dùng ${uIdx + 1}:</div>`}
+                                    ${u.note ? `<div class="text-[11px] text-amber-700 italic">Lưu ý: ${escapeHtml(u.note)}</div>` : ''}
+                                    ${(u.examples && u.examples.length > 0) ? `
+                                        <div class="font-hanzi text-xs text-slate-700 pl-2.5 border-l-2 border-cyan-300 space-y-0.5">
+                                            ${u.examples.map(ex => `<div>→ ${escapeHtml(ex)}</div>`).join('')}
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+
+                    <!-- Đồng nghĩa & Trái nghĩa -->
+                    <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 pt-1 border-t border-slate-200/80 text-[11px]">
+                        <div class="flex flex-wrap items-center gap-1"><strong class="text-slate-600">Đồng nghĩa:</strong> ${synHtml}</div>
+                        <div class="flex flex-wrap items-center gap-1"><strong class="text-slate-600">Trái nghĩa:</strong> ${antHtml}</div>
+                    </div>
+                </div>
+            `;
+        }
+
         window.renderDataManagementTable = function() {
-            document.getElementById('tableVocabCount').textContent = vocabList.length;
-            document.getElementById('tableGrammarCount').textContent = grammarList.length;
-            const idmCountEl = document.getElementById('tableIdiomCount');
-            if (idmCountEl) idmCountEl.textContent = idiomList.length;
-            document.getElementById('selectedCountBadge').textContent = selectedBulkIds.size;
+            const vCountEl = document.getElementById('tableVocabCount');
+            const gCountEl = document.getElementById('tableGrammarCount');
+            const iCountEl = document.getElementById('tableIdiomCount');
+            if (vCountEl) vCountEl.textContent = vocabList.length;
+            if (gCountEl) gCountEl.textContent = grammarList.length;
+            if (iCountEl) iCountEl.textContent = idiomList.length;
+
+            const selBadge = document.getElementById('selectedCountBadge');
+            if (selBadge) selBadge.textContent = selectedBulkIds.size;
+
+            renderDataDeckFilterList();
+
+            // Nếu người dùng chưa bấm chọn Tab nào thì giữ nguyên trạng thái ẩn gọn
+            if (!isDataWorkspaceOpen) return;
 
             const searchKw = (document.getElementById('dataSearchInput')?.value || '').trim().toLowerCase();
-            const sortBy = document.getElementById('dataSortSelect')?.value || 'FILE_ASC';
-            const fileFilter = document.getElementById('dataTableFileFilter')?.value || 'ALL';
-
             const thead = document.getElementById('dataTableHead');
             const tbody = document.getElementById('dataTableBody');
+            const visibleCounterEl = document.getElementById('dataVisibleRowsCounter');
+            if (!thead || !tbody) return;
 
-            if (activeDataTableTab === 'vocab') {
-                let rows = vocabList.filter(v => {
-                    if (!itemBelongsToCollection(v, fileFilter)) return false;
-                    if (!searchKw) return true;
-                    const decksStr = (v.collections || [v.fileSource]).join(' ').toLowerCase();
+            const getPrimarySortKey = (item) => {
+                if (activeDataTableTab === 'vocab') {
+                    return (item.pinyin || item.hanzi || '').replace(/\s+/g, '').toLowerCase();
+                }
+                if (activeDataTableTab === 'grammar') {
+                    return (item.pattern || '').toLowerCase();
+                }
+                return (item.pinyin || item.hanzi || '').replace(/\s+/g, '').toLowerCase();
+            };
+
+            const getPrimaryDeckString = (item) => {
+                const decks = Array.isArray(item.collections) && item.collections.length > 0
+                    ? item.collections
+                    : [item.fileSource || 'Mặc định'];
+                return decks.join(', ');
+            };
+
+            let sourceList = activeDataTableTab === 'grammar'
+                ? grammarList
+                : (activeDataTableTab === 'idiom' ? idiomList : vocabList);
+
+            let rows = sourceList.filter(item => {
+                if (!itemMatchesDataTableDecks(item)) return false;
+                if (!searchKw) return true;
+                const decksStr = getPrimaryDeckString(item).toLowerCase();
+                if (activeDataTableTab === 'vocab') {
                     return (
-                        (v.hanzi || '').toLowerCase().includes(searchKw) ||
-                        (v.pinyin || '').toLowerCase().includes(searchKw) ||
-                        (v.meaning || '').toLowerCase().includes(searchKw) ||
+                        (item.hanzi || '').toLowerCase().includes(searchKw) ||
+                        (item.pinyin || '').toLowerCase().includes(searchKw) ||
+                        (item.meaning || '').toLowerCase().includes(searchKw) ||
                         decksStr.includes(searchKw)
                     );
-                });
+                } else if (activeDataTableTab === 'grammar') {
+                    return (
+                        (item.pattern || '').toLowerCase().includes(searchKw) ||
+                        (item.usage || '').toLowerCase().includes(searchKw) ||
+                        (item.formula || '').toLowerCase().includes(searchKw) ||
+                        decksStr.includes(searchKw)
+                    );
+                } else {
+                    return (
+                        (item.hanzi || '').toLowerCase().includes(searchKw) ||
+                        (item.pinyin || '').toLowerCase().includes(searchKw) ||
+                        (item.meaning || '').toLowerCase().includes(searchKw) ||
+                        decksStr.includes(searchKw)
+                    );
+                }
+            });
 
-                rows.sort((a, b) => {
-                    if (sortBy === 'PINYIN_ASC') {
-                        // Sắp xếp Alphabet theo Pinyin loại bỏ dấu cách để chuẩn xác hơn
-                        const pinyinA = (a.pinyin || '').replace(/\s+/g, '').toLowerCase();
-                        const pinyinB = (b.pinyin || '').replace(/\s+/g, '').toLowerCase();
-                        return pinyinA.localeCompare(pinyinB, 'en-US');
+            // Sắp xếp theo 3 chế độ: DEFAULT (A-Z / Z-A), STATUS, DECK
+            rows.sort((a, b) => {
+                if (dataSortMode === 'STATUS') {
+                    if (activeDataTableTab === 'vocab') {
+                        const mA = getVocabMasterySummary(a).isMastered ? 1 : 0;
+                        const mB = getVocabMasterySummary(b).isMastered ? 1 : 0;
+                        if (mA !== mB) return mA - mB;
                     }
-                    if (sortBy === 'HANZI_ASC') return (a.hanzi || '').localeCompare(b.hanzi || '', 'zh-CN');
-                    if (sortBy === 'FILE_DESC') return (b.createdAt || 0) - (a.createdAt || 0);
-                    if (sortBy === 'STATUS') return (getVocabMasterySummary(a).isMastered ? 1 : 0) - (getVocabMasterySummary(b).isMastered ? 1 : 0);
-                    return (a.createdAt || 0) - (b.createdAt || 0);
-                });
+                    return getPrimarySortKey(a).localeCompare(getPrimarySortKey(b), 'vi');
+                }
+                if (dataSortMode === 'DECK') {
+                    const dComp = getPrimaryDeckString(a).localeCompare(getPrimaryDeckString(b), 'vi');
+                    if (dComp !== 0) return dComp;
+                    return getPrimarySortKey(a).localeCompare(getPrimarySortKey(b), 'vi');
+                }
+                // Chế độ Mặc định: hỗ trợ đảo chiều A-Z (ASC) và Z-A (DESC)
+                const cmp = getPrimarySortKey(a).localeCompare(getPrimarySortKey(b), 'vi');
+                return dataSortDefaultDir === 'ASC' ? cmp : -cmp;
+            });
 
-                thead.innerHTML = `
-                    <tr>
-                        <th class="p-3 w-10 text-center"><input type="checkbox" onchange="toggleSelectAllVisibleRows(this, 'vocab')" class="w-4 h-4 rounded accent-cyan-600 cursor-pointer"></th>
-                        <th class="p-3">Chữ Hán</th>
-                        <th class="p-3">Chi tiết (/Pinyin/ (Loại từ) Nghĩa & Cách dùng)</th>
-                        <th class="p-3">Đồng nghĩa / Trái nghĩa</th>
-                        <th class="p-3">Các Bộ từ</th>
-                        <th class="p-3">Đánh giá</th>
-                        <th class="p-3 text-right">Thao tác</th>
-                    </tr>
-                `;
+            currentVisibleRowIds = rows.map(r => r.id);
+            if (visibleCounterEl) visibleCounterEl.textContent = `${rows.length} mục`;
 
-                if (rows.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-slate-400">Không có từ vựng nào khớp bộ lọc.</td></tr>`;
-                    return;
+            const allVisibleSelected = rows.length > 0 && rows.every(r => selectedBulkIds.has(r.id));
+            const mainColTitle = activeDataTableTab === 'grammar'
+                ? 'Cấu trúc'
+                : (activeDataTableTab === 'idiom' ? 'Thành ngữ' : 'Chữ Hán');
+
+            // Bảng tinh giản đúng 5 cột, hiển thị trọn vẹn trên màn hình điện thoại không cần cuộn ngang
+            thead.innerHTML = `
+                <tr>
+                    <th class="py-2.5 px-2 w-8 text-center">
+                        <input type="checkbox" ${allVisibleSelected ? 'checked' : ''} onchange="toggleSelectAllVisibleRows(this, '${activeDataTableTab}')" class="w-4 h-4 rounded accent-cyan-600 cursor-pointer">
+                    </th>
+                    <th class="py-2.5 px-2">${mainColTitle}</th>
+                    <th class="py-2.5 px-1.5">Các bộ từ</th>
+                    <th class="py-2.5 px-1.5 text-center w-20 sm:w-28">Đánh giá</th>
+                    <th class="py-2.5 px-2 text-right w-16 sm:w-24">Thao tác</th>
+                </tr>
+            `;
+
+            if (rows.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-slate-400 font-semibold">Không có dữ liệu nào khớp bộ lọc hiện tại.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = rows.map(item => {
+                const isChecked = selectedBulkIds.has(item.id);
+                const isExpanded = expandedDataDetailIds.has(item.id);
+                const decks = Array.isArray(item.collections) && item.collections.length > 0
+                    ? item.collections
+                    : [item.fileSource || 'Mặc định'];
+
+                let titleText = '';
+                let subTag = '';
+                let statusBadgeHtml = '';
+                let editFn = '';
+                let detailHtml = '';
+
+                if (activeDataTableTab === 'vocab') {
+                    titleText = item.hanzi;
+                    subTag = item.pos ? `<span class="block text-[10px] font-sans font-bold text-sky-700">${escapeHtml(item.pos)}</span>` : '';
+                    const masteryInfo = getVocabMasterySummary(item);
+                    statusBadgeHtml = masteryInfo.isMastered
+                        ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-extrabold text-[10px]"><i class="fa-solid fa-circle-check"></i><span>Thuộc</span></span>`
+                        : `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold text-[10px]"><i class="fa-solid fa-clock"></i><span>${masteryInfo.completedCount}/${masteryInfo.totalCount}</span></span>`;
+                    editFn = `openVocabModal('${item.id}')`;
+                    if (isExpanded) detailHtml = buildVocabAccordionDetailHtml(item);
+                } else if (activeDataTableTab === 'grammar') {
+                    titleText = item.pattern;
+                    statusBadgeHtml = `<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 font-bold text-[10px]">Ngữ pháp</span>`;
+                    editFn = `openGrammarModal('${item.id}')`;
+                    if (isExpanded) {
+                        detailHtml = `
+                            <div class="p-3 sm:p-4 bg-indigo-50/50 border-l-4 border-indigo-600 rounded-r-2xl space-y-1.5 text-xs">
+                                <div><strong class="text-indigo-900">Cách sử dụng:</strong> ${escapeHtml(item.usage || '(Trống)')}</div>
+                                <div><strong class="text-indigo-900">Công thức:</strong> <span class="font-hanzi font-bold text-indigo-700">${escapeHtml(item.formula || '(Trống)')}</span></div>
+                                <div><strong class="text-indigo-900">Ví dụ:</strong> <span class="font-hanzi text-slate-800 whitespace-pre-line">${escapeHtml(item.example || '(Trống)')}</span></div>
+                            </div>
+                        `;
+                    }
+                } else {
+                    titleText = item.hanzi;
+                    statusBadgeHtml = `<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 font-bold text-[10px]">Thành ngữ</span>`;
+                    editFn = `openIdiomModal('${item.id}')`;
+                    if (isExpanded) {
+                        detailHtml = `
+                            <div class="p-3 sm:p-4 bg-amber-50/50 border-l-4 border-amber-600 rounded-r-2xl space-y-1.5 text-xs">
+                                <div><strong class="text-amber-900">Pinyin:</strong> <span class="text-amber-700 font-bold">/${escapeHtml(item.pinyin)}/</span></div>
+                                <div><strong class="text-amber-900">Ý nghĩa:</strong> <span class="font-bold text-slate-900">${escapeHtml(item.meaning)}</span></div>
+                                ${item.story ? `<div><strong class="text-amber-900">Điển tích:</strong> ${escapeHtml(item.story)}</div>` : ''}
+                                <div><strong class="text-amber-900">Cách dùng:</strong> ${escapeHtml(item.usage)}</div>
+                                <div><strong class="text-amber-900">Ví dụ:</strong> <span class="font-hanzi text-slate-800">${escapeHtml(item.example)}</span></div>
+                            </div>
+                        `;
+                    }
                 }
 
-                tbody.innerHTML = rows.map(v => {
-                    const isChecked = selectedBulkIds.has(v.id);
-                    const masteryInfo = getVocabMasterySummary(v);
-                    const isMastered = masteryInfo.isMastered;
-                    const decks = Array.isArray(v.collections) && v.collections.length > 0 ? v.collections : [v.fileSource || 'Mặc định'];
-                    const synBadgesHtml = (v.synonyms && v.synonyms.length > 0)
-                        ? renderSynonymInteractiveBadges(v.synonyms, 'light')
-                        : '<span class="text-slate-400">-</span>';
-                    const antText = (v.antonyms || []).map(a => `<span class="px-2 py-0.5 rounded-md bg-rose-50 text-rose-800 border border-rose-200 font-hanzi font-bold text-xs">${escapeHtml(a.targetHanzi)}</span>`).join(' ') || '<span class="text-slate-400">-</span>';
-
-                    return `
-                        <tr class="hover:bg-slate-50 transition ${isChecked ? 'bg-cyan-50/40' : ''}">
-                            <td class="p-3 text-center"><input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleRowCheckbox('${v.id}', this.checked)" class="w-4 h-4 rounded accent-cyan-600 cursor-pointer"></td>
-                            <td class="p-3 font-hanzi text-xl font-black text-slate-900">${escapeHtml(v.hanzi)}</td>
-                            <td class="p-3">
-                                <div class="text-xs">
-                                    <span class="text-amber-700 font-bold">/${escapeHtml(v.pinyin)}/</span>
-                                    ${v.pos ? `<span class="text-sky-700 font-semibold">(${escapeHtml(v.pos)})</span>` : ''}
-                                    <span class="font-bold text-slate-900">${escapeHtml(v.meaning)}</span>
+                return `
+                    <tr class="hover:bg-slate-50 transition ${isChecked ? 'bg-cyan-50/40' : ''}">
+                        <td class="py-2.5 px-2 text-center align-middle">
+                            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleRowCheckbox('${item.id}', this.checked)" class="w-4 h-4 rounded accent-cyan-600 cursor-pointer">
+                        </td>
+                        <td class="py-2.5 px-2 align-middle">
+                            <button type="button" onclick="toggleDataItemDetailAccordion('${item.id}')" class="text-left group flex items-center gap-1.5 max-w-full cursor-pointer touch-manipulation">
+                                <div class="min-w-0">
+                                    <span class="font-hanzi text-base sm:text-lg font-black text-slate-900 group-hover:text-cyan-700 transition break-words leading-snug">${escapeHtml(titleText)}</span>
+                                    ${subTag}
                                 </div>
-                                <div class="text-[11px] text-slate-500 mt-0.5 truncate max-w-xs">
-                                    ${(v.usages && v.usages.length > 0) ? `${v.usages.length} cách dùng/ví dụ` : (v.usageFormula ? `Cấu trúc: ${escapeHtml(v.usageFormula)}` : '')}
-                                </div>
-                            </td>
-                            <td class="p-3 text-[11px] space-y-1.5">
-                                <div class="flex flex-wrap items-center gap-1"><span class="font-bold text-slate-500 mr-0.5">ĐN:</span> ${synBadgesHtml}</div>
-                                <div class="flex flex-wrap items-center gap-1"><span class="font-bold text-slate-500 mr-0.5">TN:</span> ${antText}</div>
-                            </td>
-                            <td class="p-3">
-                                <div class="flex flex-wrap gap-1">
-                                    ${decks.map(d => `<span class="px-2 py-0.5 rounded-md bg-cyan-50 text-cyan-800 border border-cyan-200 font-bold text-[10px]">${escapeHtml(d)}</span>`).join('')}
-                                </div>
-                            </td>
-                            <td class="p-3 whitespace-nowrap">
-                                ${isMastered
-                                    ? `<span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[11px]"><i class="fa-solid fa-check-double mr-1"></i>Đã thuộc (${masteryInfo.completedCount}/${masteryInfo.totalCount})</span>`
-                                    : `<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 font-bold text-[11px]">Cần ôn (${masteryInfo.completedCount}/${masteryInfo.totalCount})</span>`}
-                            </td>
-                            <td class="p-3 text-right whitespace-nowrap space-x-1">
-                                <button type="button" onclick="openVocabModal('${v.id}')" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-cyan-100 text-slate-700 font-bold"><i class="fa-solid fa-pen"></i></button>
-                                <button type="button" onclick="deleteSingleItem('vocab', '${v.id}')" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-rose-100 text-slate-600 font-bold"><i class="fa-solid fa-trash"></i></button>
+                                <i class="fa-solid fa-chevron-${isExpanded ? 'up text-cyan-600' : 'down text-slate-300'} text-[10px] shrink-0 transition"></i>
+                            </button>
+                        </td>
+                        <td class="py-2.5 px-1.5 align-middle">
+                            <div class="flex flex-wrap gap-1">
+                                ${decks.map(d => `<span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 font-bold text-[10px] truncate max-w-[95px] sm:max-w-[140px]">${escapeHtml(d)}</span>`).join('')}
+                            </div>
+                        </td>
+                        <td class="py-2.5 px-1.5 text-center align-middle">
+                            ${statusBadgeHtml}
+                        </td>
+                        <td class="py-2.5 px-2 text-right align-middle whitespace-nowrap">
+                            <button type="button" onclick="${editFn}" title="Sửa" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-slate-100 hover:bg-cyan-100 text-slate-700 font-bold inline-flex items-center justify-center cursor-pointer">
+                                <i class="fa-solid fa-pen text-[11px]"></i>
+                            </button>
+                            <button type="button" onclick="deleteSingleItem('${activeDataTableTab}', '${item.id}')" title="Xóa" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-slate-100 hover:bg-rose-100 text-rose-600 font-bold inline-flex items-center justify-center ml-0.5 cursor-pointer">
+                                <i class="fa-solid fa-trash text-[11px]"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    ${isExpanded ? `
+                        <tr class="bg-slate-50/60">
+                            <td colspan="5" class="p-2 sm:p-3 border-b border-cyan-100">
+                                ${detailHtml}
                             </td>
                         </tr>
-                    `;
-                }).join('');
-            } else if (activeDataTableTab === 'grammar') {
-                let rows = grammarList.filter(g => itemBelongsToCollection(g, fileFilter));
-                thead.innerHTML = `
-                    <tr>
-                        <th class="p-3 w-10 text-center"><input type="checkbox" onchange="toggleSelectAllVisibleRows(this, 'grammar')" class="w-4 h-4 rounded accent-indigo-600 cursor-pointer"></th>
-                        <th class="p-3">Các dạng ngữ pháp</th>
-                        <th class="p-3">Cách sử dụng</th>
-                        <th class="p-3">Công thức</th>
-                        <th class="p-3">Ví dụ</th>
-                        <th class="p-3">Bộ từ</th>
-                        <th class="p-3 text-right">Thao tác</th>
-                    </tr>
+                    ` : ''}
                 `;
-                tbody.innerHTML = rows.map(g => `
-                    <tr class="hover:bg-slate-50">
-                        <td class="p-3 text-center"><input type="checkbox" ${selectedBulkIds.has(g.id) ? 'checked' : ''} onchange="toggleRowCheckbox('${g.id}', this.checked)" class="w-4 h-4 rounded"></td>
-                        <td class="p-3 font-hanzi font-bold">${escapeHtml(g.pattern)}</td>
-                        <td class="p-3">${escapeHtml(g.usage)}</td>
-                        <td class="p-3 font-hanzi text-indigo-700 font-bold">${escapeHtml(g.formula)}</td>
-                        <td class="p-3 font-hanzi">${escapeHtml(g.example)}</td>
-                        <td class="p-3"><span class="px-2 py-0.5 rounded bg-slate-100 text-[11px] font-bold">${escapeHtml((g.collections || [g.fileSource]).join(', '))}</span></td>
-                        <td class="p-3 text-right space-x-1">
-                            <button type="button" onclick="openGrammarModal('${g.id}')" class="px-2.5 py-1.5 rounded-lg bg-slate-100"><i class="fa-solid fa-pen"></i></button>
-                            <button type="button" onclick="deleteSingleItem('grammar', '${g.id}')" class="px-2.5 py-1.5 rounded-lg bg-slate-100"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `).join('');
-            } else {
-                let rows = idiomList.filter(idm => itemBelongsToCollection(idm, fileFilter));
-                thead.innerHTML = `
-                    <tr>
-                        <th class="p-3 w-10 text-center"><input type="checkbox" onchange="toggleSelectAllVisibleRows(this, 'idiom')" class="w-4 h-4 rounded accent-amber-600 cursor-pointer"></th>
-                        <th class="p-3">Thành ngữ</th>
-                        <th class="p-3">Pinyin & Ý nghĩa</th>
-                        <th class="p-3">Câu chuyện & Cách dùng</th>
-                        <th class="p-3">Bộ từ</th>
-                        <th class="p-3 text-right">Thao tác</th>
-                    </tr>
-                `;
-                tbody.innerHTML = rows.map(idm => `
-                    <tr class="hover:bg-slate-50">
-                        <td class="p-3 text-center"><input type="checkbox" ${selectedBulkIds.has(idm.id) ? 'checked' : ''} onchange="toggleRowCheckbox('${idm.id}', this.checked)" class="w-4 h-4 rounded"></td>
-                        <td class="p-3 font-hanzi text-lg font-black">${escapeHtml(idm.hanzi)}</td>
-                        <td class="p-3"><div class="text-amber-700 font-bold">/${escapeHtml(idm.pinyin)}/</div><div class="font-semibold">${escapeHtml(idm.meaning)}</div></td>
-                        <td class="p-3 text-xs"><div><strong>Cách dùng:</strong> ${escapeHtml(idm.usage)}</div>${idm.story ? `<div class="text-slate-500 truncate max-w-xs">Điển tích: ${escapeHtml(idm.story)}</div>` : ''}</td>
-                        <td class="p-3"><span class="px-2 py-0.5 rounded bg-amber-50 text-amber-800 text-[11px] font-bold">${escapeHtml((idm.collections || []).join(', '))}</span></td>
-                        <td class="p-3 text-right space-x-1">
-                            <button type="button" onclick="openIdiomModal('${idm.id}')" class="px-2.5 py-1.5 rounded-lg bg-slate-100"><i class="fa-solid fa-pen"></i></button>
-                            <button type="button" onclick="deleteSingleItem('idiom', '${idm.id}')" class="px-2.5 py-1.5 rounded-lg bg-slate-100"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `).join('');
-            }
+            }).join('');
         };
 
         window.toggleRowCheckbox = function(id, checked) {
             if (checked) selectedBulkIds.add(id);
             else selectedBulkIds.delete(id);
-            document.getElementById('selectedCountBadge').textContent = selectedBulkIds.size;
+            const selBadge = document.getElementById('selectedCountBadge');
+            if (selBadge) selBadge.textContent = selectedBulkIds.size;
         };
 
-        window.toggleSelectAllVisibleRows = function(masterCheckbox, tabType) {
+        window.toggleSelectAllVisibleRows = function(masterCheckbox) {
             const checked = masterCheckbox.checked;
-            const list = tabType === 'vocab' ? vocabList : (tabType === 'grammar' ? grammarList : idiomList);
-            list.forEach(item => {
-                if (checked) selectedBulkIds.add(item.id);
-                else selectedBulkIds.delete(item.id);
+            currentVisibleRowIds.forEach(id => {
+                if (checked) selectedBulkIds.add(id);
+                else selectedBulkIds.delete(id);
             });
             renderDataManagementTable();
         };
