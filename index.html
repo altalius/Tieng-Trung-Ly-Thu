@@ -247,7 +247,7 @@
                         </button>
                     </nav>
 
-                    <!-- Cụm Học viên Cục bộ & Xuất/Nhập JSON -->
+                    <!-- Cụm Học viên Cục bộ, Cài đặt chung & Xuất/Nhập JSON -->
                     <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
                         <button type="button" onclick="openUserManagerModal()" title="Đổi Học viên hoặc tạo thêm Học viên mới" class="flex items-center gap-1.5 bg-slate-50 hover:bg-cyan-50 border border-slate-200 hover:border-cyan-300 px-2.5 py-1.5 rounded-xl transition cursor-pointer">
                             <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-cyan-700 text-white flex items-center justify-center font-bold text-xs">
@@ -260,6 +260,11 @@
                                     <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
                                 </div>
                             </div>
+                        </button>
+
+                        <!-- Nút Cài đặt chung (Icon bánh răng) -->
+                        <button type="button" onclick="openGeneralSettingsModal()" title="Cài đặt chung (Giọng đọc & Tốc độ phát âm)" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-100 hover:bg-cyan-50 text-slate-700 hover:text-cyan-700 border border-slate-200 hover:border-cyan-300 active:scale-95 transition flex items-center justify-center text-sm sm:text-base cursor-pointer touch-manipulation">
+                            <i class="fa-solid fa-gear"></i>
                         </button>
 
                         <button type="button" onclick="exportFullBackupJson()" title="Xuất file sao lưu (.json)" class="px-2.5 sm:px-3 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold transition flex items-center gap-1.5">
@@ -275,6 +280,73 @@
                 </div>
             </div>
         </header>
+
+        <!-- MODAL CÀI ĐẶT CHUNG (TỐC ĐỘ ĐỌC & ĐỔI GIỌNG LUÂN PHIÊN) -->
+        <div id="generalSettingsModal" onclick="closeGeneralSettingsModal()" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-3 sm:p-4">
+            <div onclick="event.stopPropagation()" class="bg-white rounded-3xl shadow-2xl border border-slate-200 max-w-md w-full overflow-hidden">
+                <div class="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between">
+                    <h3 class="text-sm sm:text-base font-extrabold flex items-center gap-2">
+                        <i class="fa-solid fa-gear text-cyan-400"></i>
+                        <span>Cài Đặt Chung (Âm Thanh & Phát Âm)</span>
+                    </h3>
+                    <button type="button" onclick="closeGeneralSettingsModal()" class="w-8 h-8 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 flex items-center justify-center text-lg cursor-pointer">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <div class="p-5 space-y-5 text-xs text-slate-700">
+                    <!-- 1. Thanh trượt Tốc độ đọc (Rate) -->
+                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <label for="settingSpeechRateSlider" class="font-extrabold text-slate-900 text-xs sm:text-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-gauge-high text-cyan-600"></i>
+                                <span>Tốc độ đọc (Rate):</span>
+                            </label>
+                            <span id="settingSpeechRateValueLabel" class="px-2.5 py-0.5 rounded-lg bg-cyan-600 text-white font-black text-xs">0.85x</span>
+                        </div>
+
+                        <input type="range" id="settingSpeechRateSlider" min="0.5" max="1.5" step="0.05" value="0.85"
+                            oninput="handleSpeechRateSettingChange(this.value)"
+                            class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-cyan-600">
+
+                        <div class="flex justify-between text-[10px] font-bold text-slate-400">
+                            <span>0.5x (Chậm rõ)</span>
+                            <button type="button" onclick="handleSpeechRateSettingChange(0.85)" class="text-cyan-700 hover:underline cursor-pointer">Mặc định (0.85x)</button>
+                            <span>1.5x (Nhanh)</span>
+                        </div>
+                    </div>
+
+                    <!-- 2. Đổi giọng đọc luân phiên (Sequential Voices) -->
+                    <div class="p-4 rounded-2xl bg-cyan-50/60 border border-cyan-200 space-y-2.5">
+                        <label class="flex items-start gap-3 cursor-pointer select-none">
+                            <input type="checkbox" id="settingSequentialVoiceChk" onchange="handleSequentialVoiceSettingChange(this.checked)" class="mt-0.5 w-4 h-4 rounded accent-cyan-600 cursor-pointer shrink-0">
+                            <div class="space-y-1">
+                                <div class="font-extrabold text-slate-900 text-xs sm:text-sm">
+                                    Đọc luân phiên các giọng khác nhau (Giúp quen với nhiều âm sắc)
+                                </div>
+                                <p class="text-[11px] text-slate-500 leading-relaxed">
+                                    Mỗi lần bấm nút Loa, hệ thống sẽ tự động chuyển sang giọng đọc tiếng Trung tiếp theo có sẵn trên thiết bị của bạn.
+                                </p>
+                            </div>
+                        </label>
+                        <div id="availableZhVoicesInfo" class="text-[11px] font-bold text-cyan-800 bg-white/80 border border-cyan-200/80 px-3 py-1.5 rounded-xl flex items-center justify-between">
+                            <span>Đang kiểm tra giọng đọc tiếng Trung trên máy...</span>
+                        </div>
+                    </div>
+
+                    <!-- Nút Nghe thử & Đóng -->
+                    <div class="flex items-center justify-between gap-2 pt-2 border-t border-slate-200">
+                        <button type="button" onclick="speakChineseText('你好，欢迎学习趣味汉语！', event)" class="px-4 py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-extrabold text-xs flex items-center gap-1.5 active:scale-95 transition cursor-pointer">
+                            <i class="fa-solid fa-volume-high text-amber-600"></i>
+                            <span>Nghe thử giọng đọc</span>
+                        </button>
+                        <button type="button" onclick="closeGeneralSettingsModal()" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs shadow cursor-pointer">
+                            Hoàn tất
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Thanh Bộ Lọc Chọn Nhiều Bộ Từ & Thống Kê Tiến Độ Toàn Cục -->
         <div class="bg-slate-900 text-white border-b border-slate-800">
@@ -572,32 +644,71 @@
                 <!-- 1B. GIAO DIỆN KIỂM TRA TỪ VỰNG (TRẮC NGHIỆM & ĐIỀN VÀO CHỖ TRỐNG) -->
                 <div id="vocabQuizView" class="hidden space-y-5">
                     <!-- Thanh cấu hình bài kiểm tra từ vựng -->
-                    <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                        <div class="space-y-1">
-                            <h3 class="text-sm sm:text-base font-extrabold text-slate-900 flex items-center gap-2">
-                                <i class="fa-solid fa-trophy text-amber-500"></i>
-                                Kiểm Tra Từ Vựng (Xáo Trộn Ngẫu Nhiên Cũ + Mới)
-                            </h3>
-                            <p class="text-xs text-slate-500 leading-relaxed">
-                                Từ vựng chỉ được công nhận là <strong class="text-emerald-600">"Đã thuộc"</strong> khi bạn trả lời đúng <strong>cả 2 dạng bài</strong> (Trắc nghiệm & Điền chữ Hán vào câu).
-                            </p>
+                    <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col gap-4">
+                        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+                            <div class="space-y-1">
+                                <h3 class="text-sm sm:text-base font-extrabold text-slate-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-trophy text-amber-500"></i>
+                                    Kiểm Tra Từ Vựng (Tùy Chọn Đa Dạng Bài)
+                                </h3>
+                                <p class="text-xs text-slate-500 leading-relaxed">
+                                    Từ vựng được công nhận là <strong class="text-emerald-600">"Đã thuộc (3/3)"</strong> khi bạn vượt qua <strong>cả 3 dạng bài chính</strong> (Trắc nghiệm nghĩa, Điền trống gõ Hán tự & Tự luận từ Nghĩa).
+                                </p>
+                            </div>
+
+                            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shrink-0">
+                                <select id="vocabQuizScopeSelect" onchange="startNewVocabQuiz()" class="bg-slate-50 border border-slate-300 text-slate-800 rounded-xl px-3 py-2.5 text-xs font-bold focus:outline-none focus:border-cyan-600">
+                                    <option value="ALL">Phạm vi: Tất cả từ vựng (Xáo trộn)</option>
+                                    <option value="NEED_REVIEW">Chỉ kiểm tra từ: Cần ôn luyện thêm</option>
+                                </select>
+                                <button type="button" onclick="startNewVocabQuiz()" class="px-4 py-2.5 bg-cyan-600 hover:bg-cyan-700 active:scale-95 text-white rounded-xl text-xs font-bold shadow transition flex items-center justify-center gap-1.5 cursor-pointer touch-manipulation">
+                                    <i class="fa-solid fa-rotate-right"></i> Tạo Đề Mới
+                                </button>
+                            </div>
                         </div>
 
-                        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-<select id="vocabQuizTypeSelect" onchange="startNewVocabQuiz()" class="bg-slate-50 border border-slate-300 text-slate-800 rounded-xl px-3 py-2.5 text-xs font-bold focus:outline-none focus:border-cyan-600">
-                                <option value="MIXED">Chế độ: Kết hợp tự động cả 4 dạng bài (Khuyên dùng)</option>
-                                <option value="TYPE_1">Dạng 1: Trắc nghiệm nghĩa từ vựng (Chọn A, B, C, D)</option>
-                                <option value="TYPE_4">Dạng 2: Trắc nghiệm câu đục lỗ / Điền khuyết (Chọn A, B, C, D)</option>
-                                <option value="TYPE_2">Dạng 3: Điền từ vào chỗ trống (Tự gõ chữ Hán vào câu đục lỗ)</option>
-                                <option value="TYPE_3">Dạng 4: Tự luận / Gõ Hán tự từ nghĩa tiếng Việt</option>
-                            </select>
-                            <select id="vocabQuizScopeSelect" onchange="startNewVocabQuiz()" class="bg-slate-50 border border-slate-300 text-slate-800 rounded-xl px-3 py-2.5 text-xs font-bold focus:outline-none focus:border-cyan-600">
-                                <option value="ALL">Phạm vi: Tất cả từ vựng (Xáo trộn)</option>
-                                <option value="NEED_REVIEW">Chỉ kiểm tra từ: Cần ôn luyện thêm</option>
-                            </select>
-                            <button type="button" onclick="startNewVocabQuiz()" class="px-4 py-2.5 bg-cyan-600 hover:bg-cyan-700 active:scale-95 text-white rounded-xl text-xs font-bold shadow transition flex items-center justify-center gap-1.5">
-                                <i class="fa-solid fa-rotate-right"></i> Tạo Đề Mới
-                            </button>
+                        <!-- Nhóm Checkbox chọn nhiều dạng bài thi cùng lúc -->
+                        <div class="pt-3 border-t border-slate-100">
+                            <div class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-2 flex items-center justify-between">
+                                <span><i class="fa-solid fa-list-check mr-1 text-cyan-600"></i>Tích chọn các dạng bài muốn kiểm tra cùng lúc:</span>
+                            </div>
+                            <div id="vocabQuizTypesCheckboxGroup" class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                <!-- Dạng 1: Trắc nghiệm nghĩa -->
+                                <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-cyan-50/60 hover:border-cyan-300 transition cursor-pointer select-none">
+                                    <input type="checkbox" value="TYPE_1" checked onchange="handleVocabQuizTypeCheckboxChange()" class="vocab-quiz-type-chk w-4 h-4 rounded accent-cyan-600 cursor-pointer shrink-0">
+                                    <div class="min-w-0">
+                                        <div class="text-xs font-extrabold text-slate-800 truncate">Dạng 1: Trắc nghiệm nghĩa</div>
+                                        <div class="text-[10px] text-slate-500 truncate">Chọn đáp án A, B, C, D</div>
+                                    </div>
+                                </label>
+
+                                <!-- Dạng 2 (TYPE_4): Trắc nghiệm câu đục lỗ -> Ẩn & vô hiệu hóa mặc định theo yêu cầu -->
+                                <label class="hidden items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 bg-slate-100 opacity-60 cursor-not-allowed select-none" aria-hidden="true">
+                                    <input type="checkbox" value="TYPE_4" disabled onchange="handleVocabQuizTypeCheckboxChange()" class="vocab-quiz-type-chk w-4 h-4 rounded accent-indigo-600 shrink-0">
+                                    <div class="min-w-0">
+                                        <div class="text-xs font-extrabold text-slate-700 truncate">Dạng 2: Trắc nghiệm đục lỗ</div>
+                                        <div class="text-[10px] text-slate-500 truncate">Chọn từ điền khuyết A, B, C, D</div>
+                                    </div>
+                                </label>
+
+                                <!-- Dạng 3 (TYPE_2): Điền trống gõ Hán tự -->
+                                <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-cyan-50/60 hover:border-cyan-300 transition cursor-pointer select-none">
+                                    <input type="checkbox" value="TYPE_2" checked onchange="handleVocabQuizTypeCheckboxChange()" class="vocab-quiz-type-chk w-4 h-4 rounded accent-cyan-600 cursor-pointer shrink-0">
+                                    <div class="min-w-0">
+                                        <div class="text-xs font-extrabold text-slate-800 truncate">Dạng 3: Điền trống gõ Hán tự</div>
+                                        <div class="text-[10px] text-slate-500 truncate">Tự gõ chữ Hán vào câu đục lỗ</div>
+                                    </div>
+                                </label>
+
+                                <!-- Dạng 4 (TYPE_3): Tự luận từ Nghĩa -->
+                                <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-cyan-50/60 hover:border-cyan-300 transition cursor-pointer select-none">
+                                    <input type="checkbox" value="TYPE_3" checked onchange="handleVocabQuizTypeCheckboxChange()" class="vocab-quiz-type-chk w-4 h-4 rounded accent-cyan-600 cursor-pointer shrink-0">
+                                    <div class="min-w-0">
+                                        <div class="text-xs font-extrabold text-slate-800 truncate">Dạng 4: Tự luận từ Nghĩa</div>
+                                        <div class="text-[10px] text-slate-500 truncate">Gõ Hán tự từ nghĩa tiếng Việt</div>
+                                    </div>
+                                </label>
+                            </div>
                         </div>
                     </div>
 
@@ -1548,8 +1659,8 @@
                 <textarea id="inputVocabFibList" rows="2" placeholder="VD: 我 ___ 全体同学向老师表示感谢。" class="font-hanzi w-full p-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-cyan-600"></textarea>
             </div>
 
-            <!-- QUẢN LÝ BỘ TỪ -->
-            <div class="p-3.5 rounded-2xl bg-slate-100 border border-slate-200 space-y-2.5">
+            <!-- QUẢN LÝ BỘ TỪ & TỰ ĐỘNG LIÊN KẾT TỪ ĐA NGHĨA -->
+            <div class="p-3.5 rounded-2xl bg-slate-100 border border-slate-200 space-y-3">
                 <label class="block text-xs font-extrabold text-slate-800">
                     <i class="fa-solid fa-folder-tree mr-1 text-cyan-600"></i>Gán vào Bộ từ (1 từ có thể thuộc nhiều Bộ từ)
                 </label>
@@ -1563,6 +1674,12 @@
                         + Gán mới
                     </button>
                 </div>
+
+                <!-- Checkbox Tự động liên kết các loại từ khác của cùng 1 chữ Hán (Mặc định luôn checked) -->
+                <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-cyan-50/90 hover:bg-cyan-100/70 border border-cyan-200 text-xs font-bold text-cyan-950 cursor-pointer transition select-none">
+                    <input type="checkbox" id="chkAutoLinkSameHanziModal" checked onchange="syncAutoLinkSameHanziPreference(this.checked)" class="w-4 h-4 rounded accent-cyan-600 cursor-pointer shrink-0">
+                    <span>Tự động liên kết các loại từ khác của cùng 1 chữ Hán vào chung Bộ từ</span>
+                </label>
             </div>
 
             <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
@@ -2158,6 +2275,10 @@
                 passedFIB: Boolean(v.passedFIB),
                 passedTyping: Boolean(v.passedTyping),
                 passedSynonym: Boolean(v.passedSynonym),
+                failedMC: Boolean(v.failedMC),
+                failedFIB: Boolean(v.failedFIB),
+                failedTyping: Boolean(v.failedTyping),
+                failedSynonym: Boolean(v.failedSynonym),
                 createdAt: Number(v.createdAt) || Date.now()
             };
         }
@@ -2201,27 +2322,70 @@
         }
 
         // ---------------------------------------------------------------------------
-        // 3. KIỂM TRA TIẾN ĐỘ TỪ VỰNG & TỰ ĐỘNG DỌN DẸP BỘ TỪ RỖNG
+        // 3. KIỂM TRA TIẾN ĐỘ TỪ VỰNG (3 DẠNG BÀI CHÍNH) & TOOLTIP CHI TIẾT 4 DẠNG BÀI
         // ---------------------------------------------------------------------------
         function getVocabMasterySummary(item) {
-            if (!item) return { isMastered: false, completedCount: 0, totalCount: 1, badges: [] };
+            if (!item) return { isMastered: false, completedCount: 0, totalCount: 3, badges: [], allFourTypes: [] };
 
             const hasCloze = Boolean(extractClozeSentence(item));
-            const hasMcCloze = Boolean(hasCloze);
             const hasTypingQuiz = item.requireTyping !== false;
 
-            const requiredChecks = [
-                { code: 'MC', label: 'Trắc nghiệm nghĩa', passed: Boolean(item.passedMC) }
+            const resolveQuizState = (passed, failed) => {
+                if (passed) return 'PASSED';
+                if (failed) return 'FAILED';
+                return 'UNTESTED';
+            };
+
+            // Danh sách đầy đủ 4 dạng bài để hiển thị trong Tooltip chi tiết
+            const allFourTypes = [
+                {
+                    code: 'MC',
+                    shortLabel: 'Trắc nghiệm nghĩa',
+                    fullLabel: 'Dạng 1: Trắc nghiệm nghĩa',
+                    passed: Boolean(item.passedMC),
+                    failed: Boolean(item.failedMC),
+                    state: resolveQuizState(item.passedMC, item.failedMC),
+                    activeForMastery: true
+                },
+                {
+                    code: 'SYN',
+                    shortLabel: 'Trắc nghiệm đục lỗ',
+                    fullLabel: 'Dạng 2: Trắc nghiệm đục lỗ (Ẩn)',
+                    passed: Boolean(item.passedSynonym),
+                    failed: Boolean(item.failedSynonym),
+                    state: resolveQuizState(item.passedSynonym, item.failedSynonym),
+                    activeForMastery: false
+                },
+                {
+                    code: 'FIB',
+                    shortLabel: 'Điền trống',
+                    fullLabel: 'Dạng 3: Điền trống gõ Hán tự',
+                    passed: Boolean(item.passedFIB),
+                    failed: Boolean(item.failedFIB),
+                    state: resolveQuizState(item.passedFIB, item.failedFIB),
+                    activeForMastery: hasCloze
+                },
+                {
+                    code: 'TYPE',
+                    shortLabel: 'Gõ chữ',
+                    fullLabel: 'Dạng 4: Tự luận từ Nghĩa',
+                    passed: Boolean(item.passedTyping),
+                    failed: Boolean(item.failedTyping),
+                    state: resolveQuizState(item.passedTyping, item.failedTyping),
+                    activeForMastery: hasTypingQuiz
+                }
             ];
-            if (hasMcCloze) {
-                requiredChecks.push({ code: 'SYN', label: 'Trắc nghiệm đục lỗ', passed: Boolean(item.passedSynonym) });
-            }
-            if (hasCloze) {
-                requiredChecks.push({ code: 'FIB', label: 'Điền trống', passed: Boolean(item.passedFIB) });
-            }
-            if (hasTypingQuiz) {
-                requiredChecks.push({ code: 'TYPE', label: 'Gõ chữ', passed: Boolean(item.passedTyping) });
-            }
+
+            // Trừ bỏ TYPE_4 (SYN) khỏi tổng số bài cần làm để đạt "Đã thuộc" (Chỉ tính tối đa 3 bài chính)
+            const requiredChecks = allFourTypes
+                .filter(t => t.activeForMastery)
+                .map(t => ({
+                    code: t.code,
+                    label: t.shortLabel,
+                    passed: t.passed,
+                    failed: t.failed,
+                    state: t.state
+                }));
 
             const completedCount = requiredChecks.filter(c => c.passed).length;
             const totalCount = requiredChecks.length;
@@ -2231,8 +2395,69 @@
                 isMastered,
                 completedCount,
                 totalCount,
-                badges: requiredChecks
+                badges: requiredChecks,
+                allFourTypes
             };
+        }
+
+        // Render nhãn Đánh giá kèm Tooltip (Popup) chi tiết trạng thái 4 dạng bài
+        function renderVocabMasteryTooltipBadge(item) {
+            const summary = getVocabMasterySummary(item);
+            const hasAnyFailed = summary.allFourTypes.some(t => t.state === 'FAILED');
+
+            const mainBadgeClass = summary.isMastered
+                ? 'bg-emerald-100 hover:bg-emerald-200/80 text-emerald-800 border-emerald-300 font-extrabold'
+                : (hasAnyFailed
+                    ? 'bg-rose-50 hover:bg-rose-100 text-rose-800 border-rose-300 font-bold'
+                    : 'bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-200 font-bold');
+
+            const mainIcon = summary.isMastered
+                ? '<i class="fa-solid fa-circle-check text-emerald-600"></i>'
+                : (hasAnyFailed
+                    ? '<i class="fa-solid fa-triangle-exclamation text-rose-600"></i>'
+                    : '<i class="fa-solid fa-clock-rotate-left text-amber-600"></i>');
+
+            const mainText = summary.isMastered
+                ? `Đã thuộc (${summary.completedCount}/${summary.totalCount})`
+                : `Cần ôn thêm (${summary.completedCount}/${summary.totalCount})`;
+
+            const rowsHtml = summary.allFourTypes.map(t => {
+                let statusBadge = '';
+                if (t.state === 'PASSED') {
+                    statusBadge = `<span class="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[10px] font-extrabold shrink-0"><i class="fa-solid fa-check mr-1"></i>Đã xong</span>`;
+                } else if (t.state === 'FAILED') {
+                    statusBadge = `<span class="px-2 py-0.5 rounded-md bg-rose-500/25 text-rose-300 border border-rose-400/40 text-[10px] font-extrabold shrink-0"><i class="fa-solid fa-xmark mr-1"></i>Làm sai</span>`;
+                } else {
+                    statusBadge = `<span class="px-2 py-0.5 rounded-md bg-slate-800 text-slate-400 border border-slate-700 text-[10px] font-bold shrink-0">Chưa làm</span>`;
+                }
+                return `
+                    <div class="flex items-center justify-between gap-2 py-1 border-b border-slate-800/80 last:border-b-0">
+                        <span class="text-[11px] text-slate-200 font-medium truncate">${escapeHtml(t.fullLabel)}</span>
+                        ${statusBadge}
+                    </div>
+                `;
+            }).join('');
+
+            return `
+                <div class="synonym-tooltip-trigger relative inline-block group" onclick="toggleSynonymTooltipPopup(event, this)">
+                    <button type="button" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl border text-[11px] transition cursor-pointer select-none whitespace-nowrap ${mainBadgeClass}">
+                        ${mainIcon}
+                        <span>${mainText}</span>
+                        <i class="fa-solid fa-circle-info text-[10px] opacity-60"></i>
+                    </button>
+
+                    <div class="synonym-tooltip-popup hidden group-hover:block absolute bottom-full right-0 sm:left-1/2 sm:-translate-x-1/2 mb-2 w-64 sm:w-72 p-3 rounded-2xl bg-slate-950 text-white border border-slate-700 shadow-2xl z-50 text-left pointer-events-none">
+                        <div class="flex items-center justify-between gap-1 border-b border-slate-800 pb-1.5 mb-1.5">
+                            <span class="font-hanzi text-sm font-black text-amber-300">${escapeHtml(item.hanzi)} ${item.pos ? `<span class="font-sans text-[11px] text-sky-300">(${escapeHtml(item.pos)})</span>` : ''}</span>
+                            <span class="text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-white/10 text-slate-200">${summary.completedCount}/${summary.totalCount} bài</span>
+                        </div>
+                        <div class="space-y-0.5">
+                            ${rowsHtml}
+                        </div>
+                        <div class="w-2.5 h-2.5 bg-slate-950 border-r border-b border-slate-700 rotate-45 absolute -bottom-1.5 right-6 sm:left-1/2 sm:-translate-x-1/2"></div>
+                    </div>
+                </div>
+            `;
         }
 
         function pruneEmptyCollections() {
@@ -3615,6 +3840,174 @@
             return parts.join(' ');
         }
 
+        // ---------------------------------------------------------------------------
+        // TÍCH HỢP PHÁT ÂM TIẾNG TRUNG TỰ ĐỘNG, CÀI ĐẶT TỐC ĐỘ & GIỌNG ĐỌC LUÂN PHIÊN
+        // ---------------------------------------------------------------------------
+        const SPEECH_RATE_STORAGE_KEY = 'speech_rate_setting';
+        const SPEECH_SEQ_VOICE_STORAGE_KEY = 'speech_sequential_voice';
+
+        let currentSpeechRate = Number(safeLocalGet(SPEECH_RATE_STORAGE_KEY)) || 0.85;
+        if (currentSpeechRate < 0.5 || currentSpeechRate > 1.5) currentSpeechRate = 0.85;
+
+        let isSequentialVoiceEnabled = Boolean(safeLocalGet(SPEECH_SEQ_VOICE_STORAGE_KEY));
+        let sequentialVoiceIndex = 0;
+
+        // Lấy toàn bộ danh sách giọng đọc tiếng Trung khả dụng trên thiết bị
+        function getAllChineseVoices() {
+            if (!('speechSynthesis' in window)) return [];
+            const voices = window.speechSynthesis.getVoices() || [];
+            return voices.filter(v => v && v.lang && v.lang.toLowerCase().includes('zh'));
+        }
+
+        function updateAvailableVoicesBadgeInModal() {
+            const infoEl = document.getElementById('availableZhVoicesInfo');
+            if (!infoEl) return;
+            const zhVoices = getAllChineseVoices();
+            if (zhVoices.length === 0) {
+                infoEl.innerHTML = `<span><i class="fa-solid fa-circle-info mr-1 text-amber-600"></i>Thiết bị đang dùng giọng đọc mặc định của hệ điều hành.</span>`;
+            } else {
+                const namesPreview = zhVoices.slice(0, 3).map(v => v.name.replace(/Microsoft |Google |Apple /gi, '')).join(', ');
+                infoEl.innerHTML = `<span><i class="fa-solid fa-microphone-lines mr-1 text-cyan-600"></i>Phát hiện <strong>${zhVoices.length}</strong> giọng tiếng Trung (${escapeHtml(namesPreview)}${zhVoices.length > 3 ? '...' : ''})</span>`;
+            }
+        }
+
+        if ('speechSynthesis' in window && typeof window.speechSynthesis.onvoiceschanged !== 'undefined') {
+            window.speechSynthesis.onvoiceschanged = () => {
+                updateAvailableVoicesBadgeInModal();
+            };
+        }
+
+        window.openGeneralSettingsModal = function() {
+            const slider = document.getElementById('settingSpeechRateSlider');
+            const label = document.getElementById('settingSpeechRateValueLabel');
+            const seqChk = document.getElementById('settingSequentialVoiceChk');
+
+            if (slider) slider.value = String(currentSpeechRate);
+            if (label) label.textContent = `${Number(currentSpeechRate).toFixed(2).replace(/\.00$/, '.0')}x`;
+            if (seqChk) seqChk.checked = Boolean(isSequentialVoiceEnabled);
+
+            updateAvailableVoicesBadgeInModal();
+
+            const modal = document.getElementById('generalSettingsModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        };
+
+        window.closeGeneralSettingsModal = function() {
+            const modal = document.getElementById('generalSettingsModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        };
+
+        window.handleSpeechRateSettingChange = function(val) {
+            const num = Math.max(0.5, Math.min(1.5, parseFloat(val) || 0.85));
+            currentSpeechRate = Number(num.toFixed(2));
+            safeLocalSet(SPEECH_RATE_STORAGE_KEY, currentSpeechRate);
+
+            const slider = document.getElementById('settingSpeechRateSlider');
+            const label = document.getElementById('settingSpeechRateValueLabel');
+            if (slider && String(slider.value) !== String(currentSpeechRate)) {
+                slider.value = String(currentSpeechRate);
+            }
+            if (label) {
+                label.textContent = `${currentSpeechRate}x`;
+            }
+        };
+
+        window.handleSequentialVoiceSettingChange = function(isChecked) {
+            isSequentialVoiceEnabled = Boolean(isChecked);
+            safeLocalSet(SPEECH_SEQ_VOICE_STORAGE_KEY, isSequentialVoiceEnabled);
+        };
+
+        // Hàm lọc sạch phần dịch tiếng Việt, chỉ giữ lại câu Chữ Hán để phát âm
+        function extractChineseOnlyText(rawText) {
+            if (!rawText) return '';
+            // 1. Tách bỏ toàn bộ phần dịch trong ngoặc đơn (...) hoặc ngoặc全角 （...）
+            let text = String(rawText).split('(')[0].split('（')[0].trim();
+            // 2. Bỏ số thứ tự hoặc ký hiệu đầu dòng (VD: "1. ", "→ ", "• ")
+            text = text.replace(/^\s*(?:\d+[\.\)]\s*|→\s*|•\s*)/, '').trim();
+            // 3. Nếu có dấu gạch ngang phân cách nghĩa tiếng Việt (VD: "我是学生 - Tôi là học sinh"), lấy phần trước
+            text = text.split(/\s+[-–—]\s+/)[0].trim();
+            // 4. Lọc giữ lại các ký tự tiếng Trung, số và dấu câu tiếng Trung
+            const zhOnly = text.replace(/[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]+/g, '').trim();
+            return zhOnly || text;
+        }
+
+        function escapeJsSingleQuoteString(str) {
+            return String(str || '')
+                .replace(/\\/g, '\\\\')
+                .replace(/'/g, "\\'")
+                .replace(/"/g, '&quot;')
+                .replace(/\r?\n/g, ' ')
+                .trim();
+        }
+
+        window.speakChineseText = function(text, event) {
+            if (event) {
+                if (typeof event.stopPropagation === 'function') event.stopPropagation();
+                if (typeof event.preventDefault === 'function') event.preventDefault();
+            }
+
+            // Khóa tạm thời cờ lật thẻ để việc bấm nút Loa tuyệt đối không làm lật Flashcard
+            const surface = document.getElementById('vocabTouchSurface');
+            if (surface) {
+                surface.dataset.suppressFlip = 'true';
+                setTimeout(() => { surface.dataset.suppressFlip = 'false'; }, 320);
+            }
+
+            if (!('speechSynthesis' in window)) {
+                showToast("Trình duyệt trên thiết bị này chưa hỗ trợ phát âm Web Speech API!", "error");
+                return;
+            }
+
+            const cleanChinese = extractChineseOnlyText(text);
+            if (!cleanChinese) return;
+
+            try {
+                window.speechSynthesis.cancel();
+
+                const zhVoices = getAllChineseVoices();
+                let selectedVoice = null;
+
+                if (zhVoices.length > 0) {
+                    if (isSequentialVoiceEnabled) {
+                        selectedVoice = zhVoices[sequentialVoiceIndex % zhVoices.length];
+                        sequentialVoiceIndex = (sequentialVoiceIndex + 1) % zhVoices.length;
+                    } else {
+                        selectedVoice =
+                            zhVoices.find(v => v.lang === 'zh-CN' && /Tingting|Xiaoxiao|Google|Natural|Meijia/i.test(v.name)) ||
+                            zhVoices.find(v => v.lang === 'zh-CN') ||
+                            zhVoices[0];
+                    }
+                }
+
+                const btnEl = event?.currentTarget || null;
+                if (btnEl && btnEl.classList) {
+                    btnEl.classList.add('text-cyan-500', 'scale-110');
+                    setTimeout(() => btnEl.classList.remove('scale-110'), 350);
+                }
+
+                const segments = cleanChinese.includes('/')
+                    ? cleanChinese.split('/').map(s => s.trim()).filter(Boolean)
+                    : [cleanChinese];
+
+                segments.forEach(seg => {
+                    const utterance = new SpeechSynthesisUtterance(seg);
+                    utterance.lang = selectedVoice?.lang || 'zh-CN';
+                    utterance.rate = currentSpeechRate;
+                    utterance.pitch = 1.0;
+                    if (selectedVoice) utterance.voice = selectedVoice;
+                    window.speechSynthesis.speak(utterance);
+                });
+            } catch (err) {
+                console.warn("Lỗi phát âm Web Speech API:", err);
+            }
+        };
+
         function renderCurrentVocabFlashcard() {
             const emptyState = document.getElementById('vocabEmptyState');
             const wrapper = document.getElementById('vocabCardWrapper');
@@ -3638,9 +4031,41 @@
                 ? `<span class="px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800 border border-emerald-300 font-extrabold flex items-center gap-1 text-[11px]"><i class="fa-solid fa-circle-check text-emerald-600"></i> Đã thuộc</span>`
                 : `<span class="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 font-bold flex items-center gap-1 text-[11px]"><i class="fa-solid fa-clock-rotate-left text-amber-600"></i> Cần ôn thêm</span>`;
 
-            document.getElementById('vocabFrontHanzi').textContent = card.hanzi;
+            const safeCardHanziJs = escapeJsSingleQuoteString( extractChineseOnlyText(card.hanzi) );
+
+            // Mặt trước: Hiển thị Chữ Hán kèm nút Loa phát âm
+            const frontHanziEl = document.getElementById('vocabFrontHanzi');
+            if (frontHanziEl) {
+                frontHanziEl.innerHTML = `
+                    <span class="inline-flex items-center justify-center gap-3 flex-wrap">
+                        <span>${escapeHtml(card.hanzi)}</span>
+                        <button type="button"
+                            onclick="speakChineseText('${safeCardHanziJs}', event)"
+                            title="Nghe phát âm tiếng Trung"
+                            class="tts-speaker-btn w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-slate-100 hover:bg-cyan-50 text-slate-400 hover:text-cyan-600 active:scale-95 border border-slate-200/80 transition inline-flex items-center justify-center text-xl sm:text-2xl shadow-sm cursor-pointer touch-manipulation">
+                            <i class="fa-solid fa-volume-high"></i>
+                        </button>
+                    </span>
+                `;
+            }
+
             document.getElementById('vocabFrontFileSources').textContent = card.fileSourcesList.length > 0 ? `Bộ từ: ${card.fileSourcesList.join(', ')}` : '';
-            document.getElementById('vocabBackHanziHeader').textContent = card.hanzi;
+
+            // Tiêu đề mặt sau kèm nút Loa nhỏ
+            const backHeaderEl = document.getElementById('vocabBackHanziHeader');
+            if (backHeaderEl) {
+                backHeaderEl.innerHTML = `
+                    <span class="inline-flex items-center gap-2">
+                        <span>${escapeHtml(card.hanzi)}</span>
+                        <button type="button"
+                            onclick="speakChineseText('${safeCardHanziJs}', event)"
+                            title="Nghe phát âm từ vựng"
+                            class="tts-speaker-btn w-7 h-7 rounded-lg bg-white/10 hover:bg-cyan-500/25 text-slate-300 hover:text-cyan-400 active:scale-95 transition inline-flex items-center justify-center text-xs cursor-pointer touch-manipulation">
+                            <i class="fa-solid fa-volume-high"></i>
+                        </button>
+                    </span>
+                `;
+            }
             document.getElementById('vocabBackMergedNotice').textContent = card.senses.length > 1 ? `Gộp ${card.senses.length} loại từ/nghĩa` : `Chi tiết từ vựng`;
 
             const framesContainer = document.getElementById('vocabBackFramesContainer');
@@ -3661,6 +4086,7 @@
                        </div>`
                     : '';
 
+                // Ví dụ chung: Tách bỏ hoàn toàn phần dịch tiếng Việt trước khi truyền vào speakChineseText
                 const generalExLines = sense.generalExample
                     ? String(sense.generalExample).split(/[\n;；]+/).map(s => s.trim()).filter(Boolean)
                     : [];
@@ -3670,17 +4096,29 @@
                                <i class="fa-solid fa-quote-left"></i>
                                <span>Ví dụ chung (${generalExLines.length}):</span>
                            </div>
-                           <div class="font-hanzi text-xs sm:text-sm text-emerald-50 space-y-1 pl-2 border-l-2 border-emerald-400/40">
-                               ${generalExLines.map((ex, exIdx) => `
-                                   <div class="leading-relaxed flex items-start gap-1.5">
-                                       <span class="text-emerald-300 font-sans font-bold text-xs shrink-0 select-none">${generalExLines.length > 1 ? `${exIdx + 1}.` : '→'}</span>
-                                       <span>${escapeHtml(ex)}</span>
+                           <div class="font-hanzi text-xs sm:text-sm text-emerald-50 space-y-1.5 pl-2 border-l-2 border-emerald-400/40">
+                               ${generalExLines.map((ex, exIdx) => {
+                                   const pureChineseEx = escapeJsSingleQuoteString(extractChineseOnlyText(ex.split('(')[0].trim()));
+                                   return `
+                                   <div class="leading-relaxed flex items-start justify-between gap-2 group/ex">
+                                       <div class="flex items-start gap-1.5 min-w-0">
+                                           <span class="text-emerald-300 font-sans font-bold text-xs shrink-0 select-none">${generalExLines.length > 1 ? `${exIdx + 1}.` : '→'}</span>
+                                           <span class="break-words">${escapeHtml(ex)}</span>
+                                       </div>
+                                       <button type="button"
+                                           onclick="speakChineseText('${pureChineseEx}', event)"
+                                           title="Nghe phát âm câu ví dụ này"
+                                           class="tts-speaker-btn shrink-0 w-7 h-7 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-white/10 active:scale-95 transition inline-flex items-center justify-center text-xs cursor-pointer touch-manipulation">
+                                           <i class="fa-solid fa-volume-high"></i>
+                                       </button>
                                    </div>
-                               `).join('')}
+                                   `;
+                               }).join('')}
                            </div>
                        </div>`
                     : '';
 
+                // Ví dụ theo cách dùng (usages): Tách bỏ hoàn toàn phần dịch tiếng Việt trước khi truyền vào speakChineseText
                 const usagesList = Array.isArray(sense.usages) ? sense.usages : [];
                 const hasMultipleUsages = usagesList.length > 1;
 
@@ -3724,13 +4162,24 @@
                                 : '';
 
                             const examplesBlockHtml = exArr.length > 0
-                                ? `<div class="${hasFormula || hasMultipleUsages ? 'mt-1.5 pl-3 border-l-2 border-cyan-500/40 space-y-1' : 'mt-1 space-y-1'} font-hanzi text-xs sm:text-sm text-slate-100">
-                                       ${exArr.map((ex, exIdx) => `
-                                           <div class="leading-relaxed flex items-start gap-1.5">
-                                               <span class="text-cyan-400 font-sans font-bold text-xs shrink-0 select-none">${exArr.length > 1 ? `${exIdx + 1}.` : '→'}</span>
-                                               <span>${escapeHtml(ex)}</span>
+                                ? `<div class="${hasFormula || hasMultipleUsages ? 'mt-1.5 pl-3 border-l-2 border-cyan-500/40 space-y-1.5' : 'mt-1 space-y-1.5'} font-hanzi text-xs sm:text-sm text-slate-100">
+                                       ${exArr.map((ex, exIdx) => {
+                                           const pureChineseUsageEx = escapeJsSingleQuoteString(extractChineseOnlyText(ex.split('(')[0].trim()));
+                                           return `
+                                           <div class="leading-relaxed flex items-start justify-between gap-2 group/uex">
+                                               <div class="flex items-start gap-1.5 min-w-0">
+                                                   <span class="text-cyan-400 font-sans font-bold text-xs shrink-0 select-none">${exArr.length > 1 ? `${exIdx + 1}.` : '→'}</span>
+                                                   <span class="break-words">${escapeHtml(ex)}</span>
+                                               </div>
+                                               <button type="button"
+                                                   onclick="speakChineseText('${pureChineseUsageEx}', event)"
+                                                   title="Nghe phát âm câu ví dụ này"
+                                                   class="tts-speaker-btn shrink-0 w-7 h-7 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-white/10 active:scale-95 transition inline-flex items-center justify-center text-xs cursor-pointer touch-manipulation">
+                                                   <i class="fa-solid fa-volume-high"></i>
+                                               </button>
                                            </div>
-                                       `).join('')}
+                                           `;
+                                       }).join('')}
                                    </div>`
                                 : '';
 
@@ -3759,7 +4208,6 @@
                        </div>`
                     : '';
 
-                // BỎ onclick="toggleVocabCardFlip()" ở khung cuộn mặt sau để lướt đọc trên Mobile không bị tự lật thẻ
                 return `
                     <div class="bg-white/10 rounded-2xl p-3.5 border border-white/15 text-left cursor-default">
                         ${headerTag}
@@ -3778,7 +4226,9 @@
                 const itemsHtml = s.masteryInfo.badges.map(b =>
                     b.passed
                         ? `<span class="text-emerald-400 font-bold"><i class="fa-solid fa-circle-check"></i> ${b.label}</span>`
-                        : `<span class="text-slate-400"><i class="fa-regular fa-circle"></i> ${b.label}</span>`
+                        : (b.failed
+                            ? `<span class="text-rose-400 font-bold"><i class="fa-solid fa-circle-xmark"></i> ${b.label}</span>`
+                            : `<span class="text-slate-400"><i class="fa-regular fa-circle"></i> ${b.label}</span>`)
                 ).join(' • ');
                 return `<span>${prefix}${itemsHtml}</span>`;
             }).join(' | ');
@@ -3889,8 +4339,14 @@
             el.style.touchAction = 'pan-y';
             el.classList.add('cursor-grab', 'active:cursor-grabbing');
 
-            // Chặn sự kiện click lật thẻ ngay ở pha Capture nếu chạm vào vùng cuộn (.custom-scroll) hoặc vừa kéo/cuộn
+            // Chặn sự kiện click lật thẻ ngay ở pha Capture nếu chạm vào vùng cuộn (.custom-scroll), NHƯNG cho phép nút Loa (.tts-speaker-btn) hoạt động
             el.addEventListener('click', e => {
+                const clickedSpeakerBtn = e.target && e.target.closest && e.target.closest('.tts-speaker-btn');
+                if (clickedSpeakerBtn) {
+                    el.dataset.suppressFlip = 'true';
+                    setTimeout(() => { el.dataset.suppressFlip = 'false'; }, 320);
+                    return;
+                }
                 const touchedScrollZone = e.target && e.target.closest && e.target.closest('.custom-scroll, .synonym-tooltip-trigger');
                 if (touchedScrollZone || el.dataset.justSwiped === 'true' || el.dataset.suppressFlip === 'true') {
                     e.stopPropagation();
@@ -4237,8 +4693,33 @@
             };
         }
 
+        let vocabQuizWrongAnswers = [];
+
+        const QUIZ_TYPE_LABELS = {
+            TYPE_1: 'Dạng 1: Trắc nghiệm nghĩa',
+            TYPE_4: 'Dạng 2: Trắc nghiệm đục lỗ',
+            TYPE_2: 'Dạng 3: Điền trống gõ Hán tự',
+            TYPE_3: 'Dạng 4: Tự luận từ Nghĩa'
+        };
+
+        function getSelectedVocabQuizTypes() {
+            const checkboxes = Array.from(document.querySelectorAll('.vocab-quiz-type-chk:not(:disabled)'));
+            if (checkboxes.length === 0) return ['TYPE_1', 'TYPE_2', 'TYPE_3'];
+            return checkboxes.filter(chk => chk.checked).map(chk => chk.value);
+        }
+
+        window.handleVocabQuizTypeCheckboxChange = function() {
+            const selected = getSelectedVocabQuizTypes();
+            if (selected.length === 0) {
+                showToast("Vui lòng tích chọn ít nhất 1 dạng bài kiểm tra!", "info");
+                const firstChk = document.querySelector('.vocab-quiz-type-chk:not(:disabled)');
+                if (firstChk) firstChk.checked = true;
+            }
+            startNewVocabQuiz();
+        };
+
         window.startNewVocabQuiz = function() {
-            const quizMode = document.getElementById('vocabQuizTypeSelect')?.value || 'MIXED';
+            const selectedTypes = getSelectedVocabQuizTypes();
             const scope = document.getElementById('vocabQuizScopeSelect')?.value || 'ALL';
 
             const targetUnits = vocabList.filter(v => {
@@ -4258,44 +4739,31 @@
             const shuffledUnits = [...targetUnits].sort(() => Math.random() - 0.5);
 
             shuffledUnits.forEach(unit => {
-                if (quizMode === 'TYPE_1') {
-                    questions.push(buildType1Question(unit, vocabList));
-                } else if (quizMode === 'TYPE_2') {
-                    const q2 = buildType2Question(unit);
-                    if (q2) questions.push(q2);
-                } else if (quizMode === 'TYPE_3') {
-                    questions.push(buildType3Question(unit));
-                } else if (quizMode === 'TYPE_4') {
-                    const q4 = buildType4Question(unit, vocabList);
-                    if (q4) questions.push(q4);
-                } else {
-                    // Chế độ MIXED:
-                    // Nếu chọn phạm vi "Tất cả từ vựng" (scope === 'ALL') -> Đưa TẤT CẢ các dạng bài phù hợp (cả 4 dạng nếu đủ điều kiện) vào ôn tập
-                    if (scope === 'ALL') {
-                        questions.push(buildType1Question(unit, vocabList));
-                        const q4 = buildType4Question(unit, vocabList);
-                        if (q4) questions.push(q4);
-                        const q2 = buildType2Question(unit);
-                        if (q2) questions.push(q2);
-                        if (unit.requireTyping !== false) {
-                            questions.push(buildType3Question(unit));
+                selectedTypes.forEach(typeCode => {
+                    if (typeCode === 'TYPE_1') {
+                        if (scope === 'ALL' || !unit.passedMC) {
+                            questions.push(buildType1Question(unit, vocabList));
                         }
-                    } else {
-                        // Phạm vi "Cần ôn luyện thêm" (NEED_REVIEW): Chỉ đưa các dạng bài từ đó chưa vượt qua
-                        if (!unit.passedMC) questions.push(buildType1Question(unit, vocabList));
-                        const q4 = buildType4Question(unit, vocabList);
-                        if (q4 && !unit.passedSynonym) questions.push(q4);
-                        const q2 = buildType2Question(unit);
-                        if (q2 && !unit.passedFIB) questions.push(q2);
-                        if (unit.requireTyping !== false && !unit.passedTyping) {
+                    } else if (typeCode === 'TYPE_4') {
+                        if (scope === 'ALL' || !unit.passedSynonym) {
+                            const q4 = buildType4Question(unit, vocabList);
+                            if (q4) questions.push(q4);
+                        }
+                    } else if (typeCode === 'TYPE_2') {
+                        if (scope === 'ALL' || !unit.passedFIB) {
+                            const q2 = buildType2Question(unit);
+                            if (q2) questions.push(q2);
+                        }
+                    } else if (typeCode === 'TYPE_3') {
+                        if (unit.requireTyping !== false && (scope === 'ALL' || !unit.passedTyping)) {
                             questions.push(buildType3Question(unit));
                         }
                     }
-                }
+                });
             });
 
             if (questions.length === 0) {
-                container.innerHTML = `<div class="bg-white rounded-3xl border border-slate-200 p-8 text-center font-bold text-amber-700">Các từ hiện tại chưa có câu Ví dụ chứa từ vựng để tạo bài tập đục lỗ. Hãy bổ sung Ví dụ hoặc chọn dạng bài khác!</div>`;
+                container.innerHTML = `<div class="bg-white rounded-3xl border border-slate-200 p-8 text-center font-bold text-amber-700">Các từ hiện tại đã hoàn thành các dạng bài bạn chọn hoặc chưa có câu Ví dụ để tạo bài đục lỗ. Hãy chọn thêm dạng bài khác hoặc đổi phạm vi!</div>`;
                 return;
             }
 
@@ -4303,6 +4771,7 @@
             vocabQuizCurrentIndex = 0;
             vocabQuizScore = 0;
             vocabQuizAnswered = false;
+            vocabQuizWrongAnswers = [];
             renderCurrentVocabQuizQuestion();
         };
 
@@ -4323,7 +4792,7 @@
                     <div class="bg-white rounded-3xl shadow-lg border border-slate-200 overflow-hidden">
                         <div class="bg-slate-900 text-white px-5 py-3.5 flex items-center justify-between">
                             <span class="text-xs font-extrabold uppercase text-amber-400">
-                                ${isType4 ? 'Trắc nghiệm câu đục lỗ / Điền khuyết (A, B, C, D)' : escapeHtml(q.promptTitle)}
+                                ${isType4 ? 'Dạng 2: Trắc nghiệm câu đục lỗ (A, B, C, D)' : escapeHtml(q.promptTitle)}
                             </span>
                             <span class="text-xs font-bold text-slate-300">Câu ${vocabQuizCurrentIndex + 1}/${vocabQuizQuestions.length} • Đúng: ${vocabQuizScore}</span>
                         </div>
@@ -4335,13 +4804,18 @@
                                        <div class="font-hanzi text-xl sm:text-2xl font-bold text-slate-900 px-3 leading-relaxed">${escapeHtml(q.sentence)}</div>
                                        <div class="text-xs text-slate-500">Gợi ý nghĩa từ cần điền: <strong>${escapeHtml(q.meaningHint)}</strong></div>`
                                     : `<div class="text-xs font-bold text-slate-400 uppercase">Chọn nghĩa tiếng Việt đúng của từ:</div>
-                                       <div class="font-hanzi text-5xl sm:text-6xl font-black text-slate-900 py-1">${escapeHtml(q.unit.hanzi)}</div>
+                                       <div class="font-hanzi text-5xl sm:text-6xl font-black text-slate-900 py-1 flex items-center justify-center gap-2.5">
+                                           <span>${escapeHtml(q.unit.hanzi)}</span>
+                                           <button type="button" data-speak-text="${escapeHtmlAttr(q.unit.hanzi)}" onclick="speakChineseText(this.dataset.speakText, event)" class="w-9 h-9 rounded-xl bg-white hover:bg-cyan-50 text-slate-400 hover:text-cyan-600 border border-slate-200 text-base inline-flex items-center justify-center shadow-sm cursor-pointer">
+                                               <i class="fa-solid fa-volume-high"></i>
+                                           </button>
+                                       </div>
                                        ${q.unit.pos ? `<span class="inline-block px-3 py-0.5 rounded-full bg-sky-100 text-sky-800 text-xs font-bold">Loại từ: ${escapeHtml(q.unit.pos)}</span>` : ''}`
                                 }
                             </div>
                             <div class="grid grid-cols-1 gap-2.5">
                                 ${q.options.map((opt, i) => `
-                                    <button type="button" onclick="submitVocabType1or4Answer(${i})" id="mcOptBtn_${i}" class="w-full text-left p-3.5 rounded-2xl border-2 border-slate-200 hover:border-cyan-500 font-semibold text-xs sm:text-sm text-slate-800 flex items-start gap-3">
+                                    <button type="button" onclick="submitVocabType1or4Answer(${i})" id="mcOptBtn_${i}" class="w-full text-left p-3.5 rounded-2xl border-2 border-slate-200 hover:border-cyan-500 font-semibold text-xs sm:text-sm text-slate-800 flex items-start gap-3 cursor-pointer">
                                         <span class="w-6 h-6 rounded-lg bg-slate-200 text-slate-700 font-extrabold text-xs flex items-center justify-center shrink-0">${String.fromCharCode(65 + i)}</span>
                                         <span class="${isType4 ? 'font-hanzi text-base font-bold' : ''}">${escapeHtml(opt)}</span>
                                     </button>
@@ -4357,7 +4831,7 @@
                     <div class="bg-white rounded-3xl shadow-lg border border-slate-200 overflow-hidden">
                         <div class="bg-indigo-950 text-white px-5 py-3.5 flex items-center justify-between">
                             <span class="text-xs font-extrabold uppercase text-indigo-300">
-                                ${isType3 ? 'Tự luận / Gõ Hán tự từ nghĩa tiếng Việt' : 'Điền từ vào chỗ trống (Gõ chữ Hán)'}
+                                ${isType3 ? 'Dạng 4: Tự luận / Gõ Hán tự từ Nghĩa' : 'Dạng 3: Điền trống gõ Hán tự'}
                             </span>
                             <span class="text-xs font-bold text-slate-300">Câu ${vocabQuizCurrentIndex + 1}/${vocabQuizQuestions.length} • Đúng: ${vocabQuizScore}</span>
                         </div>
@@ -4374,7 +4848,7 @@
                             </div>
                             <form onsubmit="submitVocabType2or3Answer(event)" class="flex flex-col sm:flex-row gap-2.5">
                                 <input type="text" id="fibUserInput" required autocomplete="off" placeholder="Gõ Chữ Hán đáp án (VD: 但是，而...) vào đây..." class="font-hanzi flex-1 px-4 py-3.5 rounded-2xl border-2 border-slate-300 focus:border-indigo-600 focus:outline-none text-lg font-bold text-center sm:text-left">
-                                <button type="submit" id="fibSubmitBtn" class="px-6 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold rounded-2xl shadow-md text-sm">
+                                <button type="submit" id="fibSubmitBtn" class="px-6 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold rounded-2xl shadow-md text-sm cursor-pointer">
                                     <i class="fa-solid fa-check mr-1"></i> Kiểm Tra
                                 </button>
                             </form>
@@ -4390,14 +4864,35 @@
             if (vocabQuizAnswered) return;
             vocabQuizAnswered = true;
             const q = vocabQuizQuestions[vocabQuizCurrentIndex];
-            const isCorrect = (q.options[selectedIndex] === q.correctAnswer);
+            const userChosen = q.options[selectedIndex];
+            const isCorrect = (userChosen === q.correctAnswer);
 
             if (isCorrect) {
                 vocabQuizScore++;
-                if (q.type === 'TYPE_1') q.unit.passedMC = true;
-                if (q.type === 'TYPE_4') q.unit.passedSynonym = true;
-                persistCurrentAccountData();
+                if (q.type === 'TYPE_1') {
+                    q.unit.passedMC = true;
+                    q.unit.failedMC = false;
+                } else if (q.type === 'TYPE_4') {
+                    q.unit.passedSynonym = true;
+                    q.unit.failedSynonym = false;
+                }
+            } else {
+                if (q.type === 'TYPE_1') {
+                    q.unit.passedMC = false;
+                    q.unit.failedMC = true;
+                } else if (q.type === 'TYPE_4') {
+                    q.unit.passedSynonym = false;
+                    q.unit.failedSynonym = true;
+                }
+                vocabQuizWrongAnswers.push({
+                    unit: q.unit,
+                    type: q.type,
+                    typeLabel: QUIZ_TYPE_LABELS[q.type] || q.type,
+                    userAnswer: userChosen,
+                    correctAnswer: q.correctAnswer
+                });
             }
+            persistCurrentAccountData();
 
             q.options.forEach((opt, idx) => {
                 const btn = document.getElementById(`mcOptBtn_${idx}`);
@@ -4417,16 +4912,35 @@
             const inp = document.getElementById('fibUserInput');
             const userAns = (inp ? inp.value : '').trim();
 
-            // Sử dụng thuật toán đối chiếu linh hoạt tách theo dấu phẩy
             const isCorrect = isFlexibleAnswerMatch(userAns, q.correctAnswer);
             if (inp) inp.disabled = true;
 
             if (isCorrect) {
                 vocabQuizScore++;
-                if (q.type === 'TYPE_2') q.unit.passedFIB = true;
-                if (q.type === 'TYPE_3') q.unit.passedTyping = true;
-                persistCurrentAccountData();
+                if (q.type === 'TYPE_2') {
+                    q.unit.passedFIB = true;
+                    q.unit.failedFIB = false;
+                } else if (q.type === 'TYPE_3') {
+                    q.unit.passedTyping = true;
+                    q.unit.failedTyping = false;
+                }
+            } else {
+                if (q.type === 'TYPE_2') {
+                    q.unit.passedFIB = false;
+                    q.unit.failedFIB = true;
+                } else if (q.type === 'TYPE_3') {
+                    q.unit.passedTyping = false;
+                    q.unit.failedTyping = true;
+                }
+                vocabQuizWrongAnswers.push({
+                    unit: q.unit,
+                    type: q.type,
+                    typeLabel: QUIZ_TYPE_LABELS[q.type] || q.type,
+                    userAnswer: userAns || '(Bỏ trống)',
+                    correctAnswer: q.correctAnswer
+                });
             }
+            persistCurrentAccountData();
             showVocabQuizFeedbackBox(q, isCorrect, userAns);
         };
 
@@ -4440,12 +4954,20 @@
                         ${isCorrect ? '<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> Chính xác!' : `<i class="fa-solid fa-circle-xmark text-rose-600 mr-1"></i> Chưa chính xác! ${userTyped ? `(Bạn gõ: ${escapeHtml(userTyped)})` : ''}`}
                     </div>
                     <div class="text-xs bg-white/80 p-3 rounded-xl space-y-1">
-                        <div><strong>Đáp án chuẩn:</strong> <span class="font-hanzi text-base font-black">${escapeHtml(q.unit.hanzi)}</span> <span class="text-amber-700 font-bold">/${escapeHtml(q.unit.pinyin)}/</span> ${q.unit.pos ? `(${escapeHtml(q.unit.pos)})` : ''}</div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <strong>Đáp án chuẩn:</strong>
+                            <span class="font-hanzi text-base font-black">${escapeHtml(q.unit.hanzi)}</span>
+                            <button type="button" data-speak-text="${escapeHtmlAttr(q.unit.hanzi)}" onclick="speakChineseText(this.dataset.speakText, event)" class="w-6 h-6 rounded-md bg-slate-100 hover:bg-cyan-100 text-slate-500 hover:text-cyan-700 inline-flex items-center justify-center text-xs cursor-pointer">
+                                <i class="fa-solid fa-volume-high"></i>
+                            </button>
+                            <span class="text-amber-700 font-bold">/${escapeHtml(q.unit.pinyin)}/</span>
+                            ${q.unit.pos ? `<span>(${escapeHtml(q.unit.pos)})</span>` : ''}
+                        </div>
                         <div><strong>Nghĩa:</strong> ${escapeHtml(q.unit.meaning)}</div>
                         ${q.comparisonNotes ? `<div class="text-indigo-800 font-semibold"><strong>So sánh đồng nghĩa:</strong> ${escapeHtml(q.comparisonNotes)}</div>` : ''}
                     </div>
                     <div class="flex justify-end">
-                        <button type="button" onclick="vocabQuizCurrentIndex++; renderCurrentVocabQuizQuestion();" class="px-5 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-extrabold">
+                        <button type="button" onclick="vocabQuizCurrentIndex++; renderCurrentVocabQuizQuestion();" class="px-5 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-extrabold cursor-pointer">
                             Câu tiếp theo <i class="fa-solid fa-arrow-right ml-1"></i>
                         </button>
                     </div>
@@ -4457,13 +4979,62 @@
             const container = document.getElementById('vocabQuizContainer');
             const total = vocabQuizQuestions.length;
             const percent = total > 0 ? Math.round((vocabQuizScore / total) * 100) : 0;
+
+            const wrongListHtml = vocabQuizWrongAnswers.length > 0
+                ? `<div class="mt-5 text-left border-t border-slate-200 pt-5 space-y-3">
+                       <div class="flex items-center justify-between">
+                           <h4 class="text-xs sm:text-sm font-extrabold text-rose-700 uppercase tracking-wider flex items-center gap-1.5">
+                               <i class="fa-solid fa-triangle-exclamation"></i>
+                               <span>Danh sách từ vựng trả lời sai (${vocabQuizWrongAnswers.length} câu)</span>
+                           </h4>
+                           <span class="text-[11px] text-slate-500 font-semibold">Đã lưu vào lịch sử lỗi sai</span>
+                       </div>
+                       <div class="max-h-80 overflow-y-auto custom-scroll space-y-2 pr-1">
+                           ${vocabQuizWrongAnswers.map((item, idx) => `
+                               <div class="p-3 rounded-2xl bg-rose-50/60 border border-rose-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                                   <div class="space-y-1 min-w-0">
+                                       <div class="flex items-center gap-2 flex-wrap">
+                                           <span class="font-bold text-rose-700">#${idx + 1}.</span>
+                                           <span class="font-hanzi text-base sm:text-lg font-black text-slate-900">${escapeHtml(item.unit.hanzi)}</span>
+                                           <button type="button" data-speak-text="${escapeHtmlAttr(item.unit.hanzi)}" onclick="speakChineseText(this.dataset.speakText, event)" class="w-6 h-6 rounded-lg bg-white hover:bg-cyan-50 text-slate-500 hover:text-cyan-600 border border-slate-200 inline-flex items-center justify-center text-xs cursor-pointer">
+                                               <i class="fa-solid fa-volume-high"></i>
+                                           </button>
+                                           <span class="text-amber-700 font-bold">/${escapeHtml(item.unit.pinyin)}/</span>
+                                           ${item.unit.pos ? `<span class="px-2 py-0.5 rounded bg-sky-100 text-sky-800 font-bold text-[10px]">${escapeHtml(item.unit.pos)}</span>` : ''}
+                                       </div>
+                                       <div class="text-slate-700 font-semibold">${escapeHtml(item.unit.meaning)}</div>
+                                       <div class="text-[11px] text-slate-500">
+                                           Bạn trả lời: <strong class="text-rose-700 line-through">${escapeHtml(item.userAnswer)}</strong>
+                                           • Đáp án đúng: <strong class="text-emerald-700 font-hanzi">${escapeHtml(item.correctAnswer)}</strong>
+                                       </div>
+                                   </div>
+                                   <div class="shrink-0">
+                                       <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-rose-600 text-white font-extrabold text-[11px] shadow-sm">
+                                           <i class="fa-solid fa-circle-xmark"></i>
+                                           <span>${escapeHtml(item.typeLabel)}</span>
+                                       </span>
+                                   </div>
+                               </div>
+                           `).join('')}
+                       </div>
+                   </div>`
+                : `<div class="mt-3 p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-extrabold flex items-center justify-center gap-2">
+                       <i class="fa-solid fa-medal text-emerald-600 text-base"></i>
+                       <span>Tuyệt vời! Bạn đã trả lời đúng tuyệt đối 100% số câu hỏi trong phiên này!</span>
+                   </div>`;
+
             container.innerHTML = `
-                <div class="bg-white rounded-3xl shadow-xl border border-slate-200 p-8 text-center space-y-4">
+                <div class="bg-white rounded-3xl shadow-xl border border-slate-200 p-6 sm:p-8 text-center space-y-4">
                     <h3 class="text-xl font-black text-slate-900">Hoàn Thành Bài Kiểm Tra!</h3>
                     <p class="text-lg font-extrabold text-cyan-700">Điểm số: ${vocabQuizScore} / ${total} (${percent}%)</p>
-                    <div class="flex justify-center gap-3">
-                        <button type="button" onclick="startNewVocabQuiz()" class="px-5 py-2.5 rounded-xl bg-cyan-600 text-white text-xs font-bold">Làm Đề Mới</button>
-                        <button type="button" onclick="switchVocabSubMode('flashcard')" class="px-5 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold">Quay Lại Flashcard</button>
+                    ${wrongListHtml}
+                    <div class="flex flex-wrap justify-center gap-3 pt-2">
+                        <button type="button" onclick="startNewVocabQuiz()" class="px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-extrabold shadow cursor-pointer">
+                            <i class="fa-solid fa-rotate-right mr-1"></i> Làm Đề Mới
+                        </button>
+                        <button type="button" onclick="switchVocabSubMode('flashcard')" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-extrabold shadow cursor-pointer">
+                            <i class="fa-solid fa-clone mr-1"></i> Quay Lại Flashcard
+                        </button>
                     </div>
                 </div>
             `;
@@ -4726,20 +5297,16 @@
                 };
             }
 
-            // 4. Đồng bộ cột Đánh giá của Ngữ pháp & Thành ngữ trong Bảng Quản lý dữ liệu
+            // 4. Đồng bộ cột Đánh giá (Tooltip 4 dạng bài cho Từ vựng + Nhãn cho Ngữ pháp & Thành ngữ)
             const origRenderDataManagementTable = window.renderDataManagementTable;
             if (typeof origRenderDataManagementTable === 'function') {
                 window.renderDataManagementTable = function() {
                     origRenderDataManagementTable.apply(this, arguments);
-                    if (activeDataTableTab !== 'grammar' && activeDataTableTab !== 'idiom') return;
 
                     const thead = document.getElementById('dataTableHead');
                     const tbody = document.getElementById('dataTableBody');
                     if (!thead || !tbody) return;
 
-                    const sourceList = activeDataTableTab === 'grammar' ? grammarList : idiomList;
-
-                    // Tìm vị trí cột Đánh giá / Trạng thái trên Header
                     let statusColIdx = -1;
                     const thList = Array.from(thead.querySelectorAll('th'));
                     thList.forEach((th, idx) => {
@@ -4750,8 +5317,29 @@
                         }
                     });
 
-                    // Cập nhật nhãn Đã thuộc (emerald) / Cần ôn thêm (amber) cho từng dòng chính
                     const mainRows = Array.from(tbody.querySelectorAll('tr')).filter(tr => tr.querySelector('input[type="checkbox"]'));
+
+                    if (activeDataTableTab === 'vocab') {
+                        mainRows.forEach((tr, rowIdx) => {
+                            const rowId = currentVisibleRowIds[rowIdx];
+                            const item = vocabList.find(x => x.id === rowId);
+                            if (!item) return;
+
+                            const cells = tr.querySelectorAll('td');
+                            const targetCell = (statusColIdx >= 0 && cells[statusColIdx])
+                                ? cells[statusColIdx]
+                                : (cells.length >= 2 ? cells[cells.length - 2] : null);
+
+                            if (targetCell) {
+                                targetCell.innerHTML = renderVocabMasteryTooltipBadge(item);
+                            }
+                        });
+                        return;
+                    }
+
+                    if (activeDataTableTab !== 'grammar' && activeDataTableTab !== 'idiom') return;
+                    const sourceList = activeDataTableTab === 'grammar' ? grammarList : idiomList;
+
                     mainRows.forEach((tr, rowIdx) => {
                         const rowId = currentVisibleRowIds[rowIdx];
                         const item = sourceList.find(x => x.id === rowId);
@@ -4767,6 +5355,82 @@
                             targetCell.innerHTML = renderMasteryStatusBadgeHtml(mastered);
                         }
                     });
+                };
+            }
+
+            // 4B. TÍNH NĂNG TỰ ĐỘNG LIÊN KẾT CÁC LOẠI TỪ KHÁC CỦA CÙNG 1 CHỮ HÁN TRONG MODAL THÊM/SỬA TỪ VỰNG
+            const AUTO_LINK_PREF_KEY = 'auto_link_same_hanzi';
+            let autoLinkSameHanziEnabled = safeLocalGet(AUTO_LINK_PREF_KEY) !== false; // Mặc định luôn là true (checked)
+
+            window.syncAutoLinkSameHanziPreference = function(isChecked) {
+                autoLinkSameHanziEnabled = Boolean(isChecked);
+                safeLocalSet(AUTO_LINK_PREF_KEY, autoLinkSameHanziEnabled);
+                const modalChk = document.getElementById('chkAutoLinkSameHanziModal');
+                if (modalChk) modalChk.checked = autoLinkSameHanziEnabled;
+            };
+
+            // Đảm bảo mỗi khi mở Modal Thêm/Sửa từ vựng, Checkbox luôn giữ trạng thái checked theo cấu hình
+            const origOpenVocabModal = window.openVocabModal;
+            if (typeof origOpenVocabModal === 'function') {
+                window.openVocabModal = function() {
+                    origOpenVocabModal.apply(this, arguments);
+                    const modalChk = document.getElementById('chkAutoLinkSameHanziModal');
+                    if (modalChk) modalChk.checked = autoLinkSameHanziEnabled;
+                };
+            }
+            window.syncAutoLinkSameHanziPreference(autoLinkSameHanziEnabled);
+
+            // Quét toàn bộ vocabList để gán chung Bộ từ cho các từ có cùng Chữ Hán (khác loại từ)
+            function autoLinkDecksForSameHanzi(hanziStr, decksToAssign) {
+                const modalChk = document.getElementById('chkAutoLinkSameHanziModal');
+                const isEnabledNow = modalChk ? modalChk.checked : autoLinkSameHanziEnabled;
+                if (!isEnabledNow || !hanziStr) return 0;
+
+                const cleanHanzi = String(hanziStr).trim();
+                const validDecks = (Array.isArray(decksToAssign) ? decksToAssign : [decksToAssign])
+                    .map(d => String(d || '').trim())
+                    .filter(Boolean);
+                if (!cleanHanzi || validDecks.length === 0) return 0;
+
+                let linkedCount = 0;
+                vocabList.forEach(item => {
+                    if (!item || String(item.hanzi || '').trim() !== cleanHanzi) return;
+                    const currentDecks = Array.isArray(item.collections) ? item.collections : (item.fileSource ? [item.fileSource] : []);
+                    const beforeSize = currentDecks.length;
+                    const merged = Array.from(new Set([...currentDecks, ...validDecks])).filter(Boolean);
+                    if (merged.length > beforeSize) {
+                        item.collections = merged;
+                        item.fileSource = merged[0] || 'Mặc định';
+                        linkedCount++;
+                    }
+                });
+                return linkedCount;
+            }
+
+            // Khi Lưu từ vựng trong Modal, nếu Checkbox đang bật thì tự động liên kết các loại từ khác cùng Chữ Hán
+            const origSaveVocabModal = window.saveVocabModal;
+            if (typeof origSaveVocabModal === 'function') {
+                window.saveVocabModal = async function(event) {
+                    const modalChk = document.getElementById('chkAutoLinkSameHanziModal');
+                    const isEnabledNow = modalChk ? modalChk.checked : autoLinkSameHanziEnabled;
+                    const hanziInputVal = (document.getElementById('inputVocabHanzi')?.value || '').trim();
+                    const manualDeckInputVal = (document.getElementById('inputVocabFile')?.value || '').trim();
+                    const decksSnapshot = Array.from(new Set([
+                        ...(Array.isArray(currentModalDecks) ? currentModalDecks : []),
+                        ...(manualDeckInputVal ? manualDeckInputVal.split(/[,;\n，；]+/).map(s => s.trim()).filter(Boolean) : [])
+                    ]));
+
+                    await origSaveVocabModal.apply(this, arguments);
+
+                    if (isEnabledNow && hanziInputVal) {
+                        const targetWord = vocabList.find(v => v && v.hanzi.trim() === hanziInputVal);
+                        const finalDecks = decksSnapshot.length > 0 ? decksSnapshot : (targetWord?.collections || []);
+                        const linked = autoLinkDecksForSameHanzi(hanziInputVal, finalDecks);
+                        if (linked > 0) {
+                            await persistCurrentAccountData();
+                            showToast(`Đã tự động liên kết thêm ${linked} loại từ khác của chữ "${hanziInputVal}" vào chung Bộ từ!`, "info");
+                        }
+                    }
                 };
             }
 
